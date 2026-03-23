@@ -12,7 +12,9 @@
   "dependencies": {
     "@mantine/core": "^8.3.18",
     "@mantine/hooks": "^8.3.18",
+    "geist": "^1.7.0",
     "react": "^19.2.4",
+    "react-clock": "^6.0.0",
     "react-dom": "^19.2.4",
     "zustand": "^5.0.12"
   },

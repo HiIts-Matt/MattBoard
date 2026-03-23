@@ -1,5 +1,5 @@
-import { Clock } from "../components/Clock";
+import { ClockComponent } from "../components/Clock";
 
 export const components = {
-    clock: Clock,
+    clock: ClockComponent,
 }

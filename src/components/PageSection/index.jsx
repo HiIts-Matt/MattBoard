@@ -1,6 +1,5 @@
 import { Box } from "@mantine/core";
 import styles from './PageSection.module.css'
-import { Clock } from "../Clock";
 import { positions } from "../../utils/positions";
 import { components } from "../../utils/componentMap";
 
@@ -30,7 +29,7 @@ function Component({ component }) {
                 ...positions[component?.position]
             }}
         >
-            <SelectedComponent />
+            <SelectedComponent component={component}/>
         </Box>
     )
 }

@@ -1,0 +1,62 @@
+.colorScheme {
+    --clock-bg: color-mix(in srgb, var(--mantine-color-dark-7), black 70%)
+}
+
+.analogWrapper {
+    background: var(--clock-bg);
+    border-radius: 1000px;
+
+    :global(.react-clock__mark__body) {
+        background-color: var(--mantine-color-gray-0);
+    }
+
+    :global(.react-clock__face) {
+        border-color: var(--mantine-color-gray-0);
+    }
+
+    :global(.react-clock__second-hand__body) {
+        background-color: var(--mantine-color-red-6);
+    }
+
+    :global(.react-clock__minute-hand__body) {
+        background-color: var(--mantine-color-gray-0);
+    }
+
+    :global(.react-clock__hour-hand__body) {
+        background-color: var(--mantine-color-gray-0);
+    }
+
+    :global(.react-clock__mark__number) {
+        font-family: 'Geist Pixel Square';
+        color: var(--mantine-color-gray-0);
+    }
+
+    .bigClock {
+        :global(.react-clock__mark__number) {
+            font-size: 35px;
+        }
+    }
+}
+
+.digitalWrapper {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    background: var(--clock-bg);
+    border-radius: 12px;
+    border: 1px solid var(--mantine-color-gray-0);
+    padding: 12px 20px;
+
+    .digitalTime {
+        font-family: 'Geist Pixel Grid', monospace;
+        font-size: 48px;
+        color: var(--mantine-color-gray-0);
+        letter-spacing: 4px;
+    }
+
+    .digitalAmPm {
+        font-family: 'Geist Pixel Square', monospace;
+        font-size: 18px;
+        color: var(--mantine-color-gray-4);
+    }
+}

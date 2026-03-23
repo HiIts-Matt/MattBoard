@@ -39,5 +39,5 @@ export const positions = {
     'bottom-right': {
         bottom: '10px',
         right: '10px'
-    }
+    },
 }

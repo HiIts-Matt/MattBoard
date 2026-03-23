@@ -9,10 +9,13 @@ export const config = {
                     components: [
                         {
                             type: "clock",
-                            position: "left"
+                            position: "left",
+                            variant: 'both',
+                            showNumbers: true,
+                            size: 'lg'
                         }
                     ]
-                }
+                },
             ]
         }
     ]
