@@ -18,18 +18,19 @@ export function PageSection({ section }) {
 
 function Component({ component }) {
     const SelectedComponent = components[component?.type]
+    const isBackgroundImg = component?.variant === 'cover';
 
     if (!SelectedComponent) return null
 
     return (
         <Box
-            className={styles.component}
+            className={isBackgroundImg ? styles.backgroundComponent : styles.component}
             style={{
                 ...component.style,
                 ...positions[component?.position]
             }}
         >
-            <SelectedComponent component={component}/>
+            <SelectedComponent component={component} />
         </Box>
     )
 }

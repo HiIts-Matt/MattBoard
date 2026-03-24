@@ -9,10 +9,17 @@ export const config = {
                     components: [
                         {
                             type: "clock",
-                            position: "left",
+                            position: 'top-right',
                             variant: 'both',
-                            showNumbers: true,
-                            size: 'lg'
+                            size: 'lg',
+                            showNumbers: false,
+                            showMarks: false,
+                        },
+                        {
+                            type: 'photo',
+                            variant: 'cover',
+                            changeMins: 2,
+                            brightness: 0.5,
                         }
                     ]
                 },

@@ -3,7 +3,7 @@ export const positions = {
         top: '10px',
         left: '10px'
     },
-    'top-center': {
+    'top': {
         top: '10px',
         left: '50%',
         translate: '-50% 0'
@@ -31,7 +31,7 @@ export const positions = {
         bottom: '10px',
         left: '10px'
     },
-    'bottom-center': {
+    'bottom': {
         bottom: '10px',
         left: '50%',
         translate: '-50% 0'
@@ -40,4 +40,29 @@ export const positions = {
         bottom: '10px',
         right: '10px'
     },
+}
+
+export const getAlignmentFromPosition = (position) => {
+    if (!position) return {}
+
+    switch (position) {
+        case 'top-left':
+            return { flexDirection: 'column', alignItems: 'flex-start' }
+        case 'top':
+            return { flexDirection: 'column', alignItems: 'center' }
+        case 'top-right':
+            return { flexDirection: 'column', alignItems: 'flex-end' }
+        case 'right':
+            return { flexDirection: 'row-reverse', alignItems: 'center' }
+        case 'bottom-right':
+            return { flexDirection: 'row-reverse', alignItems: 'flex-end' }
+        case 'bottom':
+            return { flexDirection: 'column-reverse', alignItems: 'center' }
+        case 'bottom-left':
+            return { flexDirection: 'row', alignItems: 'flex-end' }
+        case 'left':
+            return { flexDirection: 'row', alignItems: 'center' }
+        default:
+            return { flexDirection: 'column', alignItems: 'center' }
+    }
 }

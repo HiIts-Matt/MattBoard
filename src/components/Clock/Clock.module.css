@@ -1,10 +1,13 @@
 .colorScheme {
-    --clock-bg: color-mix(in srgb, var(--mantine-color-dark-7), black 70%)
+    --clock-bg: rgba(0,0,0,0.8)
 }
 
 .analogWrapper {
     background: var(--clock-bg);
+    backdrop-filter: blur(6px);
     border-radius: 1000px;
+    padding: 0px;
+    margin: 0px;
 
     :global(.react-clock__mark__body) {
         background-color: var(--mantine-color-gray-0);
@@ -27,7 +30,7 @@
     }
 
     :global(.react-clock__mark__number) {
-        font-family: 'Geist Pixel Square';
+        /* font-family: 'Geist Pixel Square'; */
         color: var(--mantine-color-gray-0);
     }
 
@@ -36,20 +39,40 @@
             font-size: 35px;
         }
     }
+
+    .noMarks {
+        :global(.react-clock__mark__body) {
+            background-color: transparent;
+        }
+    }
+}
+
+.bothWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+
+    &.bigClock{
+        align-items: flex-end;
+    }
 }
 
 .digitalWrapper {
     display: flex;
+    flex-direction: row;
     align-items: baseline;
+    justify-content: flex-start;
     gap: 8px;
     background: var(--clock-bg);
+    backdrop-filter: blur(6px);
     border-radius: 12px;
     border: 1px solid var(--mantine-color-gray-0);
-    padding: 12px 20px;
+    padding: 10px;
 
     .digitalTime {
         font-family: 'Geist Pixel Grid', monospace;
-        min-width: 10ch;
+        min-width: 9ch;
         font-size: 48px;
         color: var(--mantine-color-gray-0);
         letter-spacing: 4px;

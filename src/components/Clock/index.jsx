@@ -1,16 +1,28 @@
 import { Box, Text } from "@mantine/core"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import styles from './Clock.module.css'
 import Clock from "react-clock"
 import "react-clock/dist/Clock.css"
 import { classNames } from "../../utils/utils"
+import { getAlignmentFromPosition } from "../../utils/positions"
 
 export function ClockComponent({ component }) {
     const [time, setTime] = useState(new Date())
+    const clearRef = useRef(null)
 
     useEffect(() => {
-        const interval = setInterval(() => setTime(new Date()), 1000)
-        return () => clearInterval(interval)
+        const msUntilNextSecond = 1000 - new Date().getMilliseconds()
+
+        const timeout = setTimeout(() => {
+            setTime(new Date())
+            const interval = setInterval(() => setTime(new Date()), 1000)
+            clearRef.current = () => clearInterval(interval)
+        }, msUntilNextSecond)
+
+        return () => {
+            clearTimeout(timeout)
+            clearRef.current?.()
+        }
     }, [])
 
     const variant = component?.variant || 'digital'
@@ -18,7 +30,13 @@ export function ClockComponent({ component }) {
     if (variant === 'digital') return <Digital time={time} />
     if (variant === 'analog') return <Analog time={time} component={component} />
     if (variant === 'both') return (
-        <Box style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <Box
+            className={classNames(
+                styles.bothWrapper,
+                styles.bigClock,
+            )}
+            style={getAlignmentFromPosition(component?.position)}
+        >
             <Analog time={time} component={component} />
             <Digital time={time} />
         </Box>
@@ -48,6 +66,7 @@ function Digital({ time }) {
 
 function Analog({ time, component }) {
     const bigClock = component?.size === 'lg'
+    const showMarks = component?.showMarks ?? true
 
     return (
         <Box className={classNames(
@@ -59,6 +78,7 @@ function Analog({ time, component }) {
                 size={bigClock ? 500 : 200}
                 className={classNames(
                     styles.clock,
+                    !showMarks ? styles.noMarks : '',
                     bigClock ? styles.bigClock : '',
                 )}
                 renderNumbers={component?.showNumbers}

@@ -4,4 +4,10 @@
 
 .component {
     position: absolute;
+    z-index: 10;
+}
+
+.backgroundComponent {
+    position: absolute;
+    inset: 0;
 }
