@@ -49,6 +49,7 @@
 
     .digitalTime {
         font-family: 'Geist Pixel Grid', monospace;
+        min-width: 10ch;
         font-size: 48px;
         color: var(--mantine-color-gray-0);
         letter-spacing: 4px;
