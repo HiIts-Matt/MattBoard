@@ -27,4 +27,4 @@ No subscription. No account. No watermark in your kitchen.
 
 ## License
 
-AGNU. See [`LICENSE`](./LICENSE).
+AGPL. See [`LICENSE`](./LICENSE).
