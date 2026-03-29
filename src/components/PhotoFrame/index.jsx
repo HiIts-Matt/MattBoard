@@ -5,7 +5,7 @@ import { IconAlertTriangle } from "@tabler/icons-react";
 import styles from './PhotoFrame.module.css'
 
 export function PhotoFrame({ component }) {
-    const { data: photo, isError, isLoading } = useApplePhoto(component?.changeMins);
+    const { data: photo, isError, isLoading } = useApplePhoto(component?.changeTime);
 
     const getPhotoContent = () => {
         if (isError) return <IconAlertTriangle />

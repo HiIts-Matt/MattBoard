@@ -2,6 +2,12 @@
     position: relative;
 }
 
+.sharedPalette {
+    --bg-color: rgba(0, 0, 0, 0.4);
+    --bd: 3px solid rgba(0,0,0,0.1);;
+    --bg-effect: blur(4px);
+}
+
 .component {
     position: absolute;
     z-index: 10;

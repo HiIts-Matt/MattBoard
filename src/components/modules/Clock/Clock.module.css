@@ -1,9 +1,5 @@
-.colorScheme {
-    --clock-bg: rgba(0,0,0,0.8)
-}
-
 .analogWrapper {
-    background: var(--clock-bg);
+    background: var(--bg-color);
     backdrop-filter: blur(6px);
     border-radius: 1000px;
     padding: 0px;
@@ -14,7 +10,11 @@
     }
 
     :global(.react-clock__face) {
-        border-color: var(--mantine-color-gray-0);
+        border: var(--bd);
+    }
+
+    .showBorder :global(.react-clock__face) {
+        border: 2px solid var(--mantine-color-gray-0);
     }
 
     :global(.react-clock__second-hand__body) {
@@ -53,7 +53,7 @@
     align-items: center;
     gap: 10px;
 
-    &.bigClock{
+    &.bigClock {
         align-items: flex-end;
     }
 }
@@ -64,10 +64,10 @@
     align-items: baseline;
     justify-content: flex-start;
     gap: 8px;
-    background: var(--clock-bg);
+    background: var(--bg-color);
     backdrop-filter: blur(6px);
     border-radius: 12px;
-    border: 1px solid var(--mantine-color-gray-0);
+    border: var(--bd);
     padding: 10px;
 
     .digitalTime {

@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from "react"
 import styles from './Clock.module.css'
 import Clock from "react-clock"
 import "react-clock/dist/Clock.css"
-import { classNames } from "../../utils/utils"
-import { getAlignmentFromPosition } from "../../utils/positions"
+import { classNames } from "../../../utils/utils"
+import { getAlignmentFromPosition } from "../../../utils/positions"
 
 export function ClockComponent({ component }) {
     const [time, setTime] = useState(new Date())
@@ -67,6 +67,7 @@ function Digital({ time }) {
 function Analog({ time, component }) {
     const bigClock = component?.size === 'lg'
     const showMarks = component?.showMarks ?? true
+    const showBorder = component?.showBorder ?? true;
 
     return (
         <Box className={classNames(
@@ -80,6 +81,7 @@ function Analog({ time, component }) {
                     styles.clock,
                     !showMarks ? styles.noMarks : '',
                     bigClock ? styles.bigClock : '',
+                    showBorder ? styles.showBorder : '',
                 )}
                 renderNumbers={component?.showNumbers}
             />

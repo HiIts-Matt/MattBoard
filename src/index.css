@@ -7,6 +7,11 @@
     src: url('/node_modules/geist/dist/fonts/geist-pixel/GeistPixel-Grid.woff2') format('woff2');
 }
 
+@font-face {
+    font-family: 'Geist Mono';
+    src: url('/node_modules/geist/dist/fonts/geist-mono/GeistMono-Variable.ttf') format('woff2');
+}
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;

@@ -1,9 +1,9 @@
 import './App.css';
 import '@mantine/core/styles.css';
 import { MantineProvider } from '@mantine/core';
-import { config } from './appConfig/appConfig'
 import { Page } from './components/Page';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { PageHandler } from './page-handler';
 
 const queryClient = new QueryClient();
 
@@ -11,9 +11,7 @@ function App() {
     return (
         <QueryClientProvider client={queryClient}>
             <MantineProvider>
-                {config?.pages?.map(page => (
-                    <Page page={page} />
-                ))}
+                <PageHandler/>
             </MantineProvider>
         </QueryClientProvider>
     );

@@ -2,6 +2,7 @@ import { Box } from "@mantine/core";
 import styles from './PageSection.module.css'
 import { positions } from "../../utils/positions";
 import { components } from "../../utils/componentMap";
+import { classNames } from "../../utils/utils";
 
 export function PageSection({ section }) {
     return (
@@ -9,28 +10,31 @@ export function PageSection({ section }) {
             flex={section.flex || 1}
             className={styles.section}
         >
-            {section?.components?.map(component => (
-                <Component component={component} />
+            {section?.modules?.map(modules => (
+                <Component module={modules} />
             ))}
         </Box>
     )
 }
 
-function Component({ component }) {
-    const SelectedComponent = components[component?.type]
-    const isBackgroundImg = component?.variant === 'cover';
+function Component({ module }) {
+    const SelectedComponent = components[module?.type]
+    const isBackgroundImg = module?.variant === 'cover';
 
     if (!SelectedComponent) return null
 
     return (
         <Box
-            className={isBackgroundImg ? styles.backgroundComponent : styles.component}
+            className={classNames(
+                isBackgroundImg ? styles.backgroundComponent : styles.component,
+                styles.sharedPalette
+            )}
             style={{
-                ...component.style,
-                ...positions[component?.position]
+                ...module.style,
+                ...positions[module?.position]
             }}
         >
-            <SelectedComponent component={component} />
+            <SelectedComponent component={module} />
         </Box>
     )
 }
