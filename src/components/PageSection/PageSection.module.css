@@ -3,9 +3,12 @@
 }
 
 .sharedPalette {
-    --bg-color: rgba(0, 0, 0, 0.4);
-    --bd: 3px solid rgba(0,0,0,0.1);;
-    --bg-effect: blur(4px);
+    --bg-color: rgba(50, 50, 50, 0.2);
+    --bd: none;
+    --bg-effect: blur(10px);
+    --glyph-color-minimal: rgba(255,255,255,0.5);
+    --glyph-color-solid: rgba(255,255,255,0.7);
+    --glyph-color-filled: rgba(255,255,255,1);
 }
 
 .component {

@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PageHandler } from './page-handler';
 
 const queryClient = new QueryClient();
+window.__TANSTACK_QUERY_CLIENT__ = queryClient
 
 function App() {
     return (

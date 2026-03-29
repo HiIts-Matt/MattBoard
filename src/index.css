@@ -1,3 +1,4 @@
+@import '@fontsource/space-grotesk';
 @font-face {
     font-family: 'Geist Pixel Square';
     src: url('/node_modules/geist/dist/fonts/geist-pixel/GeistPixel-Square.woff2') format('woff2');

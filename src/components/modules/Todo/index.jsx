@@ -1,39 +1,95 @@
-import { ActionIcon, Box, Checkbox, Text, TextInput, UnstyledButton } from "@mantine/core";
+import { ActionIcon, Box, Checkbox, Loader, Popover, Text, TextInput, Transition, UnstyledButton } from "@mantine/core";
 import styles from './Todo.module.css'
-import { useMap } from "@mantine/hooks";
-import { IconPencilPlus, IconPlus } from "@tabler/icons-react";
+import { IconArchive, IconPencilPlus, IconPlus, IconX } from "@tabler/icons-react";
 import { useState } from "react";
+import { useToDo } from "../../../api/useToDo";
+import { classNames } from "../../../utils/utils";
 
 
 export function ToDoList() {
 
-    const toDos = useMap();
-    const archive = useMap();
+    const [displayArchives, setDisplayArchives] = useState(false);
 
-    console.log(Array.from(toDos.values()))
+    const {
+        data: toDoData,
+        isLoading: toDoLoading,
+    } = useToDo();
+
+    const toDos = toDoData?.todos;
 
     return (
-        <Box className={styles.toDoContainer}>
-            <Text className={styles.title}>
-                To Do List
-            </Text>
-            <Box className={styles.toDoList}>
-                {Array.from(toDos.entries()).map(([itemKey, itemValue]) => (
-                    <ToDoItem key={itemKey} toDos={toDos} itemKey={itemKey} item={itemValue} />
-                ))}
-            </Box>
+        <Box className={styles.bothWrapper}>
+            <Box className={styles.toDoContainer}>
+                <Box className={styles.titleSection}>
+                    <Text className={styles.title}>
+                        To Do List
+                    </Text>
+                    <ActionIcon
+                        className={styles.archiveIcon}
+                        onClick={() => setDisplayArchives(prev => !prev)}
+                    >
+                        <IconArchive />
+                    </ActionIcon>
+                </Box>
 
-            <CreateNew toDos={toDos} />
+                {toDoLoading ? (
+                    <Box>
+                        <Loader />
+                    </Box>
+                ) : (
+                    <Box className={styles.toDoList}>
+                        {toDos
+                            .filter(item => !item?.archived)
+                            ?.map((item) => (
+                                <ToDoItem key={item.id} toDos={toDoData} item={item} />
+                            ))}
+                    </Box>
+                )}
+
+                <CreateNew toDos={toDoData} />
+            </Box>
+            <Transition
+                mounted={displayArchives}
+                transition="pop"
+                duration={400}
+                timingFunction="ease"
+            >
+                {(transition) => (
+                    <Box
+                        className={classNames(
+                            styles.toDoContainer,
+                            styles.archivesBox
+                        )}
+                        style={transition}
+                    >
+                        <Box className={styles.titleGroup}>
+                            <IconArchive size={34} stroke={1.5} />
+                            <Text className={styles.smallTitle}>
+                                Archives
+                            </Text>
+                        </Box>
+                        <Box className={styles.toDoList}>
+                            {toDos
+                                .filter(item => item?.archived)
+                                ?.map((item) => (
+                                    <ToDoItem key={item.id} toDos={toDoData} item={item} />
+                                ))}
+                        </Box>
+                    </Box>
+                )}
+            </Transition>
         </Box>
     )
 }
 
-function CreateNew({ toDos }) {
+function CreateNew() {
+
+    const { addTodo } = useToDo();
 
     const [value, setValue] = useState('')
     const hasValue = value !== '';
 
-    function addToDo() {
+    const newToDo = async () => {
         if (!value.trim()) return;
 
         const toDoItem = {
@@ -42,14 +98,14 @@ function CreateNew({ toDos }) {
             value,
         }
 
-        toDos.set(crypto.randomUUID(), toDoItem);
+        await addTodo.mutateAsync(toDoItem);
         setValue('');
     }
 
     return (
         <TextInput
             onKeyDown={(e) => {
-                if (e.key === 'Enter') addToDo();
+                if (e.key === 'Enter') newToDo();
             }}
             classNames={{
                 root: styles.inputColorPalette,
@@ -59,9 +115,10 @@ function CreateNew({ toDos }) {
             placeholder="Create New To Do"
             value={value}
             onChange={e => setValue(e.currentTarget.value)}
-            leftSection={<IconPlus />}
+            disabled={addTodo.isPending}
+            leftSection={addTodo.isPending ? <Loader size="xs" /> : <IconPlus />}
             rightSection={hasValue ? (
-                <ActionIcon onClick={addToDo}>
+                <ActionIcon onClick={newToDo} disabled={addTodo.isPending}>
                     <IconPencilPlus />
                 </ActionIcon>
             ) : undefined}
@@ -69,15 +126,34 @@ function CreateNew({ toDos }) {
     )
 }
 
-function ToDoItem({ toDos, itemKey, item }) {
+function ToDoItem({ item }) {
+
+    const { updateTodo } = useToDo();
 
     const isComplete = !!item.timeCompleted;
 
-    const toggleItem = () => {
-        toDos.set(itemKey, {
+    const toggleItem = async () => {
+        const newItem = {
             ...item,
-            timeCompleted: isComplete ? null : new Date(),
-        });
+            timeCompleted: item?.timeCompleted ? null : new Date(),
+        }
+
+        await updateTodo.mutateAsync({
+            id: item.id,
+            item: newItem,
+        })
+    }
+
+    const archiveItem = async () => {
+        const newItem = {
+            ...item,
+            archived: !item?.archived
+        }
+
+        await updateTodo.mutateAsync({
+            id: item.id,
+            item: newItem,
+        })
     }
 
     return (
@@ -86,10 +162,46 @@ function ToDoItem({ toDos, itemKey, item }) {
             checked={isComplete}
             onClick={toggleItem}
         >
-            <Checkbox.Indicator />
-            <Text className={styles.toDoItemText} td={isComplete ? 'line-through' : undefined}>
-                {item.value}
-            </Text>
+            <Box className={styles.itemContent}>
+                <Box className={styles.leftArea}>
+                    <Checkbox.Indicator />
+                    <Text className={styles.toDoItemText} td={isComplete ? 'line-through' : undefined}>
+                        {item.value}
+                    </Text>
+                </Box>
+                <ActionIcon
+                    className={styles.archiveButton}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        archiveItem();
+                    }}
+                >
+                    <IconArchive size={20} />
+                </ActionIcon>
+            </Box>
         </Checkbox.Card>
+    )
+}
+
+function ArchiveList({ toDos, children }) {
+    return (
+        <Popover
+            radius={10}
+            position='right-start'
+            offset={{
+                mainAxis: 28,
+                crossAxis: -20,
+            }}
+            withinPortal={false}
+        >
+            <Popover.Target>
+                {children}
+            </Popover.Target>
+            <Popover.Dropdown className={styles.archiveDropdown}>
+                <Box className={styles.dropdownInner}>
+
+                </Box>
+            </Popover.Dropdown>
+        </Popover>
     )
 }
