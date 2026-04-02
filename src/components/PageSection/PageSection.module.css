@@ -9,6 +9,10 @@
     --glyph-color-minimal: rgba(255,255,255,0.5);
     --glyph-color-solid: rgba(255,255,255,0.7);
     --glyph-color-filled: rgba(255,255,255,1);
+    --title-fz: 30px;
+    --main-font: 'Space Grotesk';
+    --inner-bd: 1px solid rgba(255, 255, 255, 0.5);
+    --component-pd: 16px;
 }
 
 .component {

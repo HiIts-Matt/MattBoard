@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@fontsource/space-grotesk": "^5.2.10",
+    "@iconify-json/meteocons": "^1.2.4",
+    "@iconify/react": "^6.0.2",
     "@mantine/core": "^8.3.18",
     "@mantine/hooks": "^8.3.18",
     "@tabler/icons-react": "^3.40.0",

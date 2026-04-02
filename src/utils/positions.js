@@ -28,7 +28,7 @@ export const positions = {
         translate: '0 -50%'
     },
     'bottom-left': {
-        bottom: '10px',
+        bottom: '100px',
         left: '10px'
     },
     'bottom': {

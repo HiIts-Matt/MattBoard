@@ -1,0 +1,36 @@
+.weatherBox {
+    width: 400px;
+    background: var(--bg-color);
+    backdrop-filter: var(--bg-effect);
+    border-radius: 12px;
+    padding: var(--component-pd);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    .titleGroup {
+        .title {
+            font-size: var(--title-fz);
+            font-family: var(--main-font);
+            color: var(--glyph-color-filled);
+        }
+
+        .smallPreview {
+            gap: 0px;
+            justify-content: flex-end;
+            flex: 1;
+
+            .infoStack {
+                gap: 0px;
+                align-items: flex-end;
+
+                .info {
+                    font-family: var(--main-font);
+                    color: var(--glyph-color-filled)
+                }
+            }
+        }
+
+        border-bottom: var(--inner-bd);
+    }
+}

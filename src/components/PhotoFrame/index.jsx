@@ -8,8 +8,16 @@ export function PhotoFrame({ component }) {
     const { data: photo, isError, isLoading } = useApplePhoto(component?.changeTime);
 
     const getPhotoContent = () => {
-        if (isError) return <IconAlertTriangle />
-        if (isLoading) return <Loader size='lg' />
+        if (isError) return (
+            <Box className={styles.displayWrapper}>
+                <IconAlertTriangle color='var(--mantine-color-red-9)' size={60} />
+            </Box>
+        )
+        if (isLoading) return (
+            <Box className={styles.displayWrapper}>
+                <Loader size='lg' />
+            </Box>
+        )
         return <img src={photo?.url} />
     }
 

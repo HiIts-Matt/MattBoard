@@ -7,7 +7,7 @@
     backdrop-filter: var(--bg-effect);
     border-radius: 12px;
     border: var(--bd);
-    padding: 16px;
+    padding: var(--component-pd);
     gap: 12px;
     max-height: 600px;
 }
@@ -16,14 +16,14 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    border-bottom: var(--inner-bd);
     align-items: baseline;
 
     .title {
-        font-family: 'Geist Pixel Grid';
-        font-size: 30px;
+        font-family: var(--main-font);
+        font-size: var(--title-fz);
         font-weight: 700;
-        color: var(--mantine-color-gray-0);
+        color: var(--glyph-color-filled);
         padding-bottom: 8px;
         line-height: 1;
     }

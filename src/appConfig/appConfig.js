@@ -27,6 +27,13 @@ export const config = {
                             position: 'top-left',
                             clearTime: hours(12),
                         },
+                        {
+                            type: 'weather',
+                            position: 'bottom-left',
+                            lat: 37.8136,
+                            lon: 144.9631,
+                            refetchTime: minutes(15),
+                        }
                     ]
                 },
             ]
@@ -52,6 +59,13 @@ export const config = {
                             position: 'top-left',
                             clearTime: hours(12),
                         },
+                        {
+                            type: 'weather',
+                            position: 'bottom-left',
+                            lat: 37.8136,
+                            lon: 144.9631,
+                            refetchTime: minutes(15),
+                        }
                     ]
                 },
             ]
