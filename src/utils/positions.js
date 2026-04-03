@@ -32,12 +32,12 @@ export const positions = {
         left: '10px'
     },
     'bottom': {
-        bottom: '10px',
+        bottom: '100px',
         left: '50%',
         translate: '-50% 0'
     },
     'bottom-right': {
-        bottom: '10px',
+        bottom: '100px',
         right: '10px'
     },
 }

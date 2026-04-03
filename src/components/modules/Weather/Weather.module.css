@@ -2,7 +2,7 @@
     width: 400px;
     background: var(--bg-color);
     backdrop-filter: var(--bg-effect);
-    border-radius: 12px;
+    border-radius: var(--component-rd);
     padding: var(--component-pd);
     display: flex;
     flex-direction: column;
@@ -33,4 +33,42 @@
 
         border-bottom: var(--inner-bd);
     }
+}
+
+.hourlyList {
+    overflow-x: auto;
+    display: flex;
+    flex-direction: row;
+    height: fit-content;
+    border-bottom: var(--inner-bd);
+
+    .hourlyItem {
+        height: 150px;
+        width: 100px;
+        flex-shrink: 0;
+        color: white;
+        font-family: var(--main-font);
+
+        &:not(:last-child) {
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    }
+}
+
+.weeklyList {
+
+    font-family: var(--main-font);
+    color: var(--glyph-color-filled);
+
+    .forecastRow {
+        &:not(:last-child) {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .forecastDay:first-child {
+            padding-left: 20px;
+            font-size: 20px;
+        }
+    }
+
 }

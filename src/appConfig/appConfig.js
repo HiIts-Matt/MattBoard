@@ -60,10 +60,13 @@ export const config = {
                             clearTime: hours(12),
                         },
                         {
-                            type: 'weather',
+                            type: 'news',
                             position: 'bottom-left',
-                            lat: 37.8136,
-                            lon: 144.9631,
+                            feedUrls: [
+                                'https://feeds.bbci.co.uk/news/rss.xml',
+                            ],
+                            defaultGoodNews: true,
+                            threshold: 0.5,
                             refetchTime: minutes(15),
                         }
                     ]

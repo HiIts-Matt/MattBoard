@@ -1,8 +1,11 @@
 import { Box, Collapse, Group, Loader, Stack, Text } from "@mantine/core";
 import styles from './Weather.module.css'
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { useWeather } from "../../../api/useWeather";
 import { Icon } from '@iconify/react';
+import { useMap } from "@mantine/hooks";
+import { classNames } from "../../../utils/utils";
+import { IconChevronDown, IconChevronUp, IconDropletDown, IconThermometer } from "@tabler/icons-react";
 
 const WMO = {
     0: { label: 'Clear', icon: 'meteocons:clear-day-fill' },
@@ -46,7 +49,7 @@ export function Weather({ component }) {
 
     const { lat, lon, units = 'celsius', defaultExpanded = false, refetchTime } = component ?? {}
     const [expanded, setExpanded] = useState(defaultExpanded)
-    const { data, isLoading, isError } = useWeather({ lat, lon, units, refetchTime })
+    const { data: weatherData, isLoading, isError } = useWeather({ lat, lon, units, refetchTime })
     const unitLabel = units === 'celsius' ? '°C' : '°F'
 
     if (isLoading) return (
@@ -55,13 +58,13 @@ export function Weather({ component }) {
         </Box>
     )
 
-    if (isError || !data) return (
+    if (isError || !weatherData) return (
         <Box className={styles.weatherBox}>
             <Text className={styles.condition}>Weather unavailable</Text>
         </Box>
     )
 
-    const { current_weather, daily } = data
+    const { current_weather, daily } = weatherData
     const todayWmo = getWmo(current_weather.weathercode)
 
     return (
@@ -78,7 +81,61 @@ export function Weather({ component }) {
                     </Stack>
                 </Group>
             </Group>
+            <HourlyList hourlyData={weatherData?.hourly} />
             <WeatherList daily={daily} expanded={expanded} />
+        </Box>
+    )
+}
+
+function HourlyList({ hourlyData, expanded }) {
+
+    const formattedData = useMap();
+
+    console.log(hourlyData);
+
+    useLayoutEffect(() => {
+        if (hourlyData) {
+            hourlyData?.time?.forEach((hourlyTime, idx) => {
+                const hourlyValues = {
+                    precipitation_probability: hourlyData?.precipitation_probability?.[idx],
+                    weathercode: hourlyData?.weathercode?.[idx],
+                    temperature_2m: hourlyData?.temperature_2m?.[idx],
+                }
+                formattedData.set(hourlyTime, hourlyValues)
+            })
+        }
+    }, [hourlyData])
+
+    return (
+        <Box
+            className={classNames(styles.hourlyList)}
+            onWheel={(e) => { e.currentTarget.scrollLeft += e.deltaY / 5 }}
+        >
+            {Array.from(formattedData.entries())
+                .sort(([a], [b]) => a - b)
+                .map(([time, data]) => (
+                    <HourlyItem key={time} time={time} data={data} expanded={expanded} />
+                ))
+            }
+        </Box>
+    )
+}
+
+function HourlyItem({ time, data }) {
+    const label = new Date(time).toLocaleTimeString('en-US', { hour: 'numeric', hour12: true })
+    const wmo = getWmo(data.weathercode)
+
+    return (
+        <Box className={classNames(styles.hourlyItem)}>
+            <Text className={styles.hourlyTime}>{label}</Text>
+            <Icon icon={wmo.icon} width={50} />
+            <Group gap={5} justify="center" w='100%'>
+                <Text className={styles.hourlyTemp}>{Math.round(data.temperature_2m)}°</Text>
+            </Group>
+            <Group gap={5} justify="center">
+                <IconDropletDown width={15} color='var(--mantine-color-blue-3)'/>
+                <Text className={styles.hourlyPrecip}>{data.precipitation_probability ?? 0}%</Text>
+            </Group>
         </Box>
     )
 }
@@ -86,7 +143,7 @@ export function Weather({ component }) {
 function WeatherList({ expanded, daily }) {
     return (
         <Collapse in={expanded}>
-            <Stack gap={2} className={styles.forecastList}>
+            <Stack gap={2} className={styles.weeklyList}>
                 {daily.time.slice(1).map((dateStr, i) => {
                     const idx = i + 1
                     const wmo = getWmo(daily.weathercode[idx])
@@ -95,10 +152,15 @@ function WeatherList({ expanded, daily }) {
                     return (
                         <Group key={dateStr} className={styles.forecastRow} wrap="nowrap" justify="space-between">
                             <Text className={styles.forecastDay}>{day}</Text>
-                            <Icon icon={wmo.icon} className={styles.forecastIcon} width={100} height={100} />
-                            <Text className={styles.precip}>{precip != null ? `${precip}%` : ''}</Text>
+                            <Icon icon={wmo.icon} className={styles.forecastIcon} height={70} />
+                            <Group gap={5}>
+                                <IconDropletDown color='var(--mantine-color-blue-3)' />
+                                <Text className={styles.precip}>{precip != null ? `${precip}%` : ''}</Text>
+                            </Group>
                             <Group gap={6} wrap="nowrap">
+                                <IconChevronUp color='var(--mantine-color-red-filled)' />
                                 <Text className={styles.forecastHi}>{Math.round(daily.temperature_2m_max[idx])}</Text>
+                                <IconChevronDown color='var(--mantine-color-blue-7)' />
                                 <Text className={styles.forecastLo}>{Math.round(daily.temperature_2m_min[idx])}</Text>
                             </Group>
                         </Group>
