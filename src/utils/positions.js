@@ -40,6 +40,9 @@ export const positions = {
         bottom: '100px',
         right: '10px'
     },
+    'fullsize': {
+        inset: 10,
+    },
 }
 
 export const getAlignmentFromPosition = (position) => {

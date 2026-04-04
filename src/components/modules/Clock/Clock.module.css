@@ -1,6 +1,6 @@
 .analogWrapper {
     background: var(--bg-color);
-    backdrop-filter: blur(6px);
+    backdrop-filter: var(--bg-effect);
     border-radius: 1000px;
     padding: 0px;
     margin: 0px;
@@ -30,8 +30,8 @@
     }
 
     :global(.react-clock__mark__number) {
-        /* font-family: 'Geist Pixel Square'; */
         color: var(--mantine-color-gray-0);
+        font-family: var(--main-font);
     }
 
     .bigClock {
@@ -48,13 +48,35 @@
 }
 
 .bothWrapper {
+    position: relative;
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 10px;
+    min-width: var(--component-w);
+    border-radius: 1000px;
+    background-color: var(--bg-color);
+    backdrop-filter: var(--bg-effect);
 
-    &.bigClock {
-        align-items: flex-end;
+    .digitalWrapper {
+        z-index: 0;
+        position: absolute;
+        bottom: 60px;
+        left: calc(var(--component-w) / 2);
+        transform: translateX(-50%);
+        backdrop-filter: none;
+        background-color: var(--dark-bg);
+        border-radius: var(--component-rd);
+
+        .digitalTime {
+            font-size: var(--title-fz);
+            font-family: var(--main-font);
+        }
+    }
+
+    .analogWrapper {
+        background: none;
+        backdrop-filter: none;
+        z-index: 10;
     }
 }
 

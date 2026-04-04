@@ -55,13 +55,8 @@ export const config = {
                             showBorder: false,
                         },
                         {
-                            type: 'todo',
-                            position: 'top-left',
-                            clearTime: hours(12),
-                        },
-                        {
                             type: 'news',
-                            position: 'bottom-left',
+                            position: 'top-left',
                             feedUrls: [
                                 'https://www.abc.net.au/news/feed/51120/rss.xml',
                                 'https://www.sbs.com.au/news/feed',
@@ -74,6 +69,16 @@ export const config = {
                         }
                     ]
                 },
+                {
+                    flex: 1,
+                    modules: [
+                        {
+                            type: 'calendar',
+                            position: 'fullsize',
+                            calendarId: 'd9d0c5780ea18685ab3ce9226057c622da26507d3b89d0d1a61d8345a08c7a23@group.calendar.google.com'
+                        }
+                    ]
+                }
             ]
         }
     ]

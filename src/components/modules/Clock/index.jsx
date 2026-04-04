@@ -38,7 +38,7 @@ export function ClockComponent({ component }) {
             style={getAlignmentFromPosition(component?.position)}
         >
             <Analog time={time} component={component} />
-            <Digital time={time} />
+            <Digital time={time} type='both'/>
         </Box>
     )
 }
@@ -52,7 +52,7 @@ function Digital({ time }) {
     return (
         <Box className={classNames(
             styles.colorScheme,
-            styles.digitalWrapper
+            styles.digitalWrapper,
         )}>
             <Text className={styles.digitalTime}>
                 {hours}:{minutes}:{seconds}
@@ -76,7 +76,7 @@ function Analog({ time, component }) {
         )}>
             <Clock
                 value={time}
-                size={bigClock ? 500 : 200}
+                size={bigClock ? 'calc(100vw - 20px)' : 'var(--component-w)'}
                 className={classNames(
                     styles.clock,
                     !showMarks ? styles.noMarks : '',

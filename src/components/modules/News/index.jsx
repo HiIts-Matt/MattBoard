@@ -124,11 +124,13 @@ export function NewsDisplay({ component, isFullscreen, onToggleFullscreen }) {
                         {sourceRows.map((row, rowIdx) => (
                             <Group key={rowIdx} className={styles.feedRow} align="stretch" gap={0} wrap="nowrap">
                                 {row.map(({ source, articles }) => (
-                                    <Stack key={source} className={styles.feedColumn} gap={0}>
+                                    <Stack key={source} className={styles.feedColumnWrapper} gap={0}>
                                         <Text className={styles.feedColumnTitle}>{source}</Text>
-                                        {articles.map((article, i) => (
-                                            <ArticleItem key={i} article={article} />
-                                        ))}
+                                        <Stack className={styles.feedColumn} gap={0}>
+                                            {articles.map((article, i) => (
+                                                <ArticleItem key={i} article={article} />
+                                            ))}
+                                        </Stack>
                                     </Stack>
                                 ))}
                             </Group>
