@@ -19,7 +19,10 @@ export function useNews({ feedUrls = [], refetchTime = 1000 * 60 * 15 } = {}) {
 
     const isLoading = queries.some(q => q.isLoading);
     const isError = queries.every(q => q.isError);
-    const articles = queries.flatMap(q => q.data?.articles ?? []);
+    const articles = queries.flatMap((q, i) => {
+        const source = new URL(feedUrls[i]).hostname.replace(/^www\./, '');
+        return (q.data?.articles ?? []).map(a => ({ ...a, source: a.source ?? source }));
+    });
 
     console.log(articles);
 

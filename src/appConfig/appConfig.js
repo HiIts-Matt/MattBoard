@@ -63,7 +63,10 @@ export const config = {
                             type: 'news',
                             position: 'bottom-left',
                             feedUrls: [
-                                'https://feeds.bbci.co.uk/news/rss.xml',
+                                'https://www.abc.net.au/news/feed/51120/rss.xml',
+                                'https://www.sbs.com.au/news/feed',
+                                'https://www.theguardian.com/australia-news/rss',
+                                'https://theconversation.com/au/articles.atom'
                             ],
                             defaultGoodNews: true,
                             threshold: 0.5,
