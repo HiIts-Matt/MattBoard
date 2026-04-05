@@ -32,7 +32,6 @@ export const useBuilderStore = create((set, get) => ({
 
     selectModule: (id) => set({ selectedModuleId: id }),
 
-    // pageIndex + sectionIndex tell us where to insert the new module
     addModule: (pageIndex, sectionIndex, moduleTemplate) => set(state => {
         const pages = structuredClone(state.pages);
         pages[pageIndex].sections[sectionIndex].modules.push({

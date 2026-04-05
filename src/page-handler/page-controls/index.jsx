@@ -9,7 +9,7 @@ import styles from "./PageControls.module.css";
 import { useLayoutEffect, useRef, useState } from "react";
 import { components } from "../../utils/componentMap"
 import { classNames, seconds } from "../../utils/utils";
-import { useTempState } from "../../utils/useTempState";
+import { useTempState } from "../../hooks/useTempState.jsx";
 import { useBuilderStore } from "../../components/Builder/BuilderStore";
 
 export function PageControls({
@@ -90,7 +90,7 @@ function NamePillRow({ activeConfig, configData, pages, direction, activePage, o
                 configData={configData}
                 onSave={onSave}
                 onDiscard={onDiscard}
-                onAddModule={() => onAddModule(activePage)}
+                onAddModule={(type) => onAddModule(activePage, type)}
                 builderMode={builderMode}
                 onSwap={onSwap}
             />

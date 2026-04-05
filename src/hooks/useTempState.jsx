@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { seconds } from "./utils";
+import { seconds } from "../utils/utils";
 
 export function useTempState(defaultValue = false, time = seconds(3)) {
     const [state, setState] = useState(defaultValue);
