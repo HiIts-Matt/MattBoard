@@ -6,9 +6,9 @@
     --bg-color: rgba(50, 50, 50, 0.2);
     --bd: none;
     --bg-effect: blur(10px);
-    --glyph-color-minimal: rgba(255,255,255,0.5);
-    --glyph-color-solid: rgba(255,255,255,0.7);
-    --glyph-color-filled: rgba(255,255,255,1);
+    --glyph-color-minimal: rgba(255, 255, 255, 0.5);
+    --glyph-color-solid: rgba(255, 255, 255, 0.7);
+    --glyph-color-filled: rgba(255, 255, 255, 1);
     --title-fz: 30px;
     --small-title-fz: 15px;
     --body-fz: 12px;
@@ -19,7 +19,7 @@
     --component-w: 400px;
     --dimmed-bd: 1px solid rgba(255, 255, 255, 0.2);
     --dark-bg: rgba(0, 0, 0, 0.2);
-    --light-bg: rgba(255,255,255,0.2)
+    --light-bg: rgba(255, 255, 255, 0.2)
 }
 
 .component {

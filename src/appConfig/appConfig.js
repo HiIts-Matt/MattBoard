@@ -33,30 +33,10 @@ export const config = {
                             lat: 37.8136,
                             lon: 144.9631,
                             refetchTime: minutes(15),
-                        }
-                    ]
-                },
-            ]
-        },
-        {
-            name: "News",
-            showTitle: true,
-            sections: [
-                {
-                    flex: 1,
-                    modules: [
-                        {
-                            type: "clock",
-                            position: 'top-right',
-                            variant: 'both',
-                            size: 'sm',
-                            showNumbers: false,
-                            showMarks: false,
-                            showBorder: false,
                         },
                         {
                             type: 'news',
-                            position: 'top-left',
+                            position: 'bottom-right',
                             feedUrls: [
                                 'https://www.abc.net.au/news/feed/51120/rss.xml',
                                 'https://www.sbs.com.au/news/feed',
@@ -67,6 +47,26 @@ export const config = {
                             threshold: 0.5,
                             refetchTime: minutes(15),
                         }
+                    ]
+                },
+            ]
+        },
+        {
+            name: "Calendar",
+            showTitle: true,
+            sections: [
+                {
+                    flex: 1,
+                    modules: [
+                        {
+                            type: "clock",
+                            position: 'fullsize',
+                            variant: 'both',
+                            size: 'lg',
+                            showNumbers: false,
+                            showMarks: false,
+                            showBorder: false,
+                        },
                     ]
                 },
                 {

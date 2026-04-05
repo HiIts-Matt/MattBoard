@@ -28,16 +28,16 @@ export const positions = {
         translate: '0 -50%'
     },
     'bottom-left': {
-        bottom: '100px',
+        bottom: '10px',
         left: '10px'
     },
     'bottom': {
-        bottom: '100px',
+        bottom: '10px',
         left: '50%',
         translate: '-50% 0'
     },
     'bottom-right': {
-        bottom: '100px',
+        bottom: '10px',
         right: '10px'
     },
     'fullsize': {

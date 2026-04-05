@@ -26,6 +26,7 @@ export function ClockComponent({ component }) {
     }, [])
 
     const variant = component?.variant || 'digital'
+    const bigClock = component?.size === 'lg'
 
     if (variant === 'digital') return <Digital time={time} />
     if (variant === 'analog') return <Analog time={time} component={component} />
@@ -33,12 +34,12 @@ export function ClockComponent({ component }) {
         <Box
             className={classNames(
                 styles.bothWrapper,
-                styles.bigClock,
+                bigClock ? styles.bothWrapperBig : '',
             )}
             style={getAlignmentFromPosition(component?.position)}
         >
             <Analog time={time} component={component} />
-            <Digital time={time} type='both'/>
+            <Digital time={time} type='both' />
         </Box>
     )
 }
@@ -72,11 +73,12 @@ function Analog({ time, component }) {
     return (
         <Box className={classNames(
             styles.colorScheme,
-            styles.analogWrapper
+            styles.analogWrapper,
+            bigClock ? styles.analogWrapperBig : ''
         )}>
             <Clock
                 value={time}
-                size={bigClock ? 'calc(100vw - 20px)' : 'var(--component-w)'}
+                size={bigClock ? 'calc(100% - 20px)' : 'var(--component-w)'}
                 className={classNames(
                     styles.clock,
                     !showMarks ? styles.noMarks : '',
