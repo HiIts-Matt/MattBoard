@@ -1,6 +1,6 @@
 import { Box } from "@mantine/core";
 import styles from './PageSection.module.css';
-import { getPositionAnchor } from "../../utils/positions";
+import { getPositionStyle } from "../../utils/positions";
 import { components } from "../../utils/componentMap";
 import { classNames } from "../../utils/utils";
 import { BuilderHandle } from "../Builder/BuilderHandle";
@@ -40,7 +40,7 @@ function Module({ module, fullscreenModule, setFullscreenModule, builderMode }) 
                 styles.sharedPalette,
                 isDimmed ? styles.dimmed : ''
             )}
-            style={getPositionAnchor(module)}
+            style={getPositionStyle(module)}
         >
             <SelectedComponent
                 module={module}
