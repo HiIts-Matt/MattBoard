@@ -4,9 +4,8 @@ import styles from './Clock.module.css'
 import Clock from "react-clock"
 import "react-clock/dist/Clock.css"
 import { classNames } from "../../../utils/utils"
-import { getAlignmentFromPosition } from "../../../utils/positions"
 
-export function ClockComponent({ component }) {
+export function ClockComponent({ module }) {
     const [time, setTime] = useState(new Date())
     const clearRef = useRef(null)
 
@@ -25,20 +24,19 @@ export function ClockComponent({ component }) {
         }
     }, [])
 
-    const variant = component?.variant || 'digital'
-    const bigClock = component?.size === 'lg'
+    const variant = module?.variant || 'digital'
+    const bigClock = module?.size === 'lg'
 
     if (variant === 'digital') return <Digital time={time} />
-    if (variant === 'analog') return <Analog time={time} component={component} />
+    if (variant === 'analog') return <Analog time={time} component={module} />
     if (variant === 'both') return (
         <Box
             className={classNames(
                 styles.bothWrapper,
                 bigClock ? styles.bothWrapperBig : '',
             )}
-            style={getAlignmentFromPosition(component?.position)}
         >
-            <Analog time={time} component={component} />
+            <Analog time={time} module={module} />
             <Digital time={time} type='both' />
         </Box>
     )
@@ -65,10 +63,10 @@ function Digital({ time }) {
     )
 }
 
-function Analog({ time, component }) {
-    const bigClock = component?.size === 'lg'
-    const showMarks = component?.showMarks ?? true
-    const showBorder = component?.showBorder ?? true;
+function Analog({ time, module }) {
+    const bigClock = module?.size === 'lg'
+    const showMarks = module?.showMarks ?? true
+    const showBorder = module?.showBorder ?? true;
 
     return (
         <Box className={classNames(
@@ -85,7 +83,7 @@ function Analog({ time, component }) {
                     bigClock ? styles.bigClock : '',
                     showBorder ? styles.showBorder : '',
                 )}
-                renderNumbers={component?.showNumbers}
+                renderNumbers={module?.showNumbers}
             />
         </Box>
     )

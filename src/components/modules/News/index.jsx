@@ -33,18 +33,18 @@ function ArticleItem({ article }) {
     );
 }
 
-export function NewsDisplay({ component, isFullscreen, onToggleFullscreen }) {
+export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
 
-    const defaultGoodNews = component?.defaultGoodNews ?? true;
-    const feedUrls = component?.feedUrls ?? [];
-    const threshold = component?.threshold ?? 0.5;
+    const defaultGoodNews = module?.defaultGoodNews ?? true;
+    const feedUrls = module?.feedUrls ?? [];
+    const threshold = module?.threshold ?? 0.5;
 
     const [goodNews, setGoodNews] = useState(defaultGoodNews);
     const [visibleCount, setVisibleCount] = useState(10);
 
     const { articles: allArticles, isLoading, isError } = useNews({
         feedUrls,
-        refetchTime: component?.refetchTime,
+        refetchTime: module?.refetchTime,
     });
 
     const visibleArticles = goodNews

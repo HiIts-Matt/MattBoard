@@ -1,51 +1,55 @@
 import { Box } from "@mantine/core";
-import styles from './PageSection.module.css'
-import { positions } from "../../utils/positions";
+import styles from './PageSection.module.css';
+import { getPositionAnchor } from "../../utils/positions";
 import { components } from "../../utils/componentMap";
 import { classNames } from "../../utils/utils";
+import { BuilderHandle } from "../Builder/BuilderHandle";
 
-export function PageSection({ section, fullscreenModule, setFullscreenModule }) {
+export function PageSection({ section, fullscreenModule, setFullscreenModule, builderMode }) {
     return (
         <Box
             flex={section.flex || 1}
             className={styles.section}
         >
             {section?.modules?.map(module => (
-                <Component
+                <Module
+                    key={module.id}
                     module={module}
                     fullscreenModule={fullscreenModule}
                     setFullscreenModule={setFullscreenModule}
+                    builderMode={builderMode}
                 />
             ))}
         </Box>
-    )
+    );
 }
 
-function Component({ module, fullscreenModule, setFullscreenModule }) {
-    const SelectedComponent = components[module?.type]
-    const isBackgroundImg = module?.variant === 'cover';
+function Module({ module, fullscreenModule, setFullscreenModule, builderMode }) {
+    const SelectedComponent = components[module?.type];
+    const isBackground = module?.variant === 'cover';
     const isFullscreen = fullscreenModule === module;
     const isDimmed = fullscreenModule !== null && !isFullscreen;
 
-    if (!SelectedComponent) return null
+    if (!SelectedComponent) return null;
 
     return (
         <Box
+            data-module-id={module.id}
             className={classNames(
-                isBackgroundImg ? styles.backgroundComponent : styles.component,
+                isBackground ? styles.backgroundComponent : styles.component,
                 styles.sharedPalette,
                 isDimmed ? styles.dimmed : ''
             )}
-            style={{
-                ...module.style,
-                ...positions[module?.position]
-            }}
+            style={getPositionAnchor(module)}
         >
             <SelectedComponent
-                component={module}
+                module={module}
                 isFullscreen={isFullscreen}
                 onToggleFullscreen={() => setFullscreenModule(isFullscreen ? null : module)}
             />
+            {builderMode && !module.fullsize && (
+                <BuilderHandle module={module} />
+            )}
         </Box>
-    )
+    );
 }

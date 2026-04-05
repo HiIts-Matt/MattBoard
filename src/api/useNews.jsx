@@ -24,7 +24,5 @@ export function useNews({ feedUrls = [], refetchTime = 1000 * 60 * 15 } = {}) {
         return (q.data?.articles ?? []).map(a => ({ ...a, source: a.source ?? source }));
     });
 
-    console.log(articles);
-
     return { articles, isLoading, isError };
 }

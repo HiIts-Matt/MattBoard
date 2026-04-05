@@ -45,9 +45,9 @@ const supportedOpts = [
     'refetchTime'
 ]
 
-export function Weather({ component }) {
+export function Weather({ module }) {
 
-    const { lat, lon, units = 'celsius', defaultExpanded = false, refetchTime } = component ?? {}
+    const { lat, lon, units = 'celsius', defaultExpanded = false, refetchTime } = module ?? {}
     const [expanded, setExpanded] = useState(defaultExpanded)
     const { data: weatherData, isLoading, isError } = useWeather({ lat, lon, units, refetchTime })
     const unitLabel = units === 'celsius' ? '°C' : '°F'
@@ -90,8 +90,6 @@ export function Weather({ component }) {
 function HourlyList({ hourlyData, expanded }) {
 
     const formattedData = useMap();
-
-    console.log(hourlyData);
 
     useLayoutEffect(() => {
         if (hourlyData) {

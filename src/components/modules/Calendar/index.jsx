@@ -22,8 +22,8 @@ function toLocalDateInput(isoString) {
 
 const emptyForm = { title: '', description: '', location: '', start: '', end: '', allDay: false };
 
-export function CalendarModule({ component }) {
-    const { calendarId = 'primary', refetchTime } = component ?? {};
+export function CalendarModule({ module }) {
+    const { calendarId = 'primary', refetchTime } = module ?? {};
     const { events, createEvent, updateEvent, deleteEvent } = useCalendar({ calendarId, refetchTime });
 
     const [modal, setModal] = useState(null); // null | { mode: 'create'|'edit', form, eventId? }

@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
 import { API_BASE } from "../utils/apiBase"
-import { minutes } from "../utils/utils"
 
 export function useApplePhoto(changeTime) {
     const fetchApplePhoto = async () => {

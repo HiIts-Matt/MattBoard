@@ -39,7 +39,7 @@
     background: black;
     border-radius: 100px;
     outline: 2px solid rgba(255, 255, 2550, 0.3);
-    
+
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
         opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     margin-bottom: 24px;
@@ -124,4 +124,216 @@
 
 .slideInFromLeft {
     animation: slideInFromLeft 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.namePillRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+}
+
+.editButton {
+    position: absolute;
+    right: -45px;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: black;
+    border-radius: 100px;
+    outline: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 10px;
+    cursor: pointer;
+    margin-bottom: 24px;
+    transition: background 0.2s ease,
+        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        outline 0.15s ease;
+    opacity: 1;
+    pointer-events: auto;
+
+    &:hover {
+        outline: 2px solid white;
+    }
+
+    &.hide {
+        transform: translateY(100px);
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+.builderToolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: absolute;
+    right: -205px;
+
+    .newConfigForm {
+        padding: 6px 8px;
+    }
+
+    .newConfigInput {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: white;
+        font-size: 12px;
+        font-family: 'Space Grotesk';
+
+        &::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        &:focus {
+            border-color: rgba(99, 179, 237, 0.6);
+        }
+    }
+
+    .saveMenu {
+        border-radius: 10px;
+        background: black;
+        outline: 2px solid rgba(255, 255, 255, 0.3);
+        border: none;
+        color: white;
+        padding: 0px;
+        pointer-events: all;
+
+        :global(.mantine-Menu-label) {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            text-align: left;
+            background: var(--mantine-color-gray-light);
+            color: white;
+            font-family: 'Space Grotesk';
+
+            &:not(:first-child) {
+                border-top: 1px solid rgba(255, 255, 255, 0.3);
+            }
+        }
+
+        :global(.mantine-Menu-item) {
+            color: white;
+            background: transparent;
+            transition: all 0.15s;
+            font-size: 12px;
+            font-family: 'Space Grotesk';
+
+            svg {
+                width: 20px;
+            }
+
+            &:hover {
+                background: var(--mantine-color-gray-light);
+            }
+        }
+
+        .confirmBox {
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            max-width: 200px;
+
+            .titleWrapper {
+                padding: 5px 10px;
+                width: 100%;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+                background: var(--mantine-color-gray-light);
+
+                .titleText {
+                    font-family: 'Space Grotesk';
+                    line-height: 1;
+                    font-weight: 600;
+                    font-size: 14px;
+
+                }
+            }
+
+            .subText {
+                padding: 10px;
+                font-family: 'Space Grotesk';
+                font-size: 12px;
+                text-align: left;
+            }
+        }
+
+        .toolTip {
+            margin: 5px 10px;
+            font-family: 'Space Grotesk';
+            font-size: 14px;
+        }
+    }
+}
+
+.toolbarPill {
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: black;
+    border-radius: 100px;
+    outline: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 12px;
+    cursor: pointer;
+    margin-bottom: 24px;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: background 0.15s ease,
+        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        outline 0.15s ease;
+
+    &:hover {
+        outline: 2px solid white;
+    }
+
+    &.visible {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    &.xOpen {
+        background: var(--mantine-color-red-9);
+    }
+}
+
+.delay60 {
+    transition-delay: 60ms;
+}
+
+.delay120 {
+    transition-delay: 120ms;
+}
+
+.delay180 {
+    transition-delay: 180ms;
+}
+
+.toolbarLabel {
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.addDropdown {
+    background: black;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 8px;
+}
+
+.addOption {
+    color: white;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    text-transform: capitalize;
+    width: 100%;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
 }

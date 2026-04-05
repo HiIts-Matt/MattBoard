@@ -1,71 +1,43 @@
-export const positions = {
-    'top-left': {
-        top: '10px',
-        left: '10px'
-    },
-    'top': {
-        top: '10px',
-        left: '50%',
-        translate: '-50% 0'
-    },
-    'top-right': {
-        top: '10px',
-        right: '10px'
-    },
-    'left': {
-        left: '10px',
-        top: '50%',
-        translate: '0 -50%'
-    },
-    'center': {
-        top: '50%',
-        left: '50%',
-        translate: '-50% -50%'
-    },
-    'right': {
-        right: '10px',
-        top: '50%',
-        translate: '0 -50%'
-    },
-    'bottom-left': {
-        bottom: '10px',
-        left: '10px'
-    },
-    'bottom': {
-        bottom: '10px',
-        left: '50%',
-        translate: '-50% 0'
-    },
-    'bottom-right': {
-        bottom: '10px',
-        right: '10px'
-    },
-    'fullsize': {
-        inset: 10,
-    },
+export function toAbsolutePosition({ x, y, w, h, anchor = 'top-left' }) {
+    const [anchorY, anchorX] = anchor.split('-');
+    return {
+        left: anchorX === 'left' ? x : 100 - x - w,
+        top: anchorY === 'top' ? y : 100 - y - h,
+        w,
+        h,
+    };
 }
 
-export const getAlignmentFromPosition = (position) => {
-    if (!position) return {}
+export function computeAnchoredPosition(absLeft, absTop, w, h) {
+    const anchorX = absLeft <= 100 - absLeft - w ? 'left' : 'right';
+    const anchorY = absTop <= 100 - absTop - h ? 'top' : 'bottom';
+    return {
+        anchor: `${anchorY}-${anchorX}`,
+        x: anchorX === 'left' ? absLeft : 100 - absLeft - w,
+        y: anchorY === 'top' ? absTop : 100 - absTop - h,
+        w,
+        h,
+    };
+}
 
-    switch (position) {
-        case 'top-left':
-            return { flexDirection: 'column', alignItems: 'flex-start' }
-        case 'top':
-            return { flexDirection: 'column', alignItems: 'center' }
-        case 'top-right':
-            return { flexDirection: 'column', alignItems: 'flex-end' }
-        case 'right':
-            return { flexDirection: 'row-reverse', alignItems: 'center' }
-        case 'bottom-right':
-            return { flexDirection: 'row-reverse', alignItems: 'flex-end' }
-        case 'bottom':
-            return { flexDirection: 'column-reverse', alignItems: 'center' }
-        case 'bottom-left':
-            return { flexDirection: 'row', alignItems: 'flex-end' }
-        case 'left':
-            return { flexDirection: 'row', alignItems: 'center' }
-        default:
-            return { flexDirection: 'column', alignItems: 'center' }
-    }
+export function getPositionAnchor(module) {
+    if (module.fullsize || !module.position) return { position: 'absolute', inset: 0 };
+    const { x, y, anchor = 'top-left' } = module.position;
+    const [anchorY, anchorX] = anchor.split('-');
+    return {
+        position: 'absolute',
+        [anchorX]: `${x}%`,
+        [anchorY]: `${y}%`,
+    };
+}
+
+export function getPositionSize(module) {
+    if (module.fullsize || !module.position) return {};
+    const { w, h } = module.position;
+    return { width: `${w}%`, height: `${h}%` };
+}
+
+export function getPositionStyle(module) {
+    if (module.fullsize) return { position: 'absolute', inset: 10 };
+    return { ...getPositionAnchor(module), ...getPositionSize(module) };
 }
