@@ -6,6 +6,11 @@ async function fetchEvents({ calendarId = 'primary', timeMin, timeMax } = {}) {
     if (timeMin) params.set('timeMin', timeMin);
     if (timeMax) params.set('timeMax', timeMax);
     const res = await fetch(`${API_BASE}/calendar/events?${params}`);
+    if (res.status === 401) {
+        const err = new Error('Not authenticated');
+        err.status = 401;
+        throw err;
+    }
     if (!res.ok) throw new Error('Failed to fetch calendar events');
     return res.json();
 }
@@ -43,12 +48,13 @@ export function useCalendar({ calendarId = 'primary', refetchTime = 1000 * 60 * 
     const queryClient = useQueryClient();
     const queryKey = ['calendar', calendarId];
 
-    const { data, isLoading, isError } = useQuery({
+    const { data, isLoading, isError, error } = useQuery({
         queryKey,
         queryFn: () => fetchEvents({ calendarId }),
         refetchInterval: refetchTime,
         refetchOnWindowFocus: false,
         staleTime: 1000 * 60 * 2,
+        retry: (count, err) => err?.status === 401 ? false : count < 3,
     });
 
     const invalidate = () => queryClient.invalidateQueries({ queryKey });
@@ -72,6 +78,7 @@ export function useCalendar({ calendarId = 'primary', refetchTime = 1000 * 60 * 
         events: data?.events ?? [],
         isLoading,
         isError,
+        isAuthError: error?.status === 401,
         createEvent: createMutation.mutateAsync,
         updateEvent: updateMutation.mutateAsync,
         deleteEvent: deleteMutation.mutateAsync,

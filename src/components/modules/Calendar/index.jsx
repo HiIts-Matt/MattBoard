@@ -6,7 +6,8 @@ import { Modal, Stack, TextInput, Textarea, Button, Group, Text, ActionIcon, Seg
 import { useState } from 'react';
 import { useCalendar } from '../../../api/useCalendar';
 import styles from './Calendar.module.css';
-import { IconX } from '@tabler/icons-react';
+import { IconX, IconCalendarOff } from '@tabler/icons-react';
+import { useCalendarAuth } from '../../../api/useCalendarAuth';
 
 function toLocalDateTimeInput(isoString) {
     if (!isoString) return '';
@@ -22,13 +23,32 @@ function toLocalDateInput(isoString) {
 
 const emptyForm = { title: '', description: '', location: '', start: '', end: '', allDay: false };
 
+function NotConnected({ onConnect }) {
+    return (
+        <div className={styles.notConnected}>
+            <IconCalendarOff size={52} className={styles.notConnectedIcon} />
+            <Text className={styles.notConnectedTitle}>Google Calendar</Text>
+            <Text className={styles.notConnectedSub}>Not connected</Text>
+            <Button className={styles.connectButton} onClick={onConnect}>
+                Connect with Google
+            </Button>
+        </div>
+    );
+}
+
 export function CalendarModule({ module }) {
     const { calendarId = 'primary', refetchTime } = module ?? {};
-    const { events, createEvent, updateEvent, deleteEvent } = useCalendar({ calendarId, refetchTime });
-
+    const { events, isAuthError, createEvent, updateEvent, deleteEvent } = useCalendar({ calendarId, refetchTime });
+    const { openAuthTab } = useCalendarAuth();
     const [modal, setModal] = useState(null); // null | { mode: 'create'|'edit', form, eventId? }
     const [saving, setSaving] = useState(false);
     const [deleting, setDeleting] = useState(false);
+
+    if (isAuthError) return (
+        <div className={styles.calendarWrapper}>
+            <NotConnected onConnect={openAuthTab} />
+        </div>
+    );
 
     const openCreate = (dateInfo) => {
         const allDay = dateInfo.allDay;

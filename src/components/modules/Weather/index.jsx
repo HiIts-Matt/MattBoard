@@ -5,7 +5,7 @@ import { useWeather } from "../../../api/useWeather";
 import { Icon } from '@iconify/react';
 import { useMap } from "@mantine/hooks";
 import { classNames } from "../../../utils/utils";
-import { IconChevronDown, IconChevronUp, IconDropletDown, IconThermometer } from "@tabler/icons-react";
+import { IconAlertTriangle, IconChevronDown, IconChevronUp, IconDropletDown, IconThermometer } from "@tabler/icons-react";
 
 const WMO = {
     0: { label: 'Clear', icon: 'meteocons:clear-day-fill' },
@@ -47,10 +47,30 @@ const supportedOpts = [
 
 export function Weather({ module }) {
 
-    const { lat, lon, units = 'celsius', defaultExpanded = false, refetchTime } = module ?? {}
+    const { loc, units = 'celsius', defaultExpanded = false, refetchTime } = module ?? {}
+    const { lat, lon } = loc ?? {}
     const [expanded, setExpanded] = useState(defaultExpanded)
     const { data: weatherData, isLoading, isError } = useWeather({ lat, lon, units, refetchTime })
     const unitLabel = units === 'celsius' ? '°C' : '°F'
+
+    const isSetup = !!lat && !!lon;
+
+    if (!isSetup) return (
+        <Box className={classNames(
+            styles.weatherBox,
+            styles.requiresSetup,
+        )}>
+            <Group className={styles.titleGroup}>
+                <Text className={styles.title}>
+                    Weather
+                </Text>
+            </Group>
+            <Box className={styles.requiresSetupStack}>
+                <IconAlertTriangle size={42} color='red' />
+                <Text className={styles.subText}>Module Requires Setup</Text>
+            </Box>
+        </Box>
+    )
 
     if (isLoading) return (
         <Box className={styles.weatherBox} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -131,7 +151,7 @@ function HourlyItem({ time, data }) {
                 <Text className={styles.hourlyTemp}>{Math.round(data.temperature_2m)}°</Text>
             </Group>
             <Group gap={5} justify="center">
-                <IconDropletDown width={15} color='var(--mantine-color-blue-3)'/>
+                <IconDropletDown width={15} color='var(--mantine-color-blue-3)' />
                 <Text className={styles.hourlyPrecip}>{data.precipitation_probability ?? 0}%</Text>
             </Group>
         </Box>

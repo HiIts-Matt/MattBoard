@@ -1,7 +1,7 @@
 import { useQueries } from '@tanstack/react-query';
 import { API_BASE } from '../utils/apiBase';
 
-export function useNews({ feedUrls = [], refetchTime = 1000 * 60 * 15 } = {}) {
+export function useNews({ feedUrls = [], refetchTime = 1000 * 60 * 15, enabled} = {}) {
     const queries = useQueries({
         queries: feedUrls.map(url => ({
             queryKey: ['news', url],
@@ -14,6 +14,7 @@ export function useNews({ feedUrls = [], refetchTime = 1000 * 60 * 15 } = {}) {
             refetchInterval: refetchTime,
             refetchOnWindowFocus: false,
             staleTime: 1000 * 60 * 10,
+            enabled,
         })),
     });
 

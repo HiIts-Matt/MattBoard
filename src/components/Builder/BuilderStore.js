@@ -7,6 +7,21 @@ function mapModules(pages, fn) {
     }));
 }
 
+export function groupIntoSections(modules) {
+    const sections = [];
+    let currentGroup = [];
+    modules.forEach(m => {
+        if (m.fullsize) {
+            if (currentGroup.length > 0) { sections.push(currentGroup); currentGroup = []; }
+            sections.push([m]);
+        } else {
+            currentGroup.push(m);
+        }
+    });
+    if (currentGroup.length > 0) sections.push(currentGroup);
+    return sections;
+}
+
 export const useBuilderStore = create((set, get) => ({
     pages: null,
     selectedModuleId: null,
@@ -26,6 +41,12 @@ export const useBuilderStore = create((set, get) => ({
         )
     })),
 
+    updateModuleSettings: (moduleId, updates) => set(state => ({
+        pages: mapModules(state.pages, m =>
+            m.id === moduleId ? { ...m, ...updates } : m
+        )
+    })),
+
     swapModuleType: (moduleId, newType) => set(state => ({
         pages: mapModules(state.pages, m =>
             m.id === moduleId ? { id: m.id, position: m.position, type: newType } : m
@@ -36,10 +57,14 @@ export const useBuilderStore = create((set, get) => ({
 
     addModule: (pageIndex, moduleTemplate) => set(state => {
         const pages = structuredClone(state.pages);
+        const isCalendar = moduleTemplate.type === 'calendar';
+        const isClock = moduleTemplate.type === 'clock';
+
         pages[pageIndex].modules.push({
             ...moduleTemplate,
             id: crypto.randomUUID(),
-            position: { x: 5, y: 5, w: 25 },
+            ...(isCalendar ? { fullsize: true } : { position: { x: 5, y: 5, w: 25 } }),
+            ...(isClock ? { showNumbers: false, showMarks: false, showBorder: false, variant: "both", fullsize: false} : {})
         });
         return { pages };
     }),
@@ -50,6 +75,30 @@ export const useBuilderStore = create((set, get) => ({
             modules: page.modules.filter(m => m.id !== moduleId)
         }))
     })),
+
+    moveSectionUp: (moduleId) => set(state => {
+        const pageIdx = state.pages.findIndex(p => p.modules.some(m => m.id === moduleId));
+        if (pageIdx === -1) return state;
+        const modules = state.pages[pageIdx].modules;
+        const sections = groupIntoSections(modules);
+        const sectionIdx = sections.findIndex(s => s.some(m => m.id === moduleId));
+        if (sectionIdx <= 0) return state;
+        const newSections = [...sections];
+        [newSections[sectionIdx - 1], newSections[sectionIdx]] = [newSections[sectionIdx], newSections[sectionIdx - 1]];
+        return { pages: state.pages.map((p, i) => i === pageIdx ? { ...p, modules: newSections.flat() } : p) };
+    }),
+
+    moveSectionDown: (moduleId) => set(state => {
+        const pageIdx = state.pages.findIndex(p => p.modules.some(m => m.id === moduleId));
+        if (pageIdx === -1) return state;
+        const modules = state.pages[pageIdx].modules;
+        const sections = groupIntoSections(modules);
+        const sectionIdx = sections.findIndex(s => s.some(m => m.id === moduleId));
+        if (sectionIdx >= sections.length - 1) return state;
+        const newSections = [...sections];
+        [newSections[sectionIdx], newSections[sectionIdx + 1]] = [newSections[sectionIdx + 1], newSections[sectionIdx]];
+        return { pages: state.pages.map((p, i) => i === pageIdx ? { ...p, modules: newSections.flat() } : p) };
+    }),
 
     exportConfig: () => get().pages,
 }));

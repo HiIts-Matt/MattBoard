@@ -1,21 +1,25 @@
 export const moduleSettings = {
     clock: [
         { key: 'variant', label: 'Style', type: 'select', options: ['digital', 'analog', 'both'] },
-        { key: 'size', label: 'Size', type: 'select', options: ['sm', 'lg'] },
+        { key: 'fullsize', trueLabel: 'Full size', falseLabel: 'Module', type: 'control' },
         { key: 'showNumbers', label: 'Show numbers', type: 'boolean' },
         { key: 'showMarks', label: 'Show marks', type: 'boolean' },
         { key: 'showBorder', label: 'Show border', type: 'boolean' },
+
     ],
     weather: [
-        { key: 'lat', label: 'Latitude', type: 'number' },
-        { key: 'lon', label: 'Longitude', type: 'number' },
+        { key: 'loc', label: 'Location', type: 'location' },
     ],
     todo: [
         { key: 'clearTime', label: 'Auto-clear (ms)', type: 'number' },
     ],
     news: [
+        { key: 'feedUrls', label: 'RSS Feeds', type: 'feedUrls' },
         { key: 'defaultGoodNews', label: 'Good news filter', type: 'boolean' },
-        { key: 'threshold', label: 'Filter threshold', type: 'number' },
+        { key: 'threshold', label: 'Filter threshold', type: 'slider', max: 1, min: 0, steps: 0.1, },
     ],
-    calendar: [],
+    calendar: [
+        { type: 'googleAuth' },
+        { key: 'calendarId', label: 'Calendar ID', type: 'text', placeholder: 'primary' },
+    ],
 };

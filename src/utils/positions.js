@@ -31,11 +31,8 @@ export function getPositionAnchor(module) {
     };
 }
 
-export function getPositionSize(module) {
-    return {};
-}
 
 export function getPositionStyle(module) {
     if (module.fullsize) return { position: 'absolute', inset: 10 };
-    return { ...getPositionAnchor(module), ...getPositionSize(module) };
+    return { ...getPositionAnchor(module) };
 }

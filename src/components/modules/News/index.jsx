@@ -4,6 +4,7 @@ import { classNames } from '../../../utils/utils';
 import { useState } from 'react';
 import { useNews } from '../../../api/useNews';
 import { IconAlertTriangle, IconMoodConfuzed, IconMoodHappy, IconNews } from '@tabler/icons-react';
+import { isEqual } from 'lodash';
 
 function timeAgo(dateStr) {
     if (!dateStr) return '';
@@ -39,12 +40,15 @@ export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
     const feedUrls = module?.feedUrls ?? [];
     const threshold = module?.threshold ?? 0.5;
 
+    const isSetup = !!feedUrls && feedUrls.length > 0
+
     const [goodNews, setGoodNews] = useState(defaultGoodNews);
     const [visibleCount, setVisibleCount] = useState(10);
 
     const { articles: allArticles, isLoading, isError } = useNews({
         feedUrls,
         refetchTime: module?.refetchTime,
+        enabled: isSetup
     });
 
     const visibleArticles = goodNews
@@ -95,23 +99,12 @@ export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
                 </Tooltip>
             </Group>
 
-            {isLoading && (
-                <Stack className={styles.loadingStack}>
-                    <Loader color='var(--glyph-color-minimal)' />
-                    <Text className={styles.statusText}>Loading...</Text>
-                </Stack>
-            )}
-
-            {isError && (
-                <Stack className={styles.loadingStack}>
-                    <IconAlertTriangle size={40} color='var(--mantine-color-red-9)' />
-                    <Text className={styles.statusText}>Failed to load feeds.</Text>
-                </Stack>
-            )}
-
-            {!isLoading && !isError && sorted.length === 0 && (
-                <Text className={styles.statusText}>No articles to show.</Text>
-            )}
+            <NewsAlert
+                isLoading={isLoading}
+                isError={isError}
+                isSetup={isSetup}
+                sorted={sorted}
+            />
 
             {!isLoading && !isError && sorted.length > 0 && (
                 <>
@@ -140,4 +133,60 @@ export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
             )}
         </Box>
     )
+}
+
+function NewsAlert({ isLoading, isError, isSetup, sorted }) {
+    if (!isSetup) {
+        return (
+            <Box className={styles.loadingStack}>
+                <IconAlertTriangle size={42} color='red' />
+                <Text
+                    className={classNames(
+                        styles.subText,
+                        styles.error
+                    )}
+                >
+                    Module Requires Setup
+                </Text>
+            </Box>
+        )
+    }
+    if (isError) {
+        return (
+            <Box className={styles.loadingStack}>
+                <IconAlertTriangle size={42} color='red' />
+                <Text
+                    className={classNames(
+                        styles.subText,
+                        styles.error
+                    )}
+                >
+                    Failed To Load Feed
+                </Text>
+            </Box>
+        )
+    }
+    if (isLoading) {
+        return (
+            <Box className={styles.loadingStack}>
+                <Loader color='var(--glyph-color-minimal)' />
+                <Text className={styles.subText}>Loading...</Text>
+            </Box>
+        )
+    }
+    if (sorted?.length < 1) {
+        return (
+            <Box className={styles.loadingStack}>
+                <IconAlertTriangle size={42} color='red' />
+                <Text
+                    className={classNames(
+                        styles.subText,
+                        styles.error
+                    )}
+                >
+                    No articles to show
+                </Text>
+            </Box>
+        )
+    }
 }

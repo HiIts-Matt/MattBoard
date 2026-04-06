@@ -68,7 +68,7 @@ export const config = {
                     id: 'calendar-main',
                     type: 'calendar',
                     fullsize: true,
-                    calendarId: 'd9d0c5780ea18685ab3ce9226057c622da26507d3b89d0d1a61d8345a08c7a23@group.calendar.google.com'
+                    calendarId: 'id here'
                 }
             ]
         }

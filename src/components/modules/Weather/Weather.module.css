@@ -33,6 +33,18 @@
 
         border-bottom: var(--inner-bd);
     }
+
+    .requiresSetupStack {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+
+        .subText {
+            color: red;
+            font-family: var(--main-font);
+        }
+    }
 }
 
 .hourlyList {

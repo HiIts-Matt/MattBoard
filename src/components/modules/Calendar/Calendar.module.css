@@ -94,6 +94,45 @@
     }
 }
 
+.notConnected {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.notConnectedIcon {
+    color: var(--glyph-color-minimal);
+    margin-bottom: 4px;
+}
+
+.notConnectedTitle {
+    font-family: var(--main-font);
+    font-size: var(--title-fz);
+    color: var(--glyph-color-filled);
+}
+
+.notConnectedSub {
+    font-family: var(--main-font);
+    font-size: var(--body-fz);
+    color: var(--glyph-color-minimal);
+}
+
+.connectButton {
+    margin-top: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-family: var(--main-font);
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.18);
+    }
+}
+
 .overlay {
     background: none;
 }

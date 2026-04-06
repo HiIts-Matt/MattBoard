@@ -25,7 +25,7 @@ export function ClockComponent({ module }) {
     }, [])
 
     const variant = module?.variant || 'digital'
-    const bigClock = module?.size === 'lg'
+    const bigClock = module?.fullsize
 
     if (variant === 'digital') return <Digital time={time} />
     if (variant === 'analog') return <Analog time={time} component={module} />
