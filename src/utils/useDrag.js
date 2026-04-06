@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { flushSync } from 'react-dom';
-import { toAbsolutePosition, computeAnchoredPosition } from './positions';
+import { computeAnchoredPosition } from './positions';
 
 const EDGE_MARGIN_PX = 10;
 const SNAP_THRESHOLD_PX = 30;
@@ -56,7 +56,7 @@ function renderSnapLines(overlay, snapping) {
     if (snapping.centerY) overlay.appendChild(makeLine({ top: 'calc(50% - 1px)', left: 0, height: '2px', width: '100%' }));
 }
 
-export function useDrag({ module, onPositionChange }) {
+export function useDrag({ onPositionChange }) {
     const drag = useRef(null);
 
     const onPointerDown = (e, moduleElement) => {
@@ -67,7 +67,8 @@ export function useDrag({ module, onPositionChange }) {
         const sectionRect = section.getBoundingClientRect();
         const moduleRect = moduleElement.getBoundingClientRect();
 
-        const { left: origAbsLeft, top: origAbsTop } = toAbsolutePosition(module.position);
+        const origAbsLeft = ((moduleRect.left - sectionRect.left) / sectionRect.width) * 100;
+        const origAbsTop  = ((moduleRect.top  - sectionRect.top)  / sectionRect.height) * 100;
 
         const currentW = (moduleRect.width / sectionRect.width) * 100;
         const currentH = (moduleRect.height / sectionRect.height) * 100;
@@ -110,8 +111,8 @@ export function useDrag({ module, onPositionChange }) {
             window.removeEventListener('pointermove', onMove);
             window.removeEventListener('pointerup', onUp);
 
-            flushSync(() => onPositionChange(computeAnchoredPosition(left, top, currentW, currentH)));
             element.style.transform = '';
+            flushSync(() => onPositionChange(computeAnchoredPosition(left, top, currentW, currentH)));
         };
 
         drag.current = {

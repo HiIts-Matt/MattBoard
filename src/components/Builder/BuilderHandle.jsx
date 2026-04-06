@@ -8,7 +8,6 @@ export function BuilderHandle({ module }) {
     const { updateModulePosition, selectModule } = useBuilderStore();
 
     const { onPointerDown } = useDrag({
-        module,
         onPositionChange: (newPos) => updateModulePosition(module.id, newPos),
     });
 

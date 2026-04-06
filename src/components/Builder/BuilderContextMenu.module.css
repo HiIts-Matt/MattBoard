@@ -1,0 +1,111 @@
+.positioner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 500;
+}
+
+.menu {
+    width: max-content;
+    background: black;
+    border-radius: 16px;
+    outline: 2px solid rgba(255, 255, 255, 0.3);
+    overflow: hidden;
+    position: relative;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 6px 12px;
+
+    .title {
+        font-family: 'Space Grotesk';
+        font-size: 13px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        text-transform: capitalize;
+        letter-spacing: 0.5px;
+    }
+
+    .deleteButton {
+        background: transparent;
+        border-radius: 100px;
+        color: var(--mantine-color-red-9);
+        transition:
+            background 0.15s ease,
+            color 0.15s ease;
+
+        &.open {
+            background-color: var(--mantine-color-red-9);
+            color: white;
+        }
+    }
+}
+
+.confirmTooltip:not(.deleteButton) {
+    background: var(--mantine-color-red-9);
+    font-family: 'Space Grotesk';
+    font-size: 12px;
+}
+
+.typeInput {
+    font-family: 'Space Grotesk';
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9) !important;
+    text-transform: capitalize;
+    letter-spacing: 0.5px;
+    padding: 0;
+    height: auto;
+    min-height: unset;
+    cursor: pointer;
+    width: 90px;
+}
+
+.typeDropdown {
+    background: black;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 4px;
+}
+
+.typeOption {
+    font-family: 'Space Grotesk';
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: capitalize;
+    border-radius: 6px;
+
+    &:hover, &[data-combobox-selected] {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+}
+
+.settings {
+    padding: 10px 12px 12px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.label {
+    font-family: 'Space Grotesk';
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.55);
+    flex: 1;
+}
+
+.input {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-size: 12px !important;
+}

@@ -21,7 +21,7 @@ export function useBuilderMode(save, config, data) {
     }
 
     function handleAddModule(pageIndex, type) {
-        addModule(pageIndex, 0, { type });
+        addModule(pageIndex, { type });
     }
 
     return {

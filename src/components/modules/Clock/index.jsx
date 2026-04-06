@@ -76,7 +76,7 @@ function Analog({ time, module }) {
         )}>
             <Clock
                 value={time}
-                size={bigClock ? 'calc(100% - 20px)' : 'var(--component-w)'}
+                size={bigClock ? 'calc(100% - 20px)' : '100%'}
                 className={classNames(
                     styles.clock,
                     !showMarks ? styles.noMarks : '',

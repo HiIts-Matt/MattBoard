@@ -1,20 +1,11 @@
-.bothWrapperBig {
-    height: 100%;
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    left: 50%;
-    translate: -50% 0;
-}
-
 .analogWrapper {
     background: var(--bg-color);
     backdrop-filter: var(--bg-effect);
     border-radius: 1000px;
     padding: 0px;
     margin: 0px;
+    width: var(--component-w);
+    aspect-ratio: 1;
 
     :global(.react-clock__mark__body) {
         background-color: var(--mantine-color-gray-0);
@@ -67,6 +58,8 @@
     border-radius: 1000px;
     background-color: var(--bg-color);
     backdrop-filter: var(--bg-effect);
+    width: var(--component-w);
+    aspect-ratio: 1;
 
     &.bigClock {
         position: absolute;
@@ -74,6 +67,7 @@
         border-radius: 0;
         background: none;
         backdrop-filter: none;
+        width: auto;
     }
 
     .digitalWrapper {
@@ -102,6 +96,18 @@
         align-items: center;
         justify-content: center;
     }
+}
+
+.bothWrapperBig {
+    height: 100%;
+    width: auto;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 50%;
+    translate: -50% 0;
 }
 
 .digitalWrapper {

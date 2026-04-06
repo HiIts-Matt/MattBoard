@@ -32,9 +32,7 @@ export function getPositionAnchor(module) {
 }
 
 export function getPositionSize(module) {
-    if (module.fullsize || !module.position) return {};
-    const { w, h } = module.position;
-    return { width: `${w}%`, height: `${h}%` };
+    return {};
 }
 
 export function getPositionStyle(module) {

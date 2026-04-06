@@ -1,13 +1,9 @@
 import { create } from 'zustand';
 
-// Helper to map over modules across all sections in all pages
 function mapModules(pages, fn) {
     return pages.map(page => ({
         ...page,
-        sections: page.sections.map(section => ({
-            ...section,
-            modules: section.modules.map(fn)
-        }))
+        modules: page.modules.map(fn)
     }));
 }
 
@@ -30,14 +26,20 @@ export const useBuilderStore = create((set, get) => ({
         )
     })),
 
+    swapModuleType: (moduleId, newType) => set(state => ({
+        pages: mapModules(state.pages, m =>
+            m.id === moduleId ? { id: m.id, position: m.position, type: newType } : m
+        )
+    })),
+
     selectModule: (id) => set({ selectedModuleId: id }),
 
-    addModule: (pageIndex, sectionIndex, moduleTemplate) => set(state => {
+    addModule: (pageIndex, moduleTemplate) => set(state => {
         const pages = structuredClone(state.pages);
-        pages[pageIndex].sections[sectionIndex].modules.push({
+        pages[pageIndex].modules.push({
             ...moduleTemplate,
             id: crypto.randomUUID(),
-            position: { x: 5, y: 5, w: 25, h: 30 },
+            position: { x: 5, y: 5, w: 25 },
         });
         return { pages };
     }),
@@ -45,10 +47,7 @@ export const useBuilderStore = create((set, get) => ({
     removeModule: (moduleId) => set(state => ({
         pages: state.pages.map(page => ({
             ...page,
-            sections: page.sections.map(section => ({
-                ...section,
-                modules: section.modules.filter(m => m.id !== moduleId)
-            }))
+            modules: page.modules.filter(m => m.id !== moduleId)
         }))
     })),
 

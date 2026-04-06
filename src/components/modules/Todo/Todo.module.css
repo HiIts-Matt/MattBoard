@@ -1,7 +1,7 @@
 .toDoContainer {
     display: flex;
     flex-direction: column;
-    width: 400px;
+    width: var(--component-w);
     background: var(--bg-color);
     /* border: 1px solid var(--bd-color); */
     backdrop-filter: var(--bg-effect);

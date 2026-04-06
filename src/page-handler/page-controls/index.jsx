@@ -3,7 +3,8 @@ import {
     IconChevronLeft, IconChevronRight,
     IconPencil, IconDeviceFloppy, IconX, IconPlus,
     IconSwitch,
-    IconCheck
+    IconCheck,
+    IconTools
 } from "@tabler/icons-react";
 import styles from "./PageControls.module.css";
 import { useLayoutEffect, useRef, useState } from "react";
@@ -76,40 +77,37 @@ function NamePillRow({ activeConfig, configData, pages, direction, activePage, o
     return (
         <Box className={styles.namePillRow}>
             <NamePill pages={pages} direction={direction} activePage={activePage} />
-            <Box
-                className={classNames(
-                    styles.editButton,
-                    builderMode ? styles.hide : ''
-                )}
-                onClick={onEnterBuilder}
-            >
-                <IconPencil size={20} color="white" />
-            </Box>
-            <BuilderToolbar
+            <Toolbar
                 activeConfig={activeConfig}
                 configData={configData}
+                onEnterBuilder={onEnterBuilder}
                 onSave={onSave}
                 onDiscard={onDiscard}
                 onAddModule={(type) => onAddModule(activePage, type)}
-                builderMode={builderMode}
                 onSwap={onSwap}
+                builderMode={builderMode}
             />
         </Box>
     );
 }
 
-function BuilderToolbar({
+function Toolbar({
     activeConfig,
     configData,
+    onEnterBuilder,
     onSave,
     onDiscard,
     onAddModule,
-    builderMode,
-    onSwap
+    onSwap,
+    builderMode
 }) {
 
     return (
         <Box className={styles.builderToolbar}>
+            <BuilderModeButton
+                onEnterBuilder={onEnterBuilder}
+                builderMode={builderMode}
+            />
             <XButton
                 activeConfig={activeConfig}
                 onDiscard={onDiscard}
@@ -131,6 +129,31 @@ function BuilderToolbar({
             />
         </Box>
     );
+}
+
+function BuilderModeButton({ onEnterBuilder, builderMode }) {
+    return (
+        <HoverCard
+            withinPortal={false}
+            withArrow
+            transitionProps={{ transition: 'pop' }}
+        >
+            <HoverCard.Target>
+                <Box
+                    className={classNames(
+                        styles.editButton,
+                        builderMode ? styles.hide : ''
+                    )}
+                    onClick={onEnterBuilder}
+                >
+                    <IconTools size={20} color="white" />
+                </Box>
+            </HoverCard.Target>
+            <HoverCard.Dropdown className={styles.saveMenu}>
+                <Text className={styles.toolTip}>Enter Builder Mode</Text>
+            </HoverCard.Dropdown>
+        </HoverCard>
+    )
 }
 
 function XButton({ activeConfig, onDiscard, builderMode }) {
@@ -209,15 +232,15 @@ function AddModule({ builderMode, onAddModule }) {
                 </Box>
             </Menu.Target>
             <Menu.Dropdown className={styles.saveMenu}>
-                    <Menu.Label>Add Module</Menu.Label>
-                    {moduleTypes.map(type => (
-                        <Menu.Item
-                            key={type}
-                            onClick={() => onAddModule(type)}
-                        >
-                            {type.split(1).map(([firstChar, ...rest])=> [firstChar.toUpperCase(), rest])}
-                        </Menu.Item>
-                    ))}
+                <Menu.Label>Add Module</Menu.Label>
+                {moduleTypes.map(type => (
+                    <Menu.Item
+                        key={type}
+                        onClick={() => onAddModule(type)}
+                    >
+                        {type.split(1).map(([firstChar, ...rest]) => [firstChar.toUpperCase(), rest])}
+                    </Menu.Item>
+                ))}
             </Menu.Dropdown>
         </Menu>
     )

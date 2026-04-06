@@ -135,7 +135,7 @@
 
 .editButton {
     position: absolute;
-    right: -45px;
+    left: 0px;
     pointer-events: auto;
     display: flex;
     align-items: center;

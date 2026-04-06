@@ -8,6 +8,7 @@ import { PhotoFrame } from "../components/PhotoFrame";
 import { classNames } from "../utils/utils";
 import { useConfig } from "../api/useConfig";
 import { useBuilderMode } from "../hooks/useBuilderMode";
+import { BuilderContextMenu } from "../components/Builder/BuilderContextMenu";
 
 export function PageHandler() {
     const [activePage, setActivePage] = useState(0);
@@ -55,6 +56,7 @@ export function PageHandler() {
                     </Box>
                 ))}
             </Box>
+            <BuilderContextMenu builderMode={builderMode} />
             <PageControls
                 activeConfig={activeConfig}
                 configData={data}
