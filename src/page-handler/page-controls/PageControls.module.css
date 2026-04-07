@@ -6,19 +6,19 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 24px;
+    padding: 0 10px;
     pointer-events: none;
 }
 
 .arrowPill {
     pointer-events: auto;
-    margin-bottom: 24px;
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: black;
-    border-radius: 100px;
-    outline: 2px solid rgba(255, 255, 2550, 0.3);
+    background: var(--nav-element-bg);
+    border-radius: var(--nav-pill-radius);
+    outline: var(--nav-outline);
     padding: 14px 20px;
     cursor: pointer;
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
@@ -36,16 +36,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: black;
-    border-radius: 100px;
-    outline: 2px solid rgba(255, 255, 2550, 0.3);
-
+    background: var(--nav-element-bg);
+    border-radius: var(--nav-pill-radius);
+    outline: var(--nav-outline);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
         opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     margin-bottom: 24px;
 
     .nameText {
-        color: white;
+        font-family: var(--main-font);
+        color: var(--nav-text-color);
         font-size: 16px;
         font-weight: 600;
         letter-spacing: 0.05em;
@@ -140,9 +140,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: black;
-    border-radius: 100px;
-    outline: 2px solid rgba(255, 255, 255, 0.3);
+    background: var(--nav-element-bg);
+    border-radius: var(--nav-pill-radius);
+    outline: var(--nav-outline);
     padding: 10px;
     cursor: pointer;
     margin-bottom: 24px;
@@ -154,7 +154,7 @@
     pointer-events: auto;
 
     &:hover {
-        outline: 2px solid white;
+        outline: var(--nav-outline-hover);
     }
 
     &.hide {
@@ -178,9 +178,9 @@
     .newConfigInput {
         background: rgba(255, 255, 255, 0.08);
         border-color: rgba(255, 255, 255, 0.2);
-        color: white;
+        color: var(--nav-text-color);
         font-size: 12px;
-        font-family: 'Space Grotesk';
+        font-family: var(--main-font);
 
         &::placeholder {
             color: rgba(255, 255, 255, 0.4);
@@ -193,31 +193,31 @@
 
     .saveMenu {
         border-radius: 10px;
-        background: black;
-        outline: 2px solid rgba(255, 255, 255, 0.3);
+        background: var(--nav-element-bg);
+        outline: var(--nav-outline);
         border: none;
-        color: white;
+        color: var(--nav-text-color);
         padding: 0px;
         pointer-events: all;
 
         :global(.mantine-Menu-label) {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            border-bottom: var(--nav-divider);
             text-align: left;
             background: var(--mantine-color-gray-light);
-            color: white;
-            font-family: 'Space Grotesk';
+            color: var(--nav-text-color);
+            font-family: var(--main-font);
 
             &:not(:first-child) {
-                border-top: 1px solid rgba(255, 255, 255, 0.3);
+                border-top: var(--nav-divider);
             }
         }
 
         :global(.mantine-Menu-item) {
-            color: white;
+            color: var(--nav-text-color);
             background: transparent;
             transition: all 0.15s;
             font-size: 12px;
-            font-family: 'Space Grotesk';
+            font-family: var(--main-font);
 
             svg {
                 width: 20px;
@@ -239,21 +239,20 @@
             .titleWrapper {
                 padding: 5px 10px;
                 width: 100%;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+                border-bottom: var(--nav-divider);
                 background: var(--mantine-color-gray-light);
 
                 .titleText {
-                    font-family: 'Space Grotesk';
+                    font-family: var(--main-font);
                     line-height: 1;
                     font-weight: 600;
                     font-size: 14px;
-
                 }
             }
 
             .subText {
                 padding: 10px;
-                font-family: 'Space Grotesk';
+                font-family: var(--main-font);
                 font-size: 12px;
                 text-align: left;
             }
@@ -261,7 +260,7 @@
 
         .toolTip {
             margin: 5px 10px;
-            font-family: 'Space Grotesk';
+            font-family: var(--main-font);
             font-size: 14px;
         }
     }
@@ -272,9 +271,9 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    background: black;
-    border-radius: 100px;
-    outline: 2px solid rgba(255, 255, 255, 0.3);
+    background: var(--nav-element-bg);
+    border-radius: var(--nav-pill-radius);
+    outline: var(--nav-outline);
     padding: 12px;
     cursor: pointer;
     margin-bottom: 24px;
@@ -286,7 +285,7 @@
         outline 0.15s ease;
 
     &:hover {
-        outline: 2px solid white;
+        outline: var(--nav-outline-hover);
     }
 
     &.visible {
@@ -313,7 +312,7 @@
 }
 
 .toolbarLabel {
-    color: white;
+    color: var(--nav-text-color);
     font-size: 14px;
     font-weight: 600;
 }
