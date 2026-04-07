@@ -77,7 +77,6 @@ function Module({ module, fullscreenModule, setFullscreenModule, builderMode, ca
             data-module-id={module.id}
             className={classNames(
                 isBackground ? styles.backgroundComponent : styles.component,
-                styles.sharedPalette,
                 isDimmed ? styles.dimmed : '',
                 isFullsize ? styles.fullsize : ''
             )}

@@ -7,9 +7,9 @@
 
 .menu {
     width: max-content;
-    background: black;
-    border-radius: 16px;
-    outline: 2px solid rgba(255, 255, 255, 0.3);
+    background: var(--ctx-menu-bg);
+    border-radius: var(--ctx-menu-radius);
+    outline: var(--ctx-menu-outline);
     overflow: hidden;
     position: relative;
 }
@@ -22,7 +22,7 @@
     padding: 6px 12px;
 
     .title {
-        font-family: 'Space Grotesk';
+        font-family: var(--main-font);
         font-size: 13px;
         font-weight: 600;
         color: rgba(255, 255, 255, 0.9);
@@ -32,7 +32,7 @@
 
     .deleteButton {
         background: transparent;
-        border-radius: 100px;
+        border-radius: var(--ctx-menu-pill-radius);
         color: var(--mantine-color-red-9);
         transition:
             background 0.15s ease,
@@ -40,19 +40,19 @@
 
         &.open {
             background-color: var(--mantine-color-red-9);
-            color: white;
+            color: var(--ctx-menu-text-color);
         }
     }
 }
 
 .confirmTooltip:not(.deleteButton) {
     background: var(--mantine-color-red-9);
-    font-family: 'Space Grotesk';
+    font-family: var(--main-font);
     font-size: 12px;
 }
 
 .typeInput {
-    font-family: 'Space Grotesk';
+    font-family: var(--main-font);
     font-size: 13px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.9) !important;
@@ -66,14 +66,14 @@
 }
 
 .typeDropdown {
-    background: black;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--ctx-menu-bg);
+    border: var(--ctx-menu-divider);
     border-radius: 10px;
     padding: 4px;
 }
 
 .typeOption {
-    font-family: 'Space Grotesk';
+    font-family: var(--main-font);
     font-size: 12px;
     color: rgba(255, 255, 255, 0.8);
     text-transform: capitalize;
@@ -82,7 +82,7 @@
     &:hover,
     &[data-combobox-selected] {
         background: rgba(255, 255, 255, 0.1);
-        color: white;
+        color: var(--ctx-menu-text-color);
     }
 }
 
@@ -92,7 +92,7 @@
     justify-content: space-between;
     width: 100%;
     gap: 8px;
-    color: white;
+    color: var(--ctx-menu-text-color);
     text-align: left;
 
     &:not(.location):not(.feedUrls):not(.sliderRow):not(.googleAuthRow) {
@@ -115,16 +115,16 @@
         .titleBox {
             background-color: var(--mantine-color-gray-light);
             width: 100%;
-            font-family: 'Space Grotesk';
+            font-family: var(--main-font);
             text-align: left;
             padding: 7px 10px;
 
             &:not(:first-child) {
-                border-top: 1px solid rgba(255, 255, 255, 0.3);
+                border-top: var(--ctx-menu-divider);
             }
 
             &:not(:last-child) {
-                border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+                border-bottom: var(--ctx-menu-divider);
             }
 
             .title {
@@ -149,13 +149,12 @@
 
                 .coordLabel {
                     font-size: 12px;
-                    font-family: 'Space Grotesk';
+                    font-family: var(--main-font);
                 }
 
                 .root {
                     max-width: 100px;
                 }
-
             }
         }
 
@@ -164,7 +163,7 @@
             justify-content: center;
             width: 100%;
             font-size: 12px;
-            font-family: 'Space Grotesk';
+            font-family: var(--main-font);
             background: transparent;
             display: flex;
             flex-direction: row;
@@ -181,21 +180,21 @@
         flex-direction: column;
         gap: 0px;
         padding-bottom: 10px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        border-bottom: var(--ctx-menu-divider);
 
         .titleBox {
             background-color: var(--mantine-color-gray-light);
             width: 100%;
-            font-family: 'Space Grotesk';
+            font-family: var(--main-font);
             text-align: left;
             padding: 7px 10px;
 
             &:not(:first-child) {
-                border-top: 1px solid rgba(255, 255, 255, 0.3);
+                border-top: var(--ctx-menu-divider);
             }
 
             &:not(:last-child) {
-                border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+                border-bottom: var(--ctx-menu-divider);
             }
 
             .title {
@@ -214,7 +213,7 @@
 
             .feedLabel {
                 font-size: 11px;
-                font-family: 'Space Grotesk';
+                font-family: var(--main-font);
                 color: rgba(255, 255, 255, 0.7);
                 flex: 1;
                 overflow: hidden;
@@ -261,8 +260,8 @@
             align-items: center;
             justify-content: space-between;
             padding: 7px 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-            font-family: 'Space Grotesk';
+            border-bottom: var(--ctx-menu-divider);
+            font-family: var(--main-font);
 
             .title {
                 font-size: 12px;
@@ -303,8 +302,6 @@
             }
         }
 
-
-
         .googleAuthContent {
             display: flex;
             flex-direction: column;
@@ -320,13 +317,13 @@
         }
 
         .googleAuthStatus {
-            font-family: 'Space Grotesk';
+            font-family: var(--main-font);
             font-size: 11px;
             color: var(--mantine-color-teal-4);
         }
 
         .googleAuthStep {
-            font-family: 'Space Grotesk';
+            font-family: var(--main-font);
             font-size: 11px;
             color: rgba(255, 255, 255, 0.5);
             display: flex;
@@ -338,7 +335,7 @@
             background: rgba(255, 255, 255, 0.12);
             color: rgba(255, 255, 255, 0.6);
             font-size: 9px;
-            font-family: 'Space Grotesk';
+            font-family: var(--main-font);
             width: 14px;
             height: 14px;
             border-radius: 50%;
@@ -366,7 +363,7 @@
         }
 
         .connectThisDevice {
-            font-family: 'Space Grotesk';
+            font-family: var(--main-font);
             font-size: 11px;
             color: rgba(255, 255, 255, 0.4);
             margin-top: 4px;
@@ -380,7 +377,7 @@
 }
 
 .label {
-    font-family: 'Space Grotesk';
+    font-family: var(--main-font);
     font-size: 12px;
     color: rgba(255, 255, 255, 0.55);
     flex: 1;
@@ -400,13 +397,14 @@
     gap: 0px;
     padding: 0px 10px;
 
-    :first-child{
+    :first-child {
         padding-top: 5px;
     }
 
-    :last-child{
+    :last-child {
         padding-bottom: 5px;
     }
+
     width: 100%;
 }
 
@@ -418,14 +416,14 @@
 .segmentedRoot {
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 100px;
+    border-radius: var(--ctx-menu-pill-radius);
     padding: 2px;
     padding-bottom: 3px;
 }
 
 .segmentedIndicator {
     background: rgba(255, 255, 255, 0.18);
-    border-radius: 100px;
+    border-radius: var(--ctx-menu-pill-radius);
     box-shadow: none;
 }
 
@@ -433,17 +431,17 @@
     line-height: 1;
     padding-top: 6px;
     padding-bottom: 3px;
-    font-family: 'Space Grotesk';
+    font-family: var(--main-font);
     font-size: 11px;
     color: rgba(255, 255, 255, 0.45);
-    border-radius: 100px;
+    border-radius: var(--ctx-menu-pill-radius);
 
     &:hover {
         color: rgba(255, 255, 255, 0.75);
     }
 
     &[data-active] {
-        color: white;
+        color: var(--ctx-menu-text-color);
     }
 }
 
@@ -460,7 +458,7 @@
     }
 
     .sliderValue {
-        font-family: 'Space Grotesk';
+        font-family: var(--main-font);
         font-size: 11px;
         color: rgba(255, 255, 255, 0.4);
     }
@@ -477,6 +475,6 @@
 
     .sliderThumb {
         border-color: rgba(255, 255, 255, 0.6);
-        background: white;
+        background: var(--ctx-menu-text-color);
     }
 }
