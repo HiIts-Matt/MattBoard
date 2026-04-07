@@ -8,13 +8,13 @@ export const moduleSettings = {
 
     ],
     weather: [
-        { key: 'loc', label: 'Location', type: 'location' },
+        { key: 'loc', label: 'Location', type: 'location', required: true },
     ],
     todo: [
         { key: 'clearTime', label: 'Auto-clear (ms)', type: 'number' },
     ],
     news: [
-        { key: 'feedUrls', label: 'RSS Feeds', type: 'feedUrls' },
+        { key: 'feedUrls', label: 'RSS Feeds', type: 'feedUrls', required: true },
         { key: 'defaultGoodNews', label: 'Good news filter', type: 'boolean' },
         { key: 'threshold', label: 'Filter threshold', type: 'slider', max: 1, min: 0, steps: 0.1, },
     ],

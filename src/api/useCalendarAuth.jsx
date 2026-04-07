@@ -13,7 +13,7 @@ export function useCalendarAuth() {
             const res = await fetch(STATUS_URL);
             return res.json();
         },
-        refetchInterval: 3000,
+        refetchInterval: 30000,
         refetchIntervalInBackground: true,
         refetchOnWindowFocus: true,
         staleTime: 0,
@@ -27,19 +27,19 @@ export function useCalendarAuth() {
             if (tab.closed) {
                 clearInterval(timer);
                 queryClient.invalidateQueries({ queryKey: ['calendar-auth-status'] });
+                queryClient.invalidateQueries({ queryKey: ['calendar'] });
                 return;
             }
             try {
-                // Reading tab.location.href throws SecurityError on cross-origin pages (Google OAuth).
-                // Once the backend redirects back to our origin, it becomes readable — auth is done.
                 const href = tab.location.href;
                 if (href && href !== AUTH_URL) {
                     clearInterval(timer);
                     tab.close();
                     queryClient.invalidateQueries({ queryKey: ['calendar-auth-status'] });
+                    queryClient.invalidateQueries({ queryKey: ['calendar'] });
                 }
             } catch {
-                // Still on a cross-origin page, keep waiting
+                //do nothing
             }
         }, 500);
     }

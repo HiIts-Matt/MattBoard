@@ -31,7 +31,7 @@ const theme = createTheme({
     other: {
         //general module styles
         bgColor: 'rgba(50, 50, 50, 0.2)',
-        bgEffect: 'blur(12px)',
+        bgEffect: 'blur(8px)',
         darkenedBg: 'rgba(0, 0, 0, 0.2)',
         lightenedBd: 'rgba(255, 255, 255, 0.2)',
         componentRadius: '12px',
@@ -67,6 +67,7 @@ const theme = createTheme({
 
 const cssVariablesResolver = (theme) => ({
     variables: {
+        // component styles
         '--bg-color': theme.other.bgColor,
         '--bg-effect': theme.other.bgEffect,
         '--dark-bg': theme.other.darkenedBg,

@@ -2,11 +2,13 @@ import { useRef } from 'react';
 import { useDrag } from '../../utils/useDrag';
 import { useBuilderStore } from './BuilderStore';
 import styles from './BuilderHandle.module.css';
+import { classNames } from '../../utils/utils';
 import { IconArrowUp, IconArrowDown } from '@tabler/icons-react';
 
 export function BuilderHandle({ module, canMoveUp, canMoveDown }) {
     const handleRef = useRef(null);
-    const { updateModulePosition, selectModule, moveSectionUp, moveSectionDown } = useBuilderStore();
+    const { updateModulePosition, selectModule, moveSectionUp, moveSectionDown, selectedModuleId } = useBuilderStore();
+    const isSelected = selectedModuleId === module.id;
 
     const { onPointerDown } = useDrag({
         onPositionChange: (newPos) => updateModulePosition(module.id, newPos),
@@ -16,7 +18,7 @@ export function BuilderHandle({ module, canMoveUp, canMoveDown }) {
         return (
             <div
                 ref={handleRef}
-                className={styles.fullsizeHandle}
+                className={classNames(styles.fullsizeHandle, isSelected && styles.selected)}
                 onClick={() => selectModule(module.id)}
             >
                 <span className={styles.label}>{module.type}</span>
@@ -43,7 +45,7 @@ export function BuilderHandle({ module, canMoveUp, canMoveDown }) {
     return (
         <div
             ref={handleRef}
-            className={styles.handle}
+            className={classNames(styles.handle, isSelected && styles.selected)}
             onPointerDown={(e) => {
                 selectModule(module.id);
                 onPointerDown(e, handleRef.current.parentElement);

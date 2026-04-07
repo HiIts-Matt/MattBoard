@@ -1,36 +1,23 @@
 import { Box, Text, Switch, Select, NumberInput, ActionIcon, Divider, Stack, Transition, Tooltip, UnstyledButton, TextInput, Slider, SegmentedControl } from '@mantine/core';
 import { IconLocationSearch, IconTrash, IconPlus, IconX, IconCheck, IconPlugConnectedX } from '@tabler/icons-react';
 import { useCalendarAuth } from '../../api/useCalendarAuth';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useBuilderStore } from './BuilderStore';
 import { moduleSettings } from '../../utils/moduleSettings';
 import { components } from '../../utils/componentMap';
 import styles from './BuilderContextMenu.module.css';
 import { classNames, seconds } from '../../utils/utils';
 import { useTempState } from '../../hooks/useTempState';
-import { stubFalse } from 'lodash';
-
-const MENU_W = 220;
-const GAP = 12;
-
-const scaleTransition = (origin) => ({
-    in: { opacity: 1, transform: 'scale(1)' },
-    out: { opacity: 0, transform: 'scale(0.5)' },
-    common: { transformOrigin: origin },
-    transitionProperty: 'transform, opacity',
-});
+import { useMenuPosition } from './useMenuPosition';
 
 export function BuilderContextMenu({ builderMode }) {
     const { selectedModuleId, pages, updateModuleSetting, updateModuleSettings, removeModule, swapModuleType, selectModule } = useBuilderStore();
     const moduleTypes = Object.keys(components);
-    const [pos, setPos] = useState({ x: 0, y: 0 });
-    const [origin, setOrigin] = useState('center bottom');
-    const [slide, setSlide] = useState(false);
     const [displayedModule, setDisplayedModule] = useState(null);
-    const prevIdRef = useRef(null);
-    const menuRef = useRef(null);
 
     const [deleteOpen, setDeleteOpen, resetDeleteOpen] = useTempState(false, seconds(3));
+
+    const { pos, slide, menuRef } = useMenuPosition(selectedModuleId, [displayedModule]);
 
     useEffect(() => {
         if (!selectedModuleId || !builderMode) return;
@@ -42,47 +29,21 @@ export function BuilderContextMenu({ builderMode }) {
         };
         document.addEventListener('pointerdown', handlePointerDown);
         return () => document.removeEventListener('pointerdown', handlePointerDown);
-    }, [selectedModuleId, builderMode, selectModule]);
+    }, [selectedModuleId, builderMode, selectModule, menuRef]);
 
-    useLayoutEffect(() => {
-        if (!selectedModuleId) {
-            prevIdRef.current = null;
-            return;
-        }
-
-        const el = document.querySelector(`[data-module-id="${selectedModuleId}"]`);
-        if (!el) return;
-
+    useEffect(() => {
+        if (!selectedModuleId) return;
         const module = pages?.flatMap(p => p.modules).find(m => m.id === selectedModuleId);
-        const rect = el.getBoundingClientRect();
-        const menuH = menuRef.current?.offsetHeight ?? 200;
-        const centerX = rect.left + rect.width / 2;
-        const x = Math.max(GAP, Math.min(centerX - MENU_W / 2, window.innerWidth - MENU_W - GAP));
-
-        const aboveY = rect.top - menuH - GAP;
-        let y, newOrigin;
-        if (aboveY >= GAP) {
-            y = aboveY;
-            newOrigin = 'center bottom';
-        } else {
-            y = rect.bottom + GAP;
-            newOrigin = 'center top';
-        }
-
-        setSlide(prevIdRef.current !== null);
-        setOrigin(newOrigin);
-        setPos({ x, y });
         resetDeleteOpen();
         if (module) setDisplayedModule(module);
-        prevIdRef.current = selectedModuleId;
-    }, [selectedModuleId, pages]);
+    }, [selectedModuleId, pages, resetDeleteOpen]);
 
     const settings = moduleSettings[displayedModule?.type] ?? [];
 
     return (
         <Transition
             mounted={!!(selectedModuleId && builderMode)}
-            transition={scaleTransition(origin)}
+            transition='pop'
             duration={200}
         >
             {(transitionStyle) => (
@@ -91,6 +52,7 @@ export function BuilderContextMenu({ builderMode }) {
                     style={{
                         transform: `translate(${pos.x}px, ${pos.y}px)`,
                         transition: slide ? 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)' : 'none',
+
                     }}
                 >
                     <Box ref={menuRef} className={styles.menu} style={transitionStyle}>
@@ -243,19 +205,21 @@ function SettingRow({ setting, value, onChange }) {
         </Box>
     );
 
+    const needsSetup = setting.required && (!value || (Array.isArray(value) && value.length === 0));
     if (setting.type === 'googleAuth') return <GoogleAuthRow />;
-    if (setting.type === 'location') return <LocationRow value={value} onChange={onChange} />;
-    if (setting.type === 'feedUrls') return <FeedUrlsRow value={value} onChange={onChange} />;
+    if (setting.type === 'location') return <LocationRow value={value} onChange={onChange} needsSetup={needsSetup} />;
+    if (setting.type === 'feedUrls') return <FeedUrlsRow value={value} onChange={onChange} needsSetup={needsSetup} />;
 
     return null;
 }
 
 function GoogleAuthRow() {
     const { connected, isLoading, authUrl, openAuthTab, disconnect, isDisconnecting } = useCalendarAuth();
+    const needsSetup = !isLoading && !connected;
 
     return (
         <Box className={classNames(styles.row, styles.googleAuthRow)}>
-            <Box className={styles.titleBox}>
+            <Box className={styles.titleBox} style={needsSetup ? { backgroundColor: 'var(--mantine-color-red-light)' } : undefined}>
                 <Text className={styles.title}>Google Calendar</Text>
                 <Box className={styles.rightSection}>
                     <Box className={classNames(styles.statusDot, (!isLoading && connected) ? styles.connected : styles.disconnected)} />
@@ -305,7 +269,7 @@ function feedLabel(url) {
     catch { return url; }
 }
 
-function FeedUrlsRow({ value = [], onChange }) {
+function FeedUrlsRow({ value = [], onChange, needsSetup }) {
     const [input, setInput] = useState('');
 
     function add() {
@@ -316,9 +280,10 @@ function FeedUrlsRow({ value = [], onChange }) {
     }
 
     return (
-        <Box className={classNames(styles.row, styles.feedUrls)}>
+        <Box className={classNames(styles.row, styles.feedUrls, needsSetup ? styles.needsSetup : '')}>
             <Box className={styles.titleBox}>
                 <Text className={styles.title}>RSS Feeds</Text>
+                {needsSetup && <Text className={styles.setupRequired}>Setup required</Text>}
             </Box>
             {value.map(url => (
                 <Box key={url} className={styles.feedItem}>
@@ -346,7 +311,7 @@ function FeedUrlsRow({ value = [], onChange }) {
     );
 }
 
-function LocationRow({ value, onChange }) {
+function LocationRow({ value, onChange, needsSetup }) {
     const [locating, setLocating] = useState(false);
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
@@ -379,7 +344,7 @@ function LocationRow({ value, onChange }) {
 
     return (
         <Box className={classNames(styles.row, styles.location)}>
-            <Box className={styles.titleBox}>
+            <Box className={styles.titleBox} style={needsSetup ? { backgroundColor: 'var(--mantine-color-red-light)' } : undefined}>
                 <Text className={styles.title}>Location</Text>
             </Box>
             <UnstyledButton
@@ -391,7 +356,7 @@ function LocationRow({ value, onChange }) {
                 {locating ? 'Locating…' : 'Use Current Location'}
             </UnstyledButton>
 
-            <Divider color="rgba(255,255,255,0.15)" label="OR" labelProps={{ style: { color: 'rgba(255,255,255,0.3)', fontSize: 10 } }} />
+            <Divider color="rgba(255,255,255,0.15)" label="OR" />
             <Box px={10}>
                 <Select
                     size="xs"

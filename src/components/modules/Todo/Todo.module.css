@@ -8,7 +8,7 @@
     border-radius: 12px;
     border: var(--bd);
     padding: var(--component-pd);
-    gap: 12px;
+    gap: 0px;
     max-height: 600px;
 }
 
@@ -40,23 +40,44 @@
         align-items: center;
         justify-content: flex-start;
         gap: 10px;
+        border-bottom: var(--inner-bd);
 
         .smallTitle {
-            font-family: 'Space Grotesk';
-            font-size: 24px;
+            font-family: var(--main-font);
+            font-size: var(--title-fz);
+            color: var(--glyph-color-filled);
         }
+
+        svg {
+            color: var(--glyph-color-filled);
+        }
+    }
+
+    .toDoList {
+        border-bottom: var(--inner-bd);
     }
 }
 
-.inputColorPalette {
-    --default-color: var(--mantine-color-gray-4);
-    --hover-color: var(--mantine-color-teal-6);
+.dateSeparator {
+    padding: 2px 12px 2px;
+    border-bottom: var(--dimmed-bd);
+
+    .dateSeparatorText {
+        font-family: var(--main-font);
+        font-size: 10px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--glyph-color-minimal);
+    }
 }
+
+
 
 .createNewSection {
     svg {
         transition: all 0.15s;
-        color: var(--default-color);
+        color: var(--glyph-color-solid);
         width: 24px;
         height: 24px;
     }
@@ -64,36 +85,34 @@
     &:has(+ .createNewInput:hover),
     &:has(+ .createNewInput:focus) {
         svg {
-            color: var(--hover-color);
-            width: 30px;
-            height: 30px;
+            color: var(--glyph-color-filled);
         }
     }
 }
 
 .createNewInput {
-    font-size: 18px;
-    border-radius: 8px;
+    font-size: var(--small-title-fz);
+    border-radius: 0px;
     border: none;
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--default-color);
+    border-top: var(--inner-bd);
+    border-bottom: var(--inner-bd);
+    background: transparent;
+    color: var(--glyph-color-solid);
     transition: all 0.15s;
-    font-weight: 400;
 
     &::placeholder {
-        font-weight: 400;
-        color: var(--default-color);
+        color: var(--glyph-color-solid);
     }
 
     &:hover,
     &:focus {
         background: rgba(255, 255, 255, 0.2);
         border-color: var(--hover-color);
-        color: white;
+        color: var(--glyph-color-filled);
 
         &::placeholder {
             font-weight: 600;
-            color: var(--hover-color);
+            color: var(--glyph-color-filled);
         }
     }
 }
@@ -109,22 +128,35 @@
     align-items: center;
     gap: 10px;
     padding: 8px 12px;
-    border-radius: 8px;
-    border: none;
-    background: var(--dark-bg);
     cursor: pointer;
     transition: all 0.15s;
     word-break: break-word;
     color: rgba(255, 255, 255, 0.7);
+    border: none;
+    border-radius: 0px;
 
-    &:hover {
-        background: rgba(255, 255, 255, 0.08);
+
+    &:not(:last-child) {
+        border-bottom: var(--dimmed-bd);
     }
 
     &[data-checked] {
         background: rgba(255, 255, 255, 0.2);
         color: var(--glyph-color-minimal);
         font-style: italic;
+
+        .indicator {
+            background: var(--light-bg);
+            border: var(--inner-bd);
+        }
+    }
+
+    &:hover {
+        background: var(--dark-bg);
+
+        &[data-checked] {
+            background: var(--glyph-color-minimal);
+        }
     }
 
     .itemContent {
@@ -139,6 +171,23 @@
             flex-direction: row;
             align-items: center;
             gap: 10px;
+
+            .indicator {
+                width: 30px;
+                height: 30px;
+                border-radius: 15px;
+                background-color: var(--dark-bg);
+
+                :global(.mantine-CheckboxIndicator-icon) {
+                    width: 14px;
+                    height: 14px;
+                }
+            }
+
+            .toDoItemText {
+                font-family: var(--main-font);
+                font-size: var(--small-title-fz);
+            }
         }
 
         .archiveButton {
@@ -152,7 +201,7 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    gap: 5px;
+    gap: 0px;
     flex-shrink: 1;
     overflow-y: auto;
 }

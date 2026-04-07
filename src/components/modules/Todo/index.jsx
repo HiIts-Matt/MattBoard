@@ -3,8 +3,27 @@ import styles from './Todo.module.css'
 import { IconArchive, IconPencilPlus, IconPlus, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { useToDo } from "../../../api/useToDo";
-import { classNames } from "../../../utils/utils";
+import { classNames, formatSeparatorDate } from "../../../utils/utils";
 
+function groupByDay(items) {
+    const sorted = [...items].sort((a, b) =>
+        new Date(b.timeCreated) - new Date(a.timeCreated)
+    );
+
+    const result = [];
+    let lastDay = null;
+
+    for (const item of sorted) {
+        const day = new Date(item.timeCreated).toDateString();
+        if (day !== lastDay) {
+            result.push({ type: 'separator', date: new Date(item.timeCreated) });
+            lastDay = day;
+        }
+        result.push({ type: 'item', item });
+    }
+
+    return result;
+}
 
 export function ToDoList() {
 
@@ -38,20 +57,25 @@ export function ToDoList() {
                     </Box>
                 ) : (
                     <Box className={styles.toDoList}>
-                        {toDos
-                            .filter(item => !item?.archived)
-                            ?.map((item) => (
-                                <ToDoItem key={item.id} toDos={toDoData} item={item} />
-                            ))}
+                        {groupByDay(toDos.filter(item => !item?.archived)).map((entry) =>
+                            entry.type === 'separator' ? (
+                                <Box key={entry.date.toDateString()} className={styles.dateSeparator}>
+                                    <Text className={styles.dateSeparatorText}>
+                                        {formatSeparatorDate(entry.date)}
+                                    </Text>
+                                </Box>
+                            ) : (
+                                <ToDoItem key={entry.item.id} toDos={toDoData} item={entry.item} />
+                            )
+                        )}
                     </Box>
                 )}
-
                 <CreateNew toDos={toDoData} />
             </Box>
             <Transition
                 mounted={displayArchives}
                 transition="pop"
-                duration={400}
+                duration={300}
                 timingFunction="ease"
             >
                 {(transition) => (
@@ -65,15 +89,21 @@ export function ToDoList() {
                         <Box className={styles.titleGroup}>
                             <IconArchive size={34} stroke={1.5} />
                             <Text className={styles.smallTitle}>
-                                Archives
+                                Archive
                             </Text>
                         </Box>
                         <Box className={styles.toDoList}>
-                            {toDos
-                                .filter(item => item?.archived)
-                                ?.map((item) => (
-                                    <ToDoItem key={item.id} toDos={toDoData} item={item} />
-                                ))}
+                            {groupByDay(toDos.filter(item => item?.archived)).map((entry) =>
+                                entry.type === 'separator' ? (
+                                    <Box key={entry.date.toDateString()} className={styles.dateSeparator}>
+                                        <Text className={styles.dateSeparatorText}>
+                                            {formatSeparatorDate(entry.date)}
+                                        </Text>
+                                    </Box>
+                                ) : (
+                                    <ToDoItem key={entry.item.id} toDos={toDoData} item={entry.item} />
+                                )
+                            )}
                         </Box>
                     </Box>
                 )}
@@ -108,7 +138,7 @@ function CreateNew() {
                 if (e.key === 'Enter') newToDo();
             }}
             classNames={{
-                root: styles.inputColorPalette,
+                root: styles.inputRoot,
                 input: styles.createNewInput,
                 section: styles.createNewSection,
             }}
@@ -164,7 +194,7 @@ function ToDoItem({ item }) {
         >
             <Box className={styles.itemContent}>
                 <Box className={styles.leftArea}>
-                    <Checkbox.Indicator />
+                    <Checkbox.Indicator className={styles.indicator}/>
                     <Text className={styles.toDoItemText} td={isComplete ? 'line-through' : undefined}>
                         {item.value}
                     </Text>
@@ -180,28 +210,5 @@ function ToDoItem({ item }) {
                 </ActionIcon>
             </Box>
         </Checkbox.Card>
-    )
-}
-
-function ArchiveList({ toDos, children }) {
-    return (
-        <Popover
-            radius={10}
-            position='right-start'
-            offset={{
-                mainAxis: 28,
-                crossAxis: -20,
-            }}
-            withinPortal={false}
-        >
-            <Popover.Target>
-                {children}
-            </Popover.Target>
-            <Popover.Dropdown className={styles.archiveDropdown}>
-                <Box className={styles.dropdownInner}>
-
-                </Box>
-            </Popover.Dropdown>
-        </Popover>
     )
 }

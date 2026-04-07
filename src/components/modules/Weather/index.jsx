@@ -78,14 +78,14 @@ export function Weather({ module }) {
         </Box>
     )
 
-    if (isError || !weatherData) return (
+    const { current, daily } = weatherData ?? {};
+
+    if (isError || !current || !daily) return (
         <Box className={styles.weatherBox}>
             <Text className={styles.condition}>Weather unavailable</Text>
         </Box>
     )
-
-    const { current_weather, daily } = weatherData
-    const todayWmo = getWmo(current_weather.weathercode)
+    const todayWmo = getWmo(current.weather_code)
 
     return (
         <Box className={styles.weatherBox} onClick={() => setExpanded(e => !e)}>
@@ -96,7 +96,7 @@ export function Weather({ module }) {
                 <Group className={styles.smallPreview}>
                     <Icon icon={todayWmo.icon} width={60} />
                     <Stack className={styles.infoStack}>
-                        <Text className={styles.info}>{Math.round(current_weather.temperature)}{unitLabel}</Text>
+                        <Text className={styles.info}>{Math.round(current.temperature_2m)}{unitLabel}</Text>
                         <Text className={styles.info}>{todayWmo.label}</Text>
                     </Stack>
                 </Group>
@@ -116,7 +116,7 @@ function HourlyList({ hourlyData, expanded }) {
             hourlyData?.time?.forEach((hourlyTime, idx) => {
                 const hourlyValues = {
                     precipitation_probability: hourlyData?.precipitation_probability?.[idx],
-                    weathercode: hourlyData?.weathercode?.[idx],
+                    weather_code: hourlyData?.weather_code?.[idx],
                     temperature_2m: hourlyData?.temperature_2m?.[idx],
                 }
                 formattedData.set(hourlyTime, hourlyValues)
@@ -141,8 +141,7 @@ function HourlyList({ hourlyData, expanded }) {
 
 function HourlyItem({ time, data }) {
     const label = new Date(time).toLocaleTimeString('en-US', { hour: 'numeric', hour12: true })
-    const wmo = getWmo(data.weathercode)
-
+    const wmo = getWmo(data.weather_code)
     return (
         <Box className={classNames(styles.hourlyItem)}>
             <Text className={styles.hourlyTime}>{label}</Text>
@@ -164,7 +163,7 @@ function WeatherList({ expanded, daily }) {
             <Stack gap={2} className={styles.weeklyList}>
                 {daily.time.slice(1).map((dateStr, i) => {
                     const idx = i + 1
-                    const wmo = getWmo(daily.weathercode[idx])
+                    const wmo = getWmo(daily.weather_code[idx])
                     const day = DAYS[new Date(dateStr + 'T12:00:00').getDay()]
                     const precip = daily.precipitation_probability_max[idx]
                     return (

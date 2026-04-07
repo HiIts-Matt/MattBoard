@@ -17,3 +17,13 @@ export const hours = (hours) => {
 export const days = (days) => {
     return 1000 * 60 * 60 * 24 * days;
 }
+
+export function formatSeparatorDate(date) {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) return 'Today';
+    if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
+    return date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+}

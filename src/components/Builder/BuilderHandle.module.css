@@ -18,6 +18,11 @@
     cursor: grabbing;
 }
 
+.selected {
+    border: 2px solid var(--mantine-color-teal-6);
+    background: rgba(18, 184, 134, 0.12);
+}
+
 .label {
     background: rgba(0, 0, 0, 0.5);
     color: white;
