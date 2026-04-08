@@ -1,7 +1,24 @@
 .page {
-    height: calc(100vh - 80px);
     width: 100vw;
     display: flex;
     flex-direction: column;
     position: relative;
+    min-height: 100%;
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background-color: var(--dark-bg);
+        background-image: radial-gradient(circle, var(--glyph-color-minimal) 2px, transparent 1px);
+        background-size: 40px 40px;
+        opacity: 0;
+        transition: opacity 0.2s;
+    }
+
+    &.builderMode::before {
+        opacity: 1;
+    }
 }

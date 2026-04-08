@@ -1,6 +1,7 @@
 import { Box, Text, Switch, Select, NumberInput, ActionIcon, Divider, Stack, Transition, Tooltip, UnstyledButton, TextInput, Slider, SegmentedControl } from '@mantine/core';
 import { IconLocationSearch, IconTrash, IconPlus, IconX, IconCheck, IconPlugConnectedX } from '@tabler/icons-react';
 import { useCalendarAuth } from '../../api/useCalendarAuth';
+import { useNews } from '../../api/useNews';
 import { useEffect, useRef, useState } from 'react';
 import { useBuilderStore } from './BuilderStore';
 import { moduleSettings } from '../../utils/moduleSettings';
@@ -92,17 +93,27 @@ export function BuilderContextMenu({ builderMode }) {
                         {settings.length > 0 && (
                             <>
                                 <Divider color="rgba(255, 255, 255, 0.3)" />
-                                <Stack gap={5} className={styles.settings}>
-                                    {settings.map(setting => (
-                                        <SettingRow
-                                            key={setting.key ?? setting.type}
-                                            setting={setting}
-                                            value={displayedModule?.[setting.key]}
-                                            onChange={setting.type === 'location'
-                                                ? loc => updateModuleSettings(displayedModule?.id, { [setting.key]: loc })
-                                                : val => updateModuleSetting(displayedModule?.id, setting.key, val)}
-                                        />
-                                    ))}
+                                <Stack gap={0} className={styles.settings}>
+                                    {settings.map(setting => {
+                                        if (setting.type === 'settingGroup') return (
+                                            <SettingGroupRow
+                                                key={setting.toggleKey}
+                                                setting={setting}
+                                                moduleValues={displayedModule}
+                                                onChangeSetting={(key, val) => updateModuleSetting(displayedModule?.id, key, val)}
+                                            />
+                                        );
+                                        return (
+                                            <SettingRow
+                                                key={setting.key ?? setting.type}
+                                                setting={setting}
+                                                value={displayedModule?.[setting.key]}
+                                                onChange={setting.type === 'location'
+                                                    ? loc => updateModuleSettings(displayedModule?.id, { [setting.key]: loc })
+                                                    : val => updateModuleSetting(displayedModule?.id, setting.key, val)}
+                                            />
+                                        );
+                                    })}
                                 </Stack>
                             </>
                         )}
@@ -110,6 +121,32 @@ export function BuilderContextMenu({ builderMode }) {
                 </div>
             )}
         </Transition>
+    );
+}
+
+function SettingGroupRow({ setting, moduleValues, onChangeSetting }) {
+    const enabled = !!moduleValues?.[setting.toggleKey];
+    return (
+        <Box className={styles.settingGroup}>
+            <Box className={styles.groupHeader}>
+                <Text className={styles.label}>{setting.label}</Text>
+                <Switch
+                    size="xs"
+                    checked={enabled}
+                    onChange={e => onChangeSetting(setting.toggleKey, e.currentTarget.checked)}
+                />
+            </Box>
+            <Box className={classNames(styles.groupChildren, !enabled && styles.groupChildrenDisabled)}>
+                {setting.children?.map(child => (
+                    <SettingRow
+                        key={child.key}
+                        setting={child}
+                        value={moduleValues?.[child.key]}
+                        onChange={val => onChangeSetting(child.key, val)}
+                    />
+                ))}
+            </Box>
+        </Box>
     );
 }
 
@@ -271,6 +308,7 @@ function feedLabel(url) {
 
 function FeedUrlsRow({ value = [], onChange, needsSetup }) {
     const [input, setInput] = useState('');
+    const { feedStatuses } = useNews({ feedUrls: value, enabled: value.length > 0 });
 
     function add() {
         const url = input.trim();
@@ -285,14 +323,18 @@ function FeedUrlsRow({ value = [], onChange, needsSetup }) {
                 <Text className={styles.title}>RSS Feeds</Text>
                 {needsSetup && <Text className={styles.setupRequired}>Setup required</Text>}
             </Box>
-            {value.map(url => (
-                <Box key={url} className={styles.feedItem}>
-                    <Text className={styles.feedLabel} truncate title={url}>{feedLabel(url)}</Text>
-                    <ActionIcon size="xs" variant="subtle" color="red" onClick={() => onChange(value.filter(u => u !== url))}>
-                        <IconX size={12} />
-                    </ActionIcon>
-                </Box>
-            ))}
+            {value.map(url => {
+                const status = feedStatuses?.[url];
+                return (
+                    <Box key={url} className={classNames(styles.feedItem, status === 'error' && styles.feedItemError)}>
+                        <Box className={classNames(styles.feedStatusDot, styles[`feedStatus_${status}`])} />
+                        <Text className={styles.feedLabel} truncate title={url}>{feedLabel(url)}</Text>
+                        <ActionIcon size="xs" variant="subtle" color="red" onClick={() => onChange(value.filter(u => u !== url))}>
+                            <IconX size={12} />
+                        </ActionIcon>
+                    </Box>
+                );
+            })}
             <Box className={styles.feedAddRow}>
                 <TextInput
                     size="xs"

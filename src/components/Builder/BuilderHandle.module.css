@@ -12,6 +12,7 @@
     justify-content: flex-start;
     z-index: 100;
     background: rgba(0, 0, 0, 0.15);
+    overflow: hidden;
 }
 
 .handle:active {
@@ -19,8 +20,8 @@
 }
 
 .selected {
-    border: 2px solid var(--mantine-color-teal-6);
-    background: rgba(18, 184, 134, 0.12);
+    border: 2px solid var(--mantine-primary-color-filled);
+    background: var(--mantine-primary-color-light);
 }
 
 .label {

@@ -85,31 +85,6 @@
         }
     }
 
-    .titleGroup {
-        flex-shrink: 0;
-        width: 100%;
-        align-items: center;
-        border-bottom: var(--inner-bd);
-        justify-content: space-between;
-        padding-bottom: 10px;
-
-        .titleClickable {
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .title {
-            font-size: var(--title-fz);
-            color: var(--glyph-color-filled);
-            font-family: var(--main-font);
-        }
-
-        .goodNewsButton {
-            width: 42px;
-            height: 42px;
-            background: var(--dark-bg);
-        }
-    }
 
     .articleList {
         overflow-y: auto;
@@ -194,23 +169,4 @@
         }
     }
 
-    .loadingStack {
-        display: flex;
-        flex-direction: column;
-        gap: 0px;
-        align-items: center;
-        margin-top: 20px;
-
-        .subText {
-            font-size: var(--body-fz, 0.85rem);
-            color: var(--glyph-color-minimal);
-            font-family: var(--main-font);
-            margin-top: 8px;
-
-            &.error {
-                color: red;
-                font-size: 16px;
-            }
-        }
-    }
 }

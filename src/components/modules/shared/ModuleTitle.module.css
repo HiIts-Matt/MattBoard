@@ -1,0 +1,29 @@
+.titleRow {
+    flex-shrink: 0;
+    width: 100%;
+    border-bottom: var(--inner-bd);
+    padding-bottom: 10px;
+}
+
+.left {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    &.clickable {
+        cursor: pointer;
+        user-select: none;
+    }
+}
+
+.title {
+    font-size: var(--title-fz);
+    color: var(--glyph-color-filled);
+    font-family: var(--main-font);
+}
+
+.actionButton {
+    width: 42px;
+    height: 42px;
+    background: var(--dark-bg);
+}

@@ -1,10 +1,11 @@
-import { ActionIcon, Anchor, Box, Group, Loader, Stack, Text, Tooltip } from '@mantine/core'
+import { Anchor, Box, Group, Stack, Text } from '@mantine/core'
 import styles from './News.module.css'
 import { classNames } from '../../../utils/utils';
 import { useState } from 'react';
 import { useNews } from '../../../api/useNews';
-import { IconAlertTriangle, IconMoodConfuzed, IconMoodHappy, IconNews } from '@tabler/icons-react';
-import { isEqual } from 'lodash';
+import { IconArrowsMaximize, IconArrowsMinimize, IconMoodConfuzed, IconMoodHappy, IconNews } from '@tabler/icons-react';
+import { ModuleTitle } from '../shared/ModuleTitle';
+import { ModuleAlert } from '../shared/ModuleAlert';
 
 function timeAgo(dateStr) {
     if (!dateStr) return '';
@@ -36,13 +37,13 @@ function ArticleItem({ article }) {
 
 export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
 
-    const defaultGoodNews = module?.defaultGoodNews ?? true;
+    const filterEnabled = module?.defaultGoodNews ?? false;
     const feedUrls = module?.feedUrls ?? [];
     const threshold = module?.threshold ?? 0.5;
 
-    const isSetup = !!feedUrls && feedUrls.length > 0
+    const isSetup = feedUrls.length > 0;
 
-    const [goodNews, setGoodNews] = useState(defaultGoodNews);
+    const [goodNewsActive, setGoodNewsActive] = useState(true);
     const [visibleCount, setVisibleCount] = useState(10);
 
     const { articles: allArticles, isLoading, isError } = useNews({
@@ -51,7 +52,7 @@ export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
         enabled: isSetup
     });
 
-    const visibleArticles = goodNews
+    const visibleArticles = filterEnabled && goodNewsActive
         ? allArticles.filter(a => a.sentiment >= threshold)
         : allArticles;
 
@@ -60,11 +61,10 @@ export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
     const displayedArticles = sorted.slice(0, visibleCount);
 
     const articlesBySource = feedUrls.map(url => {
-        const source = new URL(url).hostname.replace(/^www\./, '');
-        return {
-            source,
-            articles: sorted.filter(a => a.source === source),
-        };
+        let source;
+        try { source = new URL(url).hostname.replace(/^www\./, ''); }
+        catch { source = url; }
+        return { source, articles: sorted.filter(a => a.source === source) };
     });
 
     const sourceRows = [];
@@ -81,29 +81,30 @@ export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
 
     return (
         <Box className={classNames(styles.newsBox, isFullscreen ? styles.opened : '')}>
-            <Group className={styles.titleGroup}>
-                <Group gap={5} className={styles.titleClickable} onClick={onToggleFullscreen}>
-                    <IconNews color='var(--glyph-color-filled)' size={40} />
-                    <Text className={styles.title}>News</Text>
-                </Group>
-                <Tooltip
-                    label={goodNews ? 'Only Showing Good News' : 'Showing All News'}
-                    withArrow
-                >
-                    <ActionIcon
-                        onClick={() => { setGoodNews(prev => !prev); setVisibleCount(10); }}
-                        className={styles.goodNewsButton}
-                    >
-                        {goodNews ? <IconMoodHappy /> : <IconMoodConfuzed />}
-                    </ActionIcon>
-                </Tooltip>
-            </Group>
+            <ModuleTitle
+                icon={<IconNews color='var(--glyph-color-filled)' size={40} />}
+                title="News"
+                actions={[
+                    filterEnabled && {
+                        icon: goodNewsActive ? <IconMoodHappy /> : <IconMoodConfuzed />,
+                        tooltip: goodNewsActive ? 'Showing Good News' : 'Showing All News',
+                        onClick: () => { setGoodNewsActive(prev => !prev); setVisibleCount(10); },
+                    },
+                    {
+                        icon: isFullscreen ? <IconArrowsMinimize /> : <IconArrowsMaximize />,
+                        tooltip: isFullscreen ? 'Collapse' : 'Expand',
+                        onClick: onToggleFullscreen,
+                    },
+                ].filter(Boolean)}
+            />
 
-            <NewsAlert
+            <ModuleAlert
                 isLoading={isLoading}
                 isError={isError}
                 isSetup={isSetup}
-                sorted={sorted}
+                isEmpty={!isLoading && !isError && sorted.length === 0}
+                errorMessage="Failed To Load Feed"
+                emptyMessage="No articles to show"
             />
 
             {!isLoading && !isError && sorted.length > 0 && (
@@ -133,60 +134,4 @@ export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
             )}
         </Box>
     )
-}
-
-function NewsAlert({ isLoading, isError, isSetup, sorted }) {
-    if (!isSetup) {
-        return (
-            <Box className={styles.loadingStack}>
-                <IconAlertTriangle size={42} color='red' />
-                <Text
-                    className={classNames(
-                        styles.subText,
-                        styles.error
-                    )}
-                >
-                    Module Requires Setup
-                </Text>
-            </Box>
-        )
-    }
-    if (isError) {
-        return (
-            <Box className={styles.loadingStack}>
-                <IconAlertTriangle size={42} color='red' />
-                <Text
-                    className={classNames(
-                        styles.subText,
-                        styles.error
-                    )}
-                >
-                    Failed To Load Feed
-                </Text>
-            </Box>
-        )
-    }
-    if (isLoading) {
-        return (
-            <Box className={styles.loadingStack}>
-                <Loader color='var(--glyph-color-minimal)' />
-                <Text className={styles.subText}>Loading...</Text>
-            </Box>
-        )
-    }
-    if (sorted?.length < 1) {
-        return (
-            <Box className={styles.loadingStack}>
-                <IconAlertTriangle size={42} color='red' />
-                <Text
-                    className={classNames(
-                        styles.subText,
-                        styles.error
-                    )}
-                >
-                    No articles to show
-                </Text>
-            </Box>
-        )
-    }
 }

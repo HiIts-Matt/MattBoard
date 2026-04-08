@@ -26,7 +26,7 @@ export default App;
 
 const theme = createTheme({
     fontFamily: 'Space Grotesk, sans-serif',
-    primaryColor: 'violet',
+    primaryColor: 'teal',
 
     other: {
         //general module styles
@@ -46,6 +46,8 @@ const theme = createTheme({
         glyphColorFilled: 'rgba(255, 255, 255, 1)',
         glyphColorSolid: 'rgba(255, 255, 255, 0.7)',
         glyphColorMinimal: 'rgba(255, 255, 255, 0.5)',
+
+        mainSpacing: '10px',
 
         //nav styling
         navElementBg: 'black',
@@ -85,6 +87,8 @@ const cssVariablesResolver = (theme) => ({
         '--glyph-color-filled': theme.other.glyphColorFilled,
         '--glyph-color-solid': theme.other.glyphColorSolid,
         '--glyph-color-minimal': theme.other.glyphColorMinimal,
+
+        '--main-spacing': theme.other.mainSpacing,
 
         //nav styling
         '--nav-element-bg': theme.other.navElementBg,

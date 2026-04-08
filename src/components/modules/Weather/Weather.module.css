@@ -8,41 +8,19 @@
     flex-direction: column;
     justify-content: flex-start;
 
-    .titleGroup {
-        .title {
-            font-size: var(--title-fz);
-            font-family: var(--main-font);
-            color: var(--glyph-color-filled);
-        }
+    .smallPreview {
+        gap: 0px;
+        justify-content: flex-end;
+        flex: 1;
 
-        .smallPreview {
+        .infoStack {
             gap: 0px;
-            justify-content: flex-end;
-            flex: 1;
+            align-items: flex-end;
 
-            .infoStack {
-                gap: 0px;
-                align-items: flex-end;
-
-                .info {
-                    font-family: var(--main-font);
-                    color: var(--glyph-color-filled)
-                }
+            .info {
+                font-family: var(--main-font);
+                color: var(--glyph-color-filled);
             }
-        }
-
-        border-bottom: var(--inner-bd);
-    }
-
-    .requiresSetupStack {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 20px;
-
-        .subText {
-            color: red;
-            font-family: var(--main-font);
         }
     }
 }
@@ -60,6 +38,9 @@
         flex-shrink: 0;
         color: white;
         font-family: var(--main-font);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
 
         &:not(:last-child) {
             border-right: var(--dimmed-bd);

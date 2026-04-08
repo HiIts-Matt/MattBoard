@@ -31,7 +31,10 @@ export function PageControls({
     const canGoForward = activePage < pages?.length - 1;
 
     return (
-        <Box className={styles.controller}>
+        <Box className={classNames(
+            styles.controller,
+            builderMode ? styles.builderMode : '',
+        )}>
             <Box
                 className={styles.arrowPill}
                 style={{
@@ -137,6 +140,7 @@ function BuilderModeButton({ onEnterBuilder, builderMode }) {
             withinPortal={false}
             withArrow
             transitionProps={{ transition: 'pop' }}
+            disabled={builderMode}
         >
             <HoverCard.Target>
                 <Box
@@ -169,6 +173,7 @@ function XButton({ activeConfig, onDiscard, builderMode }) {
             withinPortal={false}
             withArrow
             transitionProps={{ transition: 'pop' }}
+            disabled={!builderMode}
         >
             <HoverCard.Target>
                 <Box

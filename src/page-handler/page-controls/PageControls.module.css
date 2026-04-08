@@ -1,25 +1,26 @@
 .controller {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 10px;
     pointer-events: none;
+    padding: 10px;
+    z-index: 1;
+    transition: background 0.2s;
+
+    &.builderMode {
+        background: var(--dark-bg);
+    }
 }
 
 .arrowPill {
     pointer-events: auto;
-    margin-bottom: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--nav-element-bg);
     border-radius: var(--nav-pill-radius);
     outline: var(--nav-outline);
-    padding: 14px 20px;
+    padding: 14px 14px;
     cursor: pointer;
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
         opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -41,7 +42,6 @@
     outline: var(--nav-outline);
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
         opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    margin-bottom: 24px;
 
     .nameText {
         font-family: var(--main-font);
@@ -145,7 +145,6 @@
     outline: var(--nav-outline);
     padding: 10px;
     cursor: pointer;
-    margin-bottom: 24px;
     transition: background 0.2s ease,
         transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
         opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -276,7 +275,6 @@
     outline: var(--nav-outline);
     padding: 12px;
     cursor: pointer;
-    margin-bottom: 24px;
     transform: translateY(100px);
     opacity: 0;
     transition: background 0.15s ease,

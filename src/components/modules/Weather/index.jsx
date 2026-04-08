@@ -1,11 +1,12 @@
-import { Box, Collapse, Group, Loader, Stack, Text } from "@mantine/core";
+import { Box, Collapse, Group, Stack, Text } from "@mantine/core";
 import styles from './Weather.module.css'
 import { useLayoutEffect, useState } from "react";
 import { useWeather } from "../../../api/useWeather";
 import { Icon } from '@iconify/react';
 import { useMap } from "@mantine/hooks";
-import { classNames } from "../../../utils/utils";
-import { IconAlertTriangle, IconChevronDown, IconChevronUp, IconDropletDown, IconThermometer } from "@tabler/icons-react";
+import { IconChevronDown, IconChevronUp, IconDropletDown } from "@tabler/icons-react";
+import { ModuleTitle } from '../shared/ModuleTitle';
+import { ModuleAlert } from '../shared/ModuleAlert';
 
 const WMO = {
     0: { label: 'Clear', icon: 'meteocons:clear-day-fill' },
@@ -37,102 +38,73 @@ function getWmo(code) {
     return WMO[code] ?? { label: 'Unknown', icon: 'meteocons:not-available' }
 }
 
-const supportedOpts = [
-    'type',
-    'position',
-    'lat',
-    'lon',
-    'refetchTime'
-]
-
 export function Weather({ module }) {
-
     const { loc, units = 'celsius', defaultExpanded = false, refetchTime } = module ?? {}
     const { lat, lon } = loc ?? {}
     const [expanded, setExpanded] = useState(defaultExpanded)
     const { data: weatherData, isLoading, isError } = useWeather({ lat, lon, units, refetchTime })
     const unitLabel = units === 'celsius' ? '°C' : '°F'
-
     const isSetup = !!lat && !!lon;
 
-    if (!isSetup) return (
-        <Box className={classNames(
-            styles.weatherBox,
-            styles.requiresSetup,
-        )}>
-            <Group className={styles.titleGroup}>
-                <Text className={styles.title}>
-                    Weather
-                </Text>
-            </Group>
-            <Box className={styles.requiresSetupStack}>
-                <IconAlertTriangle size={42} color='red' />
-                <Text className={styles.subText}>Module Requires Setup</Text>
-            </Box>
-        </Box>
-    )
-
-    if (isLoading) return (
-        <Box className={styles.weatherBox} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Loader size="sm" color="white" />
-        </Box>
-    )
-
-    const { current, daily } = weatherData ?? {};
-
-    if (isError || !current || !daily) return (
-        <Box className={styles.weatherBox}>
-            <Text className={styles.condition}>Weather unavailable</Text>
-        </Box>
-    )
-    const todayWmo = getWmo(current.weather_code)
+    const { current_weather: current, daily } = weatherData ?? {};
+    const todayWmo = current ? getWmo(current.weather_code) : null;
 
     return (
         <Box className={styles.weatherBox} onClick={() => setExpanded(e => !e)}>
-            <Group className={styles.titleGroup}>
-                <Text className={styles.title}>
-                    Weather
-                </Text>
-                <Group className={styles.smallPreview}>
-                    <Icon icon={todayWmo.icon} width={60} />
-                    <Stack className={styles.infoStack}>
-                        <Text className={styles.info}>{Math.round(current.temperature_2m)}{unitLabel}</Text>
-                        <Text className={styles.info}>{todayWmo.label}</Text>
-                    </Stack>
-                </Group>
-            </Group>
-            <HourlyList hourlyData={weatherData?.hourly} />
-            <WeatherList daily={daily} expanded={expanded} />
+            <ModuleTitle
+                title="Weather"
+                rightContent={current && (
+                    <Group className={styles.smallPreview}>
+                        <Icon icon={todayWmo.icon} width={60} />
+                        <Stack className={styles.infoStack}>
+                            <Text className={styles.info}>{Math.round(current.temperature_2m)}{unitLabel}</Text>
+                            <Text className={styles.info}>{todayWmo.label}</Text>
+                        </Stack>
+                    </Group>
+                )}
+            />
+
+            <ModuleAlert
+                isLoading={isLoading}
+                isError={isError}
+                isSetup={isSetup}
+                errorMessage="Weather unavailable"
+            />
+
+            {!isLoading && !isError && isSetup && current && daily && (
+                <>
+                    <HourlyList hourlyData={weatherData?.hourly} />
+                    <WeatherList daily={daily} expanded={expanded} />
+                </>
+            )}
         </Box>
     )
 }
 
-function HourlyList({ hourlyData, expanded }) {
-
+function HourlyList({ hourlyData }) {
     const formattedData = useMap();
 
     useLayoutEffect(() => {
         if (hourlyData) {
             hourlyData?.time?.forEach((hourlyTime, idx) => {
-                const hourlyValues = {
+                formattedData.set(hourlyTime, {
                     precipitation_probability: hourlyData?.precipitation_probability?.[idx],
                     weather_code: hourlyData?.weather_code?.[idx],
                     temperature_2m: hourlyData?.temperature_2m?.[idx],
-                }
-                formattedData.set(hourlyTime, hourlyValues)
+                })
             })
         }
-    }, [hourlyData])
+    }, [hourlyData, formattedData])
 
     return (
         <Box
-            className={classNames(styles.hourlyList)}
+            className={styles.hourlyList}
             onWheel={(e) => { e.currentTarget.scrollLeft += e.deltaY / 5 }}
         >
             {Array.from(formattedData.entries())
                 .sort(([a], [b]) => a - b)
                 .map(([time, data]) => (
-                    <HourlyItem key={time} time={time} data={data} expanded={expanded} />
+                    <HourlyItem key={time} time={time} data={data} />
                 ))
             }
         </Box>
@@ -143,7 +115,7 @@ function HourlyItem({ time, data }) {
     const label = new Date(time).toLocaleTimeString('en-US', { hour: 'numeric', hour12: true })
     const wmo = getWmo(data.weather_code)
     return (
-        <Box className={classNames(styles.hourlyItem)}>
+        <Box className={styles.hourlyItem}>
             <Text className={styles.hourlyTime}>{label}</Text>
             <Icon icon={wmo.icon} width={50} />
             <Group gap={5} justify="center" w='100%'>

@@ -1,6 +1,7 @@
-import { ActionIcon, Box, Checkbox, Loader, Popover, Text, TextInput, Transition, UnstyledButton } from "@mantine/core";
+import { ActionIcon, Box, Checkbox, Loader, Text, TextInput, Transition } from "@mantine/core";
 import styles from './Todo.module.css'
-import { IconArchive, IconPencilPlus, IconPlus, IconX } from "@tabler/icons-react";
+import { IconArchive, IconPencilPlus, IconPlus } from "@tabler/icons-react";
+import { ModuleTitle } from '../shared/ModuleTitle';
 import { useState } from "react";
 import { useToDo } from "../../../api/useToDo";
 import { classNames, formatSeparatorDate } from "../../../utils/utils";
@@ -39,17 +40,14 @@ export function ToDoList() {
     return (
         <Box className={styles.bothWrapper}>
             <Box className={styles.toDoContainer}>
-                <Box className={styles.titleSection}>
-                    <Text className={styles.title}>
-                        To Do List
-                    </Text>
-                    <ActionIcon
-                        className={styles.archiveIcon}
-                        onClick={() => setDisplayArchives(prev => !prev)}
-                    >
-                        <IconArchive />
-                    </ActionIcon>
-                </Box>
+                <ModuleTitle
+                    title="To Do List"
+                    actions={[{
+                        icon: <IconArchive />,
+                        tooltip: 'Toggle Archives',
+                        onClick: () => setDisplayArchives(prev => !prev),
+                    }]}
+                />
 
                 {toDoLoading ? (
                     <Box>

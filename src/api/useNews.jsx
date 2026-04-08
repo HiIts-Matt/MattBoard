@@ -21,9 +21,18 @@ export function useNews({ feedUrls = [], refetchTime = 1000 * 60 * 15, enabled} 
     const isLoading = queries.some(q => q.isLoading);
     const isError = queries.every(q => q.isError);
     const articles = queries.flatMap((q, i) => {
-        const source = new URL(feedUrls[i]).hostname.replace(/^www\./, '');
-        return (q.data?.articles ?? []).map(a => ({ ...a, source: a.source ?? source }));
+        try {
+            const source = new URL(feedUrls[i]).hostname.replace(/^www\./, '');
+            return (q.data?.articles ?? []).map(a => ({ ...a, source: a.source ?? source }));
+        } catch {
+            return [];
+        }
     });
 
-    return { articles, isLoading, isError };
+    const feedStatuses = Object.fromEntries(feedUrls.map((url, i) => {
+        const q = queries[i];
+        return [url, q.isLoading ? 'loading' : q.isError ? 'error' : 'success'];
+    }));
+
+    return { articles, isLoading, isError, feedStatuses };
 }

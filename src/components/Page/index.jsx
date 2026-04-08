@@ -25,7 +25,7 @@ export function Page({ page, builderMode }) {
 
 
     return (
-        <Box className={styles.page} style={page?.style} ref={pageRef}>
+        <Box className={`${styles.page}${builderMode ? ` ${styles.builderMode}` : ''}`} style={page?.style} ref={pageRef}>
             {sections.map((section, i) => (
                 <PageSection
                     key={i}

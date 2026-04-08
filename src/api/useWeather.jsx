@@ -10,6 +10,7 @@ export function useWeather({ lat, lon, units = 'celsius', refetchTime = 1000 * 6
             if (!res.ok) throw new Error('Failed to fetch weather');
             return res.json();
         },
+        retry: false,
         enabled: !!(lat && lon),
         refetchInterval: refetchTime,
         refetchOnWindowFocus: false,

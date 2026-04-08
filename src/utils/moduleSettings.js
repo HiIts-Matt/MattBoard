@@ -15,8 +15,14 @@ export const moduleSettings = {
     ],
     news: [
         { key: 'feedUrls', label: 'RSS Feeds', type: 'feedUrls', required: true },
-        { key: 'defaultGoodNews', label: 'Good news filter', type: 'boolean' },
-        { key: 'threshold', label: 'Filter threshold', type: 'slider', max: 1, min: 0, steps: 0.1, },
+        {
+            type: 'settingGroup',
+            toggleKey: 'defaultGoodNews',
+            label: 'Good News Filter',
+            children: [
+                { key: 'threshold', label: 'Filter threshold', type: 'slider', max: 1, min: 0, steps: 0.1 },
+            ],
+        },
     ],
     calendar: [
         { type: 'googleAuth' },
