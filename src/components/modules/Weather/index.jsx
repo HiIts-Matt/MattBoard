@@ -135,9 +135,9 @@ function WeatherList({ expanded, daily }) {
             <Stack gap={2} className={styles.weeklyList}>
                 {daily.time.slice(1).map((dateStr, i) => {
                     const idx = i + 1
-                    const wmo = getWmo(daily.weather_code[idx])
+                    const wmo = getWmo(daily.weather_code?.[idx])
                     const day = DAYS[new Date(dateStr + 'T12:00:00').getDay()]
-                    const precip = daily.precipitation_probability_max[idx]
+                    const precip = daily.precipitation_probability_max?.[idx]
                     return (
                         <Group key={dateStr} className={styles.forecastRow} wrap="nowrap" justify="space-between">
                             <Text className={styles.forecastDay}>{day}</Text>
