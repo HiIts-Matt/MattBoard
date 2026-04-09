@@ -4,7 +4,20 @@ import { getPositionStyle } from "../../utils/positions";
 import { components } from "../../utils/componentMap";
 import { classNames } from "../../utils/utils";
 import { BuilderHandle } from "../Builder/BuilderHandle";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, Component } from "react";
+
+class ModuleErrorBoundary extends Component {
+    constructor(props) { super(props); this.state = { error: null }; }
+    static getDerivedStateFromError(error) { return { error }; }
+    render() {
+        if (this.state.error) return (
+            <Box style={{ color: 'white', background: 'rgba(200,0,0,0.7)', padding: 12, borderRadius: 8, fontSize: 12, wordBreak: 'break-all' }}>
+                <b>{this.props.moduleType} crashed:</b><br />{this.state.error?.message}
+            </Box>
+        );
+        return this.props.children;
+    }
+}
 
 export function PageSection({ section, sectionIdx, totalSections, fullscreenModule, setFullscreenModule, builderMode, pageRef }) {
     const hasFullscreenModule = section?.modules?.some(m => m === fullscreenModule);
@@ -93,11 +106,13 @@ function Module({ module, fullscreenModule, setFullscreenModule, builderMode, ca
                 } : {})
             }}
         >
-            <SelectedComponent
-                module={module}
-                isFullscreen={pos}
-                onToggleFullscreen={() => setFullscreenModule(isFullscreen ? null : module)}
-            />
+            <ModuleErrorBoundary moduleType={module.type}>
+                <SelectedComponent
+                    module={module}
+                    isFullscreen={pos}
+                    onToggleFullscreen={() => setFullscreenModule(isFullscreen ? null : module)}
+                />
+            </ModuleErrorBoundary>
             {builderMode && (
                 <BuilderHandle
                     module={module}
