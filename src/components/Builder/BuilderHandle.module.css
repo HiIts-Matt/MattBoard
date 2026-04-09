@@ -5,6 +5,7 @@
     bottom: 0px;
     top: 0px;
     cursor: grab;
+    touch-action: none;
     border: 2px dashed rgba(255, 255, 255, 0.4);
     border-radius: 8px;
     display: flex;

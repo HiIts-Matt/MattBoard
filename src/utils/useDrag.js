@@ -59,9 +59,11 @@ function renderSnapLines(overlay, snapping) {
 export function useDrag({ onPositionChange }) {
     const drag = useRef(null);
 
-    const onPointerDown = (e, moduleElement) => {
+    const onPointerDown = (e, moduleElement, handleEl) => {
         e.preventDefault();
         e.stopPropagation();
+
+        handleEl.setPointerCapture(e.pointerId);
 
         const section = moduleElement.parentElement;
         const sectionRect = section.getBoundingClientRect();
@@ -99,7 +101,9 @@ export function useDrag({ onPositionChange }) {
         const onUp = (e) => {
             if (!drag.current) return;
             const { startX, startY, containerW, containerH, origAbsLeft, origAbsTop, currentW, currentH,
-                    marginX, marginY, snapX, snapY, element, overlay, section, onMove, onUp } = drag.current;
+                    marginX, marginY, snapX, snapY, element, overlay, section } = drag.current;
+
+            handleEl.releasePointerCapture(e.pointerId);
 
             const rawLeft = origAbsLeft + ((e.clientX - startX) / containerW) * 100;
             const rawTop  = origAbsTop  + ((e.clientY - startY) / containerH) * 100;
@@ -108,8 +112,9 @@ export function useDrag({ onPositionChange }) {
 
             section.removeChild(overlay);
             drag.current = null;
-            window.removeEventListener('pointermove', onMove);
-            window.removeEventListener('pointerup', onUp);
+            handleEl.removeEventListener('pointermove', onMove);
+            handleEl.removeEventListener('pointerup', onUp);
+            handleEl.removeEventListener('pointercancel', onUp);
 
             element.style.transform = '';
             flushSync(() => onPositionChange(computeAnchoredPosition(left, top, currentW, currentH)));
@@ -121,11 +126,11 @@ export function useDrag({ onPositionChange }) {
             origAbsLeft, origAbsTop, currentW, currentH,
             marginX, marginY, snapX, snapY,
             element: moduleElement, overlay, section,
-            onMove, onUp,
         };
 
-        window.addEventListener('pointermove', onMove);
-        window.addEventListener('pointerup', onUp);
+        handleEl.addEventListener('pointermove', onMove);
+        handleEl.addEventListener('pointerup', onUp);
+        handleEl.addEventListener('pointercancel', onUp);
     };
 
     return { onPointerDown };
