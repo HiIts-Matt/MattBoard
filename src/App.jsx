@@ -46,8 +46,8 @@ const theme = createTheme({
 
     other: {
         //general module styles
-        bgColor: 'rgba(50, 50, 50, 0.2)',
-        bgEffect: 'blur(8px)',
+        bgColor: 'rgba(50, 50, 50, 0.6)',
+        bgEffect: 'none',
         darkenedBg: 'rgba(0, 0, 0, 0.2)',
         lightenedBd: 'rgba(255, 255, 255, 0.2)',
         componentRadius: '12px',
