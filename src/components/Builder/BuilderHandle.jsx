@@ -48,7 +48,7 @@ export function BuilderHandle({ module, canMoveUp, canMoveDown }) {
             className={classNames(styles.handle, isSelected && styles.selected)}
             onPointerDown={(e) => {
                 selectModule(module.id);
-                onPointerDown(e, handleRef.current.parentElement);
+                onPointerDown(e, handleRef.current.parentElement, handleRef.current);
             }}
         >
             <span className={styles.label}>{module.type}</span>
