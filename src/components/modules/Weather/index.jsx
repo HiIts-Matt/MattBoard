@@ -47,7 +47,7 @@ export function Weather({ module }) {
     const isSetup = !!lat && !!lon;
 
     const { current_weather: current, daily } = weatherData ?? {};
-    const todayWmo = current ? getWmo(current.weather_code) : null;
+    const todayWmo = current ? getWmo(current.weathercode) : null;
 
     return (
         <Box className={styles.weatherBox} onClick={() => setExpanded(e => !e)}>
@@ -57,7 +57,7 @@ export function Weather({ module }) {
                     <Group className={styles.smallPreview}>
                         <Icon icon={todayWmo.icon} width={60} />
                         <Stack className={styles.infoStack}>
-                            <Text className={styles.info}>{Math.round(current.temperature_2m)}{unitLabel}</Text>
+                            <Text className={styles.info}>{Math.round(current.temperature)}{unitLabel}</Text>
                             <Text className={styles.info}>{todayWmo.label}</Text>
                         </Stack>
                     </Group>
@@ -89,7 +89,7 @@ function HourlyList({ hourlyData }) {
             hourlyData?.time?.forEach((hourlyTime, idx) => {
                 formattedData.set(hourlyTime, {
                     precipitation_probability: hourlyData?.precipitation_probability?.[idx],
-                    weather_code: hourlyData?.weather_code?.[idx],
+                    weathercode: hourlyData?.weathercode?.[idx],
                     temperature_2m: hourlyData?.temperature_2m?.[idx],
                 })
             })
@@ -113,7 +113,7 @@ function HourlyList({ hourlyData }) {
 
 function HourlyItem({ time, data }) {
     const label = new Date(time).toLocaleTimeString('en-US', { hour: 'numeric', hour12: true })
-    const wmo = getWmo(data.weather_code)
+    const wmo = getWmo(data.weathercode)
     return (
         <Box className={styles.hourlyItem}>
             <Text className={styles.hourlyTime}>{label}</Text>
@@ -135,7 +135,7 @@ function WeatherList({ expanded, daily }) {
             <Stack gap={2} className={styles.weeklyList}>
                 {daily.time.slice(1).map((dateStr, i) => {
                     const idx = i + 1
-                    const wmo = getWmo(daily.weather_code?.[idx])
+                    const wmo = getWmo(daily.weathercode?.[idx])
                     const day = DAYS[new Date(dateStr + 'T12:00:00').getDay()]
                     const precip = daily.precipitation_probability_max?.[idx]
                     return (
