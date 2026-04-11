@@ -91,7 +91,6 @@
 }
 
 .bothWrapperBig {
-    width: min(calc(100% - 20px), calc(100cqh - 20px));
     aspect-ratio: 1;
 }
 

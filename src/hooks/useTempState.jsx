@@ -1,20 +1,25 @@
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { seconds } from "../utils/utils";
 
 export function useTempState(defaultValue = false, time = seconds(3)) {
     const [state, setState] = useState(defaultValue);
     const timer = useRef(null);
+    const defaultRef = useRef(defaultValue);
+    const timeRef = useRef(time);
 
-    function set(value) {
+    useEffect(() => { defaultRef.current = defaultValue; }, [defaultValue]);
+    useEffect(() => { timeRef.current = time; }, [time]);
+
+    const set = useCallback((value) => {
         setState(value);
         clearTimeout(timer.current);
-        timer.current = setTimeout(() => setState(defaultValue), time);
-    }
+        timer.current = setTimeout(() => setState(defaultRef.current), timeRef.current);
+    }, []);
 
-    function reset() {
+    const reset = useCallback(() => {
         clearTimeout(timer.current);
-        setState(defaultValue);
-    }
+        setState(defaultRef.current);
+    }, []);
 
     return [state, set, reset];
 }

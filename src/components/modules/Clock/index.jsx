@@ -30,14 +30,41 @@ export function ClockComponent({ module }) {
     if (variant === 'digital') return <Digital time={time} />
     if (variant === 'analog') return <Analog time={time} component={module} />
     if (variant === 'both') return (
+        <BothWrapper bigClock={bigClock}>
+            <Analog time={time} module={module} />
+            <Digital time={time} type='both' />
+        </BothWrapper>
+    )
+}
+
+function BothWrapper({ bigClock, children }) {
+    const ref = useRef(null)
+    const [side, setSide] = useState(0)
+
+    useEffect(() => {
+        if (!bigClock) return
+        const el = ref.current?.parentElement
+        if (!el) return
+        const ro = new ResizeObserver(([entry]) => {
+            const { width, height } = entry.contentRect
+            setSide(Math.max(0, Math.floor(Math.min(width, height)) - 20))
+        })
+        ro.observe(el)
+        return () => ro.disconnect()
+    }, [bigClock])
+
+    const style = bigClock && side > 0 ? { width: side, height: side } : undefined
+
+    return (
         <Box
+            ref={ref}
             className={classNames(
                 styles.bothWrapper,
                 bigClock ? styles.bothWrapperBig : '',
             )}
+            style={style}
         >
-            <Analog time={time} module={module} />
-            <Digital time={time} type='both' />
+            {children}
         </Box>
     )
 }

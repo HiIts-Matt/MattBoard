@@ -1,6 +1,5 @@
 .section {
     position: relative;
-    container-type: size;
 
     &.hasFullscreenModule {
         position: static;
@@ -16,6 +15,7 @@
 
     &.fullsize {
         width: calc(100% - 20px);
+        max-height: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
