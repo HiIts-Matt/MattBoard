@@ -13,7 +13,7 @@ export const moduleSettings = {
     todo: [
         { key: 'fullsize', trueLabel: 'Full size', falseLabel: 'Module', type: 'control' },
         { key: 'listName', label: 'List Name', type: 'text' },
-        { key: 'clearTime', label: 'Auto Archive (ms)', type: 'number' },
+        { key: 'clearTime', label: 'Auto Archive (hr)', type: 'number' },
     ],
     news: [
         { key: 'feedUrls', label: 'RSS Feeds', type: 'feedUrls', required: true },

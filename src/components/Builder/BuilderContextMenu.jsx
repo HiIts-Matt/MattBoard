@@ -25,6 +25,7 @@ export function BuilderContextMenu({ builderMode }) {
         if (!selectedModuleId || !builderMode) return;
         const handlePointerDown = (e) => {
             if (menuRef.current?.contains(e.target)) return;
+            if (menuRef.current?.contains(document.activeElement)) return;
             if (e.target.closest('[data-module-id]')) return;
             if (e.target.closest('.mantine-Combobox-dropdown, .mantine-Tooltip-tooltip')) return;
             selectModule(null);

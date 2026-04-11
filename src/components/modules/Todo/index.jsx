@@ -2,7 +2,7 @@ import { ActionIcon, Badge, Box, Checkbox, Loader, ScrollArea, Text, TextInput, 
 import styles from './Todo.module.css'
 import { IconArchive, IconChevronLeft, IconChevronRight, IconCircle, IconCircleCheck, IconPencilPlus, IconPlus, IconTrash } from "@tabler/icons-react";
 import { ModuleTitle } from '../shared/ModuleTitle';
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useToDo } from "../../../api/useToDo";
 import { classNames, formatSeparatorDate, toTitleCase } from "../../../utils/utils";
 import { useBuilderStore } from "../../Builder/BuilderStore";
@@ -34,12 +34,41 @@ export function ToDoList({ module }) {
     const {
         data: toDoData,
         isLoading: toDoLoading,
+        updateTodo,
     } = useToDo();
 
     const { pages: builderPages, builderToDoData } = useBuilderStore();
     const builderMode = builderPages !== null;
-    const displayedData = (builderMode && builderToDoData ? builderToDoData : toDoData)
-    const toDos = displayedData?.[module?.listName] || [];
+    const displayedData = (builderMode && builderToDoData ? builderToDoData : toDoData);
+    const listName = module?.listName;
+    const toDos = useMemo(() => displayedData?.[listName] || [], [displayedData, listName]);
+
+    // Auto-archive: move completed items to archive after clearTime hours
+    const clearTimeHours = module?.clearTime;
+    const processingRef = useRef(new Set());
+
+    useEffect(() => {
+        if (!clearTimeHours || clearTimeHours <= 0 || builderMode) return;
+        const thresholdMs = clearTimeHours * 60 * 60 * 1000;
+
+        const check = () => {
+            const now = Date.now();
+            toDos.forEach(item => {
+                if (item.archived || !item.timeCompleted) return;
+                if (processingRef.current.has(item.id)) return;
+                if (now - new Date(item.timeCompleted).getTime() < thresholdMs) return;
+                processingRef.current.add(item.id);
+                updateTodo.mutate(
+                    { id: item.id, item: { ...item, archived: true } },
+                    { onSettled: () => processingRef.current.delete(item.id) }
+                );
+            });
+        };
+
+        check();
+        const id = setInterval(check, 60_000);
+        return () => clearInterval(id);
+    }, [toDos, clearTimeHours, builderMode, updateTodo]);
 
     console.log(displayedData);
 
@@ -51,7 +80,7 @@ export function ToDoList({ module }) {
         <Box className={styles.bothWrapper}>
             <Box className={styles.toDoContainer}>
                 <ModuleTitle
-                    title={toTitleCase(module?.listName)}
+                    title={toTitleCase(listName)}
                     actions={[{
                         icon: <IconArchive />,
                         tooltip: 'Toggle Archives',
@@ -76,12 +105,12 @@ export function ToDoList({ module }) {
                                     </Text>
                                 </Box>
                             ) : (
-                                <ToDoItem key={entry.item.id} item={entry.item} listName={module?.listName} />
+                                <ToDoItem key={entry.item.id} item={entry.item} listName={listName} />
                             )
                         )}
                     </ScrollArea>
                 )}
-                <CreateNew toDos={toDoData} listName={module?.listName} />
+                <CreateNew listName={listName} />
             </Box>
             <Transition
                 mounted={displayArchives}
@@ -115,7 +144,7 @@ export function ToDoList({ module }) {
                                         </Text>
                                     </Box>
                                 ) : (
-                                    <ToDoItem key={entry.item.id} item={entry.item} listName={module?.listName} />
+                                    <ToDoItem key={entry.item.id} item={entry.item} listName={listName} />
                                 )
                             )}
                         </ScrollArea>
