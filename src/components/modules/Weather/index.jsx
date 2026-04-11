@@ -1,4 +1,4 @@
-import { Box, Collapse, Group, Stack, Text } from "@mantine/core";
+import { Box, Collapse, Group, ScrollArea, Stack, Text } from "@mantine/core";
 import styles from './Weather.module.css'
 import { useLayoutEffect, useState } from "react";
 import { useWeather } from "../../../api/useWeather";
@@ -46,8 +46,10 @@ export function Weather({ module }) {
     const unitLabel = units === 'celsius' ? '°C' : '°F'
     const isSetup = !!lat && !!lon;
 
+    console.log(weatherData);
+
     const { current_weather: current, daily } = weatherData ?? {};
-    const todayWmo = current ? getWmo(current.weathercode) : null;
+    const todayWmo = current ? getWmo(current.weather_code) : null;
 
     return (
         <Box className={styles.weatherBox} onClick={() => setExpanded(e => !e)}>
@@ -57,7 +59,7 @@ export function Weather({ module }) {
                     <Group className={styles.smallPreview}>
                         <Icon icon={todayWmo.icon} width={60} />
                         <Stack className={styles.infoStack}>
-                            <Text className={styles.info}>{Math.round(current.temperature)}{unitLabel}</Text>
+                            <Text className={styles.info}>{Math.round(current.temperature_2m)}{unitLabel}</Text>
                             <Text className={styles.info}>{todayWmo.label}</Text>
                         </Stack>
                     </Group>
@@ -89,7 +91,7 @@ function HourlyList({ hourlyData }) {
             hourlyData?.time?.forEach((hourlyTime, idx) => {
                 formattedData.set(hourlyTime, {
                     precipitation_probability: hourlyData?.precipitation_probability?.[idx],
-                    weathercode: hourlyData?.weathercode?.[idx],
+                    weather_code: hourlyData?.weather_code?.[idx],
                     temperature_2m: hourlyData?.temperature_2m?.[idx],
                 })
             })
@@ -97,9 +99,14 @@ function HourlyList({ hourlyData }) {
     }, [hourlyData, formattedData])
 
     return (
-        <Box
-            className={styles.hourlyList}
-            onWheel={(e) => { e.currentTarget.scrollLeft += e.deltaY / 5 }}
+        <ScrollArea
+            type="hover"
+            scrollbars="x"
+            offsetScrollbars="x"
+            classNames={{ root: styles.hourlyList, viewport: styles.hourlyListViewport }}
+            viewportProps={{
+                onWheel: (e) => { e.currentTarget.scrollLeft += e.deltaY / 5 },
+            }}
         >
             {Array.from(formattedData.entries())
                 .sort(([a], [b]) => a - b)
@@ -107,13 +114,14 @@ function HourlyList({ hourlyData }) {
                     <HourlyItem key={time} time={time} data={data} />
                 ))
             }
-        </Box>
+        </ScrollArea>
     )
 }
 
 function HourlyItem({ time, data }) {
+    console.log(data);
     const label = new Date(time).toLocaleTimeString('en-US', { hour: 'numeric', hour12: true })
-    const wmo = getWmo(data.weathercode)
+    const wmo = getWmo(data.weather_code)
     return (
         <Box className={styles.hourlyItem}>
             <Text className={styles.hourlyTime}>{label}</Text>
@@ -135,7 +143,7 @@ function WeatherList({ expanded, daily }) {
             <Stack gap={2} className={styles.weeklyList}>
                 {daily.time.slice(1).map((dateStr, i) => {
                     const idx = i + 1
-                    const wmo = getWmo(daily.weathercode?.[idx])
+                    const wmo = getWmo(daily.weather_code?.[idx])
                     const day = DAYS[new Date(dateStr + 'T12:00:00').getDay()]
                     const precip = daily.precipitation_probability_max?.[idx]
                     return (

@@ -26,9 +26,6 @@
 }
 
 .hourlyList {
-    overflow-x: auto;
-    display: flex;
-    flex-direction: row;
     height: fit-content;
     border-bottom: var(--inner-bd);
 
@@ -46,6 +43,11 @@
             border-right: var(--dimmed-bd);
         }
     }
+}
+
+.hourlyListViewport > div {
+    display: flex !important;
+    flex-direction: row;
 }
 
 .weeklyList {

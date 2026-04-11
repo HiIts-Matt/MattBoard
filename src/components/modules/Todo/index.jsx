@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Checkbox, Loader, Text, TextInput, Transition } from "@mantine/core";
+import { ActionIcon, Box, Checkbox, Loader, ScrollArea, Text, TextInput, Transition } from "@mantine/core";
 import styles from './Todo.module.css'
 import { IconArchive, IconPencilPlus, IconPlus } from "@tabler/icons-react";
 import { ModuleTitle } from '../shared/ModuleTitle';
@@ -54,7 +54,10 @@ export function ToDoList() {
                         <Loader />
                     </Box>
                 ) : (
-                    <Box className={styles.toDoList}>
+                    <ScrollArea
+                        type="hover"
+                        classNames={{ root: styles.toDoList }}
+                    >
                         {groupByDay(toDos.filter(item => !item?.archived)).map((entry) =>
                             entry.type === 'separator' ? (
                                 <Box key={entry.date.toDateString()} className={styles.dateSeparator}>
@@ -66,7 +69,7 @@ export function ToDoList() {
                                 <ToDoItem key={entry.item.id} toDos={toDoData} item={entry.item} />
                             )
                         )}
-                    </Box>
+                    </ScrollArea>
                 )}
                 <CreateNew toDos={toDoData} />
             </Box>
@@ -90,7 +93,10 @@ export function ToDoList() {
                                 Archive
                             </Text>
                         </Box>
-                        <Box className={styles.toDoList}>
+                        <ScrollArea
+                            type="hover"
+                            classNames={{ root: styles.toDoList }}
+                        >
                             {groupByDay(toDos.filter(item => item?.archived)).map((entry) =>
                                 entry.type === 'separator' ? (
                                     <Box key={entry.date.toDateString()} className={styles.dateSeparator}>
@@ -102,7 +108,7 @@ export function ToDoList() {
                                     <ToDoItem key={entry.item.id} toDos={toDoData} item={entry.item} />
                                 )
                             )}
-                        </Box>
+                        </ScrollArea>
                     </Box>
                 )}
             </Transition>

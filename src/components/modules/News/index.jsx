@@ -1,7 +1,7 @@
-import { Anchor, Box, Group, Stack, Text } from '@mantine/core'
+import { Anchor, Box, Group, ScrollArea, Stack, Text } from '@mantine/core'
 import styles from './News.module.css'
 import { classNames } from '../../../utils/utils';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useNews } from '../../../api/useNews';
 import { IconArrowsMaximize, IconArrowsMinimize, IconMoodConfuzed, IconMoodHappy, IconNews } from '@tabler/icons-react';
 import { ModuleTitle } from '../shared/ModuleTitle';
@@ -45,6 +45,7 @@ export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
 
     const [goodNewsActive, setGoodNewsActive] = useState(true);
     const [visibleCount, setVisibleCount] = useState(10);
+    const articleListRef = useRef(null);
 
     const { articles: allArticles, isLoading, isError } = useNews({
         feedUrls,
@@ -72,9 +73,10 @@ export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
         sourceRows.push(articlesBySource.slice(i, i + 3));
     }
 
-    const handleScroll = (e) => {
-        const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-        if (scrollHeight - scrollTop - clientHeight < 50) {
+    const handleScrollPosition = ({ y }) => {
+        const el = articleListRef.current;
+        if (!el) return;
+        if (el.scrollHeight - y - el.clientHeight < 50) {
             setVisibleCount(prev => Math.min(prev + 10, visibleArticles.length));
         }
     };
@@ -109,22 +111,31 @@ export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
 
             {!isLoading && !isError && sorted.length > 0 && (
                 <>
-                    <Stack className={styles.articleList} gap={0} onScroll={handleScroll}>
+                    <ScrollArea.Autosize
+                        type="hover"
+                        scrollbars="y"
+                        classNames={{ root: styles.articleList, viewport: styles.articleListViewport }}
+                        viewportRef={articleListRef}
+                        onScrollPositionChange={handleScrollPosition}
+                    >
                         {displayedArticles.map((article, i) => (
                             <ArticleItem key={i} article={article} />
                         ))}
-                    </Stack>
+                    </ScrollArea.Autosize>
                     <Stack className={styles.feedColumns} gap={0}>
                         {sourceRows.map((row, rowIdx) => (
                             <Group key={rowIdx} className={styles.feedRow} align="stretch" gap={0} wrap="nowrap">
                                 {row.map(({ source, articles }) => (
                                     <Stack key={source} className={styles.feedColumnWrapper} gap={0}>
                                         <Text className={styles.feedColumnTitle}>{source}</Text>
-                                        <Stack className={styles.feedColumn} gap={0}>
+                                        <ScrollArea
+                                            type="hover"
+                                            classNames={{ root: styles.feedColumn }}
+                                        >
                                             {articles.map((article, i) => (
                                                 <ArticleItem key={i} article={article} />
                                             ))}
-                                        </Stack>
+                                        </ScrollArea>
                                     </Stack>
                                 ))}
                             </Group>
