@@ -49,7 +49,7 @@ const theme = createTheme({
         bgColor: 'rgba(50, 50, 50, 0.6)',
         bgEffect: 'none',
         darkenedBg: 'rgba(0, 0, 0, 0.2)',
-        lightenedBd: 'rgba(255, 255, 255, 0.2)',
+        lightenedBg: 'rgba(255, 255, 255, 0.2)',
         componentRadius: '12px',
         componentPadding: '16px',
         componentW: '400px',

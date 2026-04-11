@@ -27,3 +27,8 @@ export function formatSeparatorDate(date) {
     if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
     return date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
 }
+
+export const toTitleCase = (str) => {
+    if (typeof str !== 'string') return str;
+    return str.replace(/\b\w/g, (char) => char.toUpperCase());
+}

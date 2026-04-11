@@ -6,7 +6,12 @@ export function ModuleTitle({ icon, title, onTitleClick, actions, rightContent }
     const left = (
         <Group gap={5} className={classNames(styles.left, onTitleClick && styles.clickable)} onClick={onTitleClick}>
             {icon}
-            <Text className={styles.title}>{title}</Text>
+            {typeof title === 'string' ? (
+                <Text className={styles.title}>{title}</Text>
+            ) : (
+                title
+            )}
+
         </Group>
     );
 

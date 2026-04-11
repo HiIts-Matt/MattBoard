@@ -46,8 +46,6 @@ export function Weather({ module }) {
     const unitLabel = units === 'celsius' ? '°C' : '°F'
     const isSetup = !!lat && !!lon;
 
-    console.log(weatherData);
-
     const { current_weather: current, daily } = weatherData ?? {};
     const todayWmo = current ? getWmo(current.weather_code) : null;
 
@@ -119,7 +117,6 @@ function HourlyList({ hourlyData }) {
 }
 
 function HourlyItem({ time, data }) {
-    console.log(data);
     const label = new Date(time).toLocaleTimeString('en-US', { hour: 'numeric', hour12: true })
     const wmo = getWmo(data.weather_code)
     return (

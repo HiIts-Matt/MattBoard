@@ -1,16 +1,24 @@
 import { useBuilderStore } from "../components/Builder/BuilderStore";
+import { useToDo } from "../api/useToDo";
 
 export function useBuilderMode(save, config, data) {
-    const { pages: builderPages, enterBuilder, exitBuilder, addModule, exportConfig } = useBuilderStore();
+    const { pages: builderPages, builderToDoData, enterBuilder, exitBuilder, addModule, exportConfig } = useBuilderStore();
+    const { updateTodo } = useToDo();
 
-    function handleSave(targetId, newName) {
+    async function handleSave(targetId, newName) {
         const updatedPages = exportConfig();
         const target = newName
             ? { name: newName, background: config.background }
             : targetId
                 ? data.configs.find(c => c.id === targetId)
                 : config;
-        save.mutate({ ...target, pages: updatedPages });
+        await save.mutateAsync({ ...target, pages: updatedPages });
+
+        if (builderToDoData) {
+            const allItems = Object.values(builderToDoData).flat();
+            await Promise.all(allItems.map(item => updateTodo.mutateAsync({ id: item.id, item })));
+        }
+
         exitBuilder();
     }
 

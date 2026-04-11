@@ -7,6 +7,7 @@ import { PageControls } from "./page-controls";
 import { PhotoFrame } from "../components/PhotoFrame";
 import { classNames } from "../utils/utils";
 import { useConfig } from "../api/useConfig";
+import { useToDo } from "../api/useToDo";
 import { useBuilderMode } from "../hooks/useBuilderMode";
 import { BuilderContextMenu } from "../components/Builder/BuilderContextMenu";
 
@@ -25,6 +26,8 @@ export function PageHandler() {
         handleSwap,
         handleAddModule,
     } = useBuilderMode(save, config, data);
+
+    const { data: toDoData } = useToDo();
 
 
     const builderMode = builderPages !== null;
@@ -65,7 +68,7 @@ export function PageHandler() {
                 activePage={activePage}
                 onNavigate={goToPage}
                 builderMode={builderMode}
-                onEnterBuilder={() => enterBuilder(config.pages)}
+                onEnterBuilder={() => enterBuilder(config.pages, toDoData)}
                 onSave={handleSave}
                 onDiscard={exitBuilder}
                 onAddModule={(pageIndex, type) => handleAddModule(pageIndex, type)}

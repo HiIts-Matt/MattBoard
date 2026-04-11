@@ -19,10 +19,11 @@ class ModuleErrorBoundary extends Component {
     }
 }
 
-export function PageSection({ section, sectionIdx, totalSections, fullscreenModule, setFullscreenModule, builderMode, pageRef }) {
+export function PageSection({ section, sectionIdx, totalSections, fullscreenModule, setFullscreenModule, builderMode, pageRef, sectionRef }) {
     const hasFullscreenModule = section?.modules?.some(m => m === fullscreenModule);
     return (
         <Box
+            ref={sectionRef}
             flex={section.flex || 1}
             className={classNames(
                 styles.section,

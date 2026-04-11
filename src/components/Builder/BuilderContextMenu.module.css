@@ -124,7 +124,7 @@
     text-align: left;
 
     &:not(.location):not(.feedUrls):not(.sliderRow):not(.googleAuthRow) {
-        padding: 0px 10px;
+        padding: 2px 10px;
 
         &:first-child {
             padding-top: 10px;
@@ -212,7 +212,8 @@
         &.needsSetup {
             background: var(--mantine-color-red-light);
 
-            .title, .setupRequired {
+            .title,
+            .setupRequired {
                 color: var(--mantine-color-red-text);
             }
 
@@ -268,9 +269,17 @@
                 background: rgba(255, 255, 255, 0.2);
             }
 
-            .feedStatus_success { background: var(--mantine-color-teal-4); }
-            .feedStatus_error { background: var(--mantine-color-red-5); }
-            .feedStatus_loading { background: rgba(255, 255, 255, 0.2); }
+            .feedStatus_success {
+                background: var(--mantine-color-teal-4);
+            }
+
+            .feedStatus_error {
+                background: var(--mantine-color-red-5);
+            }
+
+            .feedStatus_loading {
+                background: rgba(255, 255, 255, 0.2);
+            }
 
             .feedLabel {
                 font-size: 11px;
@@ -311,7 +320,7 @@
                 height: 34px;
                 width: 34px;
                 border-radius: 0px;
-                border: 1px solid var(--mantine-color-teal-6) ;
+                border: 1px solid var(--mantine-color-teal-6);
                 color: var(--mantine-color-teal-6);
                 background: var(--mantine-color-teal-light);
 
@@ -480,6 +489,7 @@
     align-items: flex-start;
     gap: 0px;
     padding: 0px 10px;
+    width: 100%;
 
     :first-child {
         padding-top: 5px;
@@ -488,16 +498,19 @@
     :last-child {
         padding-bottom: 5px;
     }
-
-    width: 100%;
 }
 
 .controlRow {
-    padding: 0px 10px;
+    margin: 0px 0px;
     width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    min-width: 180px;
 }
 
 .segmentedRoot {
+    width: 100%;
+    box-sizing: border-box;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: var(--ctx-menu-pill-radius);

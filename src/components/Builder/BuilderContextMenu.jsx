@@ -2,7 +2,7 @@ import { Box, Text, Switch, Select, NumberInput, ActionIcon, Divider, Stack, Tra
 import { IconLocationSearch, IconTrash, IconPlus, IconX, IconCheck, IconPlugConnectedX } from '@tabler/icons-react';
 import { useCalendarAuth } from '../../api/useCalendarAuth';
 import { useNews } from '../../api/useNews';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useBuilderStore } from './BuilderStore';
 import { moduleSettings } from '../../utils/moduleSettings';
 import { components } from '../../utils/componentMap';
@@ -12,9 +12,10 @@ import { useTempState } from '../../hooks/useTempState';
 import { useMenuPosition } from './useMenuPosition';
 
 export function BuilderContextMenu({ builderMode }) {
-    const { selectedModuleId, pages, updateModuleSetting, updateModuleSettings, removeModule, swapModuleType, selectModule } = useBuilderStore();
+    const { selectedModuleId, pages, updateModuleSetting, updateModuleSettings, removeModule, swapModuleType, selectModule, renameBuilderToDoList } = useBuilderStore();
     const moduleTypes = Object.keys(components);
     const [displayedModule, setDisplayedModule] = useState(null);
+    const [listNameDraft, setListNameDraft] = useState('');
 
     const [deleteOpen, setDeleteOpen, resetDeleteOpen] = useTempState(false, seconds(3));
 
@@ -36,10 +37,16 @@ export function BuilderContextMenu({ builderMode }) {
         if (!selectedModuleId) return;
         const module = pages?.flatMap(p => p.modules).find(m => m.id === selectedModuleId);
         resetDeleteOpen();
-        if (module) setDisplayedModule(module);
+        if (module) {
+            setDisplayedModule(module);
+            setListNameDraft(module.listName || '');
+        }
     }, [selectedModuleId, pages, resetDeleteOpen]);
 
-    const settings = moduleSettings[displayedModule?.type] ?? [];
+    const settings = (moduleSettings[displayedModule?.type] ?? []).filter(setting => {
+        if (setting.key === 'listName' && displayedModule?.fullsize) return false;
+        return true;
+    });
 
     return (
         <Transition
@@ -103,6 +110,31 @@ export function BuilderContextMenu({ builderMode }) {
                                                 onChangeSetting={(key, val) => updateModuleSetting(displayedModule?.id, key, val)}
                                             />
                                         );
+                                        if (setting.key === 'listName' && displayedModule?.type === 'todo') {
+                                            return (
+                                                <SettingRow
+                                                    key={setting.key}
+                                                    setting={setting}
+                                                    value={listNameDraft}
+                                                    onChange={setListNameDraft}
+                                                    onBlur={() => {
+                                                        const newName = listNameDraft.trim();
+                                                        if (!displayedModule || newName === displayedModule.listName) {
+                                                            setListNameDraft(displayedModule?.listName || '');
+                                                            return;
+                                                        }
+                                                        const allModules = pages?.flatMap(p => p.modules) || [];
+                                                        const otherTodoModules = allModules.filter(m => m.type === 'todo' && m.id !== displayedModule.id);
+                                                        if (otherTodoModules.some(m => m.listName === newName)) {
+                                                            setListNameDraft(displayedModule.listName || '');
+                                                            return;
+                                                        }
+                                                        updateModuleSetting(displayedModule.id, 'listName', newName);
+                                                        renameBuilderToDoList(displayedModule.listName, newName);
+                                                    }}
+                                                />
+                                            );
+                                        }
                                         return (
                                             <SettingRow
                                                 key={setting.key ?? setting.type}
@@ -150,7 +182,7 @@ function SettingGroupRow({ setting, moduleValues, onChangeSetting }) {
     );
 }
 
-function SettingRow({ setting, value, onChange }) {
+function SettingRow({ setting, value, onChange, onBlur }) {
     if (setting.type === 'boolean') return (
         <Box className={styles.row}>
             <Text className={styles.label}>{setting.label}</Text>
@@ -185,6 +217,7 @@ function SettingRow({ setting, value, onChange }) {
                 value={value ?? ''}
                 placeholder={setting.placeholder}
                 onChange={e => onChange(e.currentTarget.value)}
+                onBlur={onBlur}
                 classNames={{ input: styles.input }}
             />
         </Box>
@@ -231,7 +264,6 @@ function SettingRow({ setting, value, onChange }) {
                     { value: 'true', label: setting.trueLabel },
                 ]}
                 radius="xl"
-                size="xs"
                 fullWidth
                 classNames={{
                     root: styles.segmentedRoot,

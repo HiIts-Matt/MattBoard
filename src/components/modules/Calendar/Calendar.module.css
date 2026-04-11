@@ -94,6 +94,147 @@
     }
 }
 
+/* ─── Compact widget ─────────────────────────────────────────────────────── */
+
+.widget {
+    background: var(--bg-color);
+    backdrop-filter: var(--bg-effect);
+    border-radius: var(--component-rd);
+    border: var(--bd);
+    padding: var(--component-pd);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: var(--component-w);
+}
+
+.widgetHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    border-bottom: var(--inner-bd);
+}
+
+.widgetMonthTitle {
+    font-family: var(--main-font);
+    font-size: var(--small-title-fz);
+    font-weight: 600;
+    color: var(--glyph-color-filled);
+}
+
+.widgetNavButton {
+    color: var(--glyph-color-solid);
+
+    &:hover {
+        color: var(--glyph-color-filled);
+        background: var(--dark-bg);
+    }
+}
+
+.dayGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+}
+
+.dayName {
+    font-family: var(--main-font);
+    font-size: 10px;
+    color: var(--glyph-color-minimal);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 3px 0 5px;
+}
+
+.dayCell {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    position: relative;
+    cursor: default;
+    transition: background 0.1s;
+
+    &:hover {
+        background: var(--dark-bg);
+    }
+}
+
+.dayCellToday {
+    background: rgba(255, 255, 255, 0.15);
+
+    .dayNumber {
+        color: var(--glyph-color-filled);
+        font-weight: 700;
+    }
+}
+
+.dayNumber {
+    font-family: var(--main-font);
+    font-size: var(--body-fz);
+    color: var(--glyph-color-solid);
+    line-height: 1;
+}
+
+.eventDot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--mantine-color-blue-4);
+    position: absolute;
+    bottom: 3px;
+}
+
+.dayPopover {
+    background: rgba(25, 25, 25, 0.96);
+    backdrop-filter: blur(12px);
+    border: var(--inner-bd);
+    border-radius: var(--component-rd);
+    padding: 10px 12px;
+    min-width: 180px;
+    max-width: 260px;
+}
+
+.popoverDate {
+    font-family: var(--main-font);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--glyph-color-minimal);
+    margin-bottom: 6px;
+}
+
+.popoverEvent {
+    padding: 5px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    &:not(:last-child) {
+        border-bottom: var(--dimmed-bd);
+    }
+}
+
+.popoverEventTitle {
+    font-family: var(--main-font);
+    font-size: var(--body-fz);
+    color: var(--glyph-color-filled);
+}
+
+.popoverEventTime {
+    font-family: var(--main-font);
+    font-size: 11px;
+    color: var(--glyph-color-minimal);
+}
+
+/* ─── Fullsize calendar ───────────────────────────────────────────────────── */
+
 .notConnected {
     width: 100%;
     height: 100%;

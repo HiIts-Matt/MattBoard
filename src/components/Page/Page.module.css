@@ -1,3 +1,34 @@
+.sectionDivider {
+    flex-shrink: 0;
+    height: 8px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: ns-resize;
+    z-index: 50;
+    transition: background 0.15s;
+
+    &:hover,
+    &.sectionDividerActive {
+        background: rgba(0, 0, 0, 1);
+
+        .sectionDividerGrip {
+            opacity: 1;
+        }
+    }
+}
+
+.sectionDividerGrip {
+    width: 40px;
+    height: 2px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    transition: opacity 0.15s;
+    pointer-events: none;
+}
+
 .page {
     width: 100vw;
     display: flex;

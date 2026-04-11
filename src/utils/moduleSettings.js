@@ -11,7 +11,9 @@ export const moduleSettings = {
         { key: 'loc', label: 'Location', type: 'location', required: true },
     ],
     todo: [
-        { key: 'clearTime', label: 'Auto-clear (ms)', type: 'number' },
+        { key: 'fullsize', trueLabel: 'Full size', falseLabel: 'Module', type: 'control' },
+        { key: 'listName', label: 'List Name', type: 'text' },
+        { key: 'clearTime', label: 'Auto Archive (ms)', type: 'number' },
     ],
     news: [
         { key: 'feedUrls', label: 'RSS Feeds', type: 'feedUrls', required: true },
@@ -27,5 +29,6 @@ export const moduleSettings = {
     calendar: [
         { type: 'googleAuth' },
         { key: 'calendarId', label: 'Calendar ID', type: 'text', placeholder: 'primary' },
+        { key: 'fullsize', trueLabel: 'Full size', falseLabel: 'Widget', type: 'control' },
     ],
 };

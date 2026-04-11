@@ -25,9 +25,37 @@ export function groupIntoSections(modules) {
 export const useBuilderStore = create((set, get) => ({
     pages: null,
     selectedModuleId: null,
+    builderToDoData: null,
 
-    enterBuilder: (pages) => set({ pages: structuredClone(pages) }),
-    exitBuilder: () => set({ pages: null, selectedModuleId: null }),
+    enterBuilder: (pages, builderToDoData = null) => set({
+        pages: structuredClone(pages),
+        builderToDoData: builderToDoData ? structuredClone(builderToDoData) : null,
+    }),
+    exitBuilder: () => set({ pages: null, selectedModuleId: null, builderToDoData: null }),
+    setBuilderToDoData: (builderToDoData) => set({ builderToDoData: structuredClone(builderToDoData) }),
+    renameBuilderToDoList: (oldName, newName) => set(state => {
+        if (!state.builderToDoData || oldName === newName || !state.builderToDoData[oldName] || state.builderToDoData[newName]) return state;
+        const updatedBuilderToDoData = structuredClone(state.builderToDoData);
+        const renamedItems = updatedBuilderToDoData[oldName].map(item => ({ ...item, listName: newName }));
+        updatedBuilderToDoData[newName] = renamedItems;
+        delete updatedBuilderToDoData[oldName];
+        return { builderToDoData: updatedBuilderToDoData };
+    }),
+    updateBuilderToDoItem: (id, updates) => set(state => {
+        if (!state.builderToDoData) return state;
+        const updatedBuilderToDoData = structuredClone(state.builderToDoData);
+        Object.keys(updatedBuilderToDoData).forEach(key => {
+            updatedBuilderToDoData[key] = updatedBuilderToDoData[key].map(item => item.id === id ? { ...item, ...updates } : item);
+        });
+        return { builderToDoData: updatedBuilderToDoData };
+    }),
+    addBuilderToDoItem: (item) => set(state => {
+        if (!state.builderToDoData) return state;
+        const updatedBuilderToDoData = structuredClone(state.builderToDoData);
+        const listName = item.listName || '';
+        updatedBuilderToDoData[listName] = [...(updatedBuilderToDoData[listName] || []), item];
+        return { builderToDoData: updatedBuilderToDoData };
+    }),
 
     updateModulePosition: (moduleId, newPos) => set(state => ({
         pages: mapModules(state.pages, m =>
@@ -36,8 +64,20 @@ export const useBuilderStore = create((set, get) => ({
     })),
 
     updateModuleSetting: (moduleId, key, value) => set(state => ({
+        pages: mapModules(state.pages, m => {
+            if (m.id !== moduleId) return m;
+            const updated = { ...m, [key]: value };
+            // When toggling fullsize off on a module with no position, give it a default
+            if (key === 'fullsize' && !value && !updated.position) {
+                updated.position = { x: 5, y: 5, w: 25 };
+            }
+            return updated;
+        })
+    })),
+
+    updateSectionFlex: (moduleId, flex) => set(state => ({
         pages: mapModules(state.pages, m =>
-            m.id === moduleId ? { ...m, [key]: value } : m
+            m.id === moduleId ? { ...m, _sectionFlex: flex } : m
         )
     })),
 

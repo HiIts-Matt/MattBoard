@@ -3,13 +3,200 @@
     flex-direction: column;
     width: var(--component-w);
     background: var(--bg-color);
-    /* border: 1px solid var(--bd-color); */
     backdrop-filter: var(--bg-effect);
-    border-radius: 12px;
+    border-radius: var(--component-rd);
     border: var(--bd);
     padding: var(--component-pd);
     gap: 0px;
     max-height: 600px;
+}
+
+.fullsizeContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-color);
+    backdrop-filter: var(--bg-effect);
+    border-radius: var(--component-rd);
+    border: var(--bd);
+    padding: var(--component-pd);
+    gap: 0px;
+
+    .viewerRoot {
+        display: flex;
+        flex-direction: row;
+        flex: 1;
+        min-height: 0;
+
+        .listColumn {
+            min-width: 300px;
+            max-width: 300px;
+            border-right: var(--inner-bd);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--light-bg);
+        }
+    }
+}
+
+.listItem {
+    border-bottom: var(--dimmed-bd);
+    border-left: 2px solid transparent;
+    color: var(--glyph-color-solid);
+    padding: 7px 10px 7px 8px;
+    font-size: var(--small-title-fz);
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+
+    &:hover {
+        background: var(--dark-bg);
+        color: var(--glyph-color-filled);
+
+        .deleteListButton {
+            opacity: 1;
+        }
+    }
+
+    &.listItemSelected {
+        border-left-color: var(--glyph-color-filled);
+        color: var(--glyph-color-filled);
+        background: var(--dark-bg);
+
+        .deleteListButton {
+            opacity: 0.4;
+        }
+    }
+
+    .listItemRight {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .countGroup {
+        display: flex;
+        flex-direction: row;
+        gap: 4px;
+
+        .itemCountBox {
+            border-radius: 100px;
+            background-color: var(--dark-bg);
+            padding: 1px 6px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 3px;
+
+            .itemCount {
+                font-size: 12px;
+            }
+        }
+    }
+
+    .deleteListButton {
+        opacity: 0;
+        background: transparent;
+        color: var(--glyph-color-minimal);
+        transition: opacity 0.15s, color 0.15s;
+
+        &:hover {
+            color: var(--mantine-color-red-5);
+        }
+    }
+
+}
+
+.sidebarScroll {
+    flex: 1;
+    min-height: 0;
+}
+
+.emptyState {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.emptyStateText {
+    font-family: var(--main-font);
+    font-size: var(--small-title-fz);
+    color: var(--glyph-color-minimal);
+    font-style: italic;
+    text-align: center;
+}
+
+.paneHeader {
+    flex-shrink: 0;
+    padding: 8px 12px 8px;
+    border-bottom: var(--inner-bd);
+
+    .paneTitle {
+        font-family: var(--main-font);
+        font-size: var(--small-title-fz);
+        font-weight: 600;
+        color: var(--glyph-color-solid);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+}
+
+.listBox {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.archiveDivider {
+    flex-shrink: 0;
+    width: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    border-left: var(--inner-bd);
+    border-right: 1px solid transparent;
+    color: var(--glyph-color-minimal);
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+
+    &:hover {
+        background: var(--dark-bg);
+        color: var(--glyph-color-filled);
+    }
+
+    &.archiveDividerOpen {
+        border-right: var(--inner-bd);
+        color: var(--glyph-color-solid);
+    }
+}
+
+.archiveBox {
+    flex: 1;
+    position: relative;
+    max-width: 0px;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.15s, max-width 0.3s;
+
+    &.opened {
+        max-width: 50%;
+        opacity: 1;
+    }
+
 }
 
 .titleSection {
@@ -41,6 +228,8 @@
         justify-content: flex-start;
         gap: 10px;
         border-bottom: var(--inner-bd);
+        padding-bottom: 10px;
+        margin-bottom: 4px;
 
         .smallTitle {
             font-family: var(--main-font);

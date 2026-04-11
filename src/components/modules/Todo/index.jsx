@@ -1,10 +1,11 @@
-import { ActionIcon, Box, Checkbox, Loader, ScrollArea, Text, TextInput, Transition } from "@mantine/core";
+import { ActionIcon, Badge, Box, Checkbox, Loader, ScrollArea, Text, TextInput, Transition } from "@mantine/core";
 import styles from './Todo.module.css'
-import { IconArchive, IconPencilPlus, IconPlus } from "@tabler/icons-react";
+import { IconArchive, IconChevronLeft, IconChevronRight, IconCircle, IconCircleCheck, IconPencilPlus, IconPlus, IconTrash } from "@tabler/icons-react";
 import { ModuleTitle } from '../shared/ModuleTitle';
 import { useState } from "react";
 import { useToDo } from "../../../api/useToDo";
-import { classNames, formatSeparatorDate } from "../../../utils/utils";
+import { classNames, formatSeparatorDate, toTitleCase } from "../../../utils/utils";
+import { useBuilderStore } from "../../Builder/BuilderStore";
 
 function groupByDay(items) {
     const sorted = [...items].sort((a, b) =>
@@ -26,7 +27,7 @@ function groupByDay(items) {
     return result;
 }
 
-export function ToDoList() {
+export function ToDoList({ module }) {
 
     const [displayArchives, setDisplayArchives] = useState(false);
 
@@ -35,13 +36,22 @@ export function ToDoList() {
         isLoading: toDoLoading,
     } = useToDo();
 
-    const toDos = toDoData?.todos;
+    const { pages: builderPages, builderToDoData } = useBuilderStore();
+    const builderMode = builderPages !== null;
+    const displayedData = (builderMode && builderToDoData ? builderToDoData : toDoData)
+    const toDos = displayedData?.[module?.listName] || [];
+
+    console.log(displayedData);
+
+    if (module.fullsize) {
+        return <FullsizeList displayedData={displayedData} />
+    }
 
     return (
         <Box className={styles.bothWrapper}>
             <Box className={styles.toDoContainer}>
                 <ModuleTitle
-                    title="To Do List"
+                    title={toTitleCase(module?.listName)}
                     actions={[{
                         icon: <IconArchive />,
                         tooltip: 'Toggle Archives',
@@ -66,12 +76,12 @@ export function ToDoList() {
                                     </Text>
                                 </Box>
                             ) : (
-                                <ToDoItem key={entry.item.id} toDos={toDoData} item={entry.item} />
+                                <ToDoItem key={entry.item.id} item={entry.item} listName={module?.listName} />
                             )
                         )}
                     </ScrollArea>
                 )}
-                <CreateNew toDos={toDoData} />
+                <CreateNew toDos={toDoData} listName={module?.listName} />
             </Box>
             <Transition
                 mounted={displayArchives}
@@ -105,7 +115,7 @@ export function ToDoList() {
                                         </Text>
                                     </Box>
                                 ) : (
-                                    <ToDoItem key={entry.item.id} toDos={toDoData} item={entry.item} />
+                                    <ToDoItem key={entry.item.id} item={entry.item} listName={module?.listName} />
                                 )
                             )}
                         </ScrollArea>
@@ -116,7 +126,171 @@ export function ToDoList() {
     )
 }
 
-function CreateNew() {
+function FullsizeList({ displayedData }) {
+
+    const [selectedList, setSelectedList] = useState(null);
+    const [archivesOpen, setArchivesOpen] = useState(false);
+    const [extraLists, setExtraLists] = useState([]);
+    const { deleteTodo } = useToDo();
+
+    const allListNames = [...new Set([...Object.keys(displayedData || {}), ...extraLists])];
+    const displayedItems = displayedData?.[selectedList] || [];
+    const activeItems = displayedItems.filter(item => !item?.archived);
+    const archivedItems = displayedItems.filter(item => item?.archived);
+
+    const handleAddList = (name) => {
+        setExtraLists(prev => prev.includes(name) ? prev : [...prev, name]);
+        setSelectedList(name);
+    };
+
+    const handleDeleteList = async (listName) => {
+        const items = displayedData?.[listName] || [];
+        await Promise.all(items.map(item => deleteTodo.mutateAsync(item.id)));
+        setExtraLists(prev => prev.filter(l => l !== listName));
+        if (selectedList === listName) setSelectedList(null);
+    };
+
+    return (
+        <Box className={styles.fullsizeContainer}>
+            <ModuleTitle title='Lists' />
+            <Box className={styles.viewerRoot}>
+                <Box className={styles.listColumn}>
+                    <ScrollArea type="hover" classNames={{ root: styles.sidebarScroll }}>
+                        {allListNames.map(listName => (
+                            <ListItem
+                                key={listName}
+                                listName={listName}
+                                list={displayedData?.[listName] || []}
+                                isSelected={selectedList === listName}
+                                onClick={() => setSelectedList(listName)}
+                                onDelete={() => handleDeleteList(listName)}
+                            />
+                        ))}
+                    </ScrollArea>
+                    <CreateNewList onAdd={handleAddList} />
+                </Box>
+                <Box className={styles.listBox}>
+                    <Box className={styles.paneHeader}>
+                        <Text className={styles.paneTitle}>{selectedList ?? 'Select a list'}</Text>
+                    </Box>
+                    {selectedList === null ? (
+                        <EmptyState message="Select a list to get started" />
+                    ) : activeItems.length === 0 ? (
+                        <EmptyState message="This list is empty" />
+                    ) : (
+                        <ScrollArea type="hover" classNames={{ root: styles.toDoList }}>
+                            {groupByDay(activeItems).map((entry) =>
+                                entry.type === 'separator' ? (
+                                    <Box key={entry.date.toDateString()} className={styles.dateSeparator}>
+                                        <Text className={styles.dateSeparatorText}>
+                                            {formatSeparatorDate(entry.date)}
+                                        </Text>
+                                    </Box>
+                                ) : (
+                                    <ToDoItem key={entry.item.id} item={entry.item} listName={selectedList} />
+                                )
+                            )}
+                        </ScrollArea>
+                    )}
+                    {selectedList && <CreateNew listName={selectedList} />}
+                </Box>
+                <Box
+                    className={classNames(styles.archiveDivider, archivesOpen ? styles.archiveDividerOpen : '')}
+                    onClick={() => setArchivesOpen(prev => !prev)}
+                >
+                    {archivesOpen ? <IconChevronRight size={14} /> : <IconChevronLeft size={14} />}
+                    <IconArchive size={16} />
+                </Box>
+                <Box className={classNames(styles.archiveBox, archivesOpen ? styles.opened : '')}>
+                    <Box className={styles.paneHeader}>
+                        <Text className={styles.paneTitle}>Archive</Text>
+                    </Box>
+                    {archivedItems.length === 0 ? (
+                        <EmptyState message="Nothing archived" />
+                    ) : (
+                        <ScrollArea type="hover" classNames={{ root: styles.toDoList }}>
+                            {groupByDay(archivedItems).map((entry) =>
+                                entry.type === 'separator' ? (
+                                    <Box key={entry.date.toDateString()} className={styles.dateSeparator}>
+                                        <Text className={styles.dateSeparatorText}>
+                                            {formatSeparatorDate(entry.date)}
+                                        </Text>
+                                    </Box>
+                                ) : (
+                                    <ToDoItem key={entry.item.id} item={entry.item} listName={selectedList} />
+                                )
+                            )}
+                        </ScrollArea>
+                    )}
+                </Box>
+            </Box>
+        </Box>
+    )
+}
+
+function EmptyState({ message }) {
+    return (
+        <Box className={styles.emptyState}>
+            <Text className={styles.emptyStateText}>{message}</Text>
+        </Box>
+    );
+}
+
+function CreateNewList({ onAdd }) {
+    const [value, setValue] = useState('');
+    const submit = () => {
+        const name = value.trim();
+        if (!name) return;
+        onAdd(name);
+        setValue('');
+    };
+    return (
+        <TextInput
+            classNames={{
+                root: styles.inputRoot,
+                input: styles.createNewInput,
+                section: styles.createNewSection,
+            }}
+            placeholder="New list..."
+            value={value}
+            onChange={e => setValue(e.currentTarget.value)}
+            onKeyDown={e => e.key === 'Enter' && submit()}
+            leftSection={<IconPlus />}
+            rightSection={value ? (
+                <ActionIcon onClick={submit}><IconPencilPlus /></ActionIcon>
+            ) : undefined}
+        />
+    );
+}
+
+function ListItem({ listName, list, isSelected, onClick, onDelete }) {
+    return (
+        <Box className={classNames(styles.listItem, isSelected && styles.listItemSelected)} onClick={onClick}>
+            <Text className={styles.listTitle}>{listName}</Text>
+            <Box className={styles.listItemRight}>
+                <Box className={styles.countGroup}>
+                    <Box className={styles.itemCountBox}>
+                        <IconCircle size={14} />
+                        <Text className={styles.itemCount}>{list.filter(i => !i.archived).length}</Text>
+                    </Box>
+                    <Box className={styles.itemCountBox}>
+                        <IconCircleCheck size={14} color='var(--mantine-color-teal-6)' />
+                        <Text className={styles.itemCount}>{list.filter(i => !!i.timeCompleted && !i.archived).length}</Text>
+                    </Box>
+                </Box>
+                <ActionIcon
+                    className={styles.deleteListButton}
+                    size="xs"
+                    onClick={(e) => { e.stopPropagation(); onDelete(); }}
+                >
+                    <IconTrash size={13} />
+                </ActionIcon>
+            </Box>
+        </Box>
+    );
+}
+
+function CreateNew({ listName }) {
 
     const { addTodo } = useToDo();
 
@@ -130,6 +304,7 @@ function CreateNew() {
             timeCreated: new Date(),
             timeCompleted: null,
             value,
+            listName,
         }
 
         await addTodo.mutateAsync(toDoItem);
@@ -160,7 +335,7 @@ function CreateNew() {
     )
 }
 
-function ToDoItem({ item }) {
+function ToDoItem({ item, listName }) {
 
     const { updateTodo } = useToDo();
 
@@ -170,6 +345,7 @@ function ToDoItem({ item }) {
         const newItem = {
             ...item,
             timeCompleted: item?.timeCompleted ? null : new Date(),
+            listName
         }
 
         await updateTodo.mutateAsync({
@@ -198,7 +374,7 @@ function ToDoItem({ item }) {
         >
             <Box className={styles.itemContent}>
                 <Box className={styles.leftArea}>
-                    <Checkbox.Indicator className={styles.indicator}/>
+                    <Checkbox.Indicator className={styles.indicator} />
                     <Text className={styles.toDoItemText} td={isComplete ? 'line-through' : undefined}>
                         {item.value}
                     </Text>
