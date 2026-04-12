@@ -1,5 +1,5 @@
 import { Box, Text } from "@mantine/core"
-import { useEffect, useRef, useState } from "react"
+import { memo, useEffect, useRef, useState } from "react"
 import styles from './Clock.module.css'
 import Clock from "react-clock"
 import "react-clock/dist/Clock.css"
@@ -37,7 +37,7 @@ export function ClockComponent({ module }) {
     )
 }
 
-function BothWrapper({ bigClock, children }) {
+const BothWrapper = memo(function BothWrapper({ bigClock, children }) {
     const ref = useRef(null)
     const [side, setSide] = useState(0)
 
@@ -67,9 +67,9 @@ function BothWrapper({ bigClock, children }) {
             {children}
         </Box>
     )
-}
+});
 
-function Digital({ time }) {
+const Digital = memo(function Digital({ time }) {
     const hours = time.getHours() % 12 || 12
     const minutes = time.getMinutes().toString().padStart(2, '0')
     const seconds = time.getSeconds().toString().padStart(2, '0')
@@ -88,9 +88,9 @@ function Digital({ time }) {
             </Text>
         </Box>
     )
-}
+});
 
-function Analog({ time, module }) {
+const Analog = memo(function Analog({ time, module }) {
     const bigClock = module?.size === 'lg'
     const showMarks = module?.showMarks ?? true
     const showBorder = module?.showBorder ?? true;
@@ -114,4 +114,4 @@ function Analog({ time, module }) {
             />
         </Box>
     )
-}
+});

@@ -1,7 +1,7 @@
 import { Anchor, Box, Group, ScrollArea, Stack, Text } from '@mantine/core'
 import styles from './News.module.css'
 import { classNames } from '../../../utils/utils';
-import { useRef, useState } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import { useNews } from '../../../api/useNews';
 import { IconArrowsMaximize, IconArrowsMinimize, IconMoodConfuzed, IconMoodHappy, IconNews } from '@tabler/icons-react';
 import { ModuleTitle } from '../shared/ModuleTitle';
@@ -18,7 +18,7 @@ function timeAgo(dateStr) {
     return `${Math.floor(hrs / 24)}d ago`;
 }
 
-function ArticleItem({ article }) {
+const ArticleItem = memo(function ArticleItem({ article }) {
     return (
         <Anchor
             href={article.link}
@@ -33,7 +33,7 @@ function ArticleItem({ article }) {
             </Text>
         </Anchor>
     );
-}
+});
 
 export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
 
@@ -53,33 +53,45 @@ export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
         enabled: isSetup
     });
 
-    const visibleArticles = filterEnabled && goodNewsActive
-        ? allArticles.filter(a => a.sentiment >= threshold)
-        : allArticles;
+    const visibleArticles = useMemo(() =>
+        filterEnabled && goodNewsActive
+            ? allArticles.filter(a => a.sentiment >= threshold)
+            : allArticles,
+        [allArticles, filterEnabled, goodNewsActive, threshold]
+    );
 
-    const sorted = [...visibleArticles].sort((a, b) => new Date(b.pubDate ?? 0) - new Date(a.pubDate ?? 0));
+    const sorted = useMemo(() =>
+        [...visibleArticles].sort((a, b) => new Date(b.pubDate ?? 0) - new Date(a.pubDate ?? 0)),
+        [visibleArticles]
+    );
 
-    const displayedArticles = sorted.slice(0, visibleCount);
+    const displayedArticles = useMemo(() => sorted.slice(0, visibleCount), [sorted, visibleCount]);
 
-    const articlesBySource = feedUrls.map(url => {
-        let source;
-        try { source = new URL(url).hostname.replace(/^www\./, ''); }
-        catch { source = url; }
-        return { source, articles: sorted.filter(a => a.source === source) };
-    });
+    const articlesBySource = useMemo(() =>
+        feedUrls.map(url => {
+            let source;
+            try { source = new URL(url).hostname.replace(/^www\./, ''); }
+            catch { source = url; }
+            return { source, articles: sorted.filter(a => a.source === source) };
+        }),
+        [feedUrls, sorted]
+    );
 
-    const sourceRows = [];
-    for (let i = 0; i < articlesBySource.length; i += 3) {
-        sourceRows.push(articlesBySource.slice(i, i + 3));
-    }
+    const sourceRows = useMemo(() => {
+        const rows = [];
+        for (let i = 0; i < articlesBySource.length; i += 3) {
+            rows.push(articlesBySource.slice(i, i + 3));
+        }
+        return rows;
+    }, [articlesBySource]);
 
-    const handleScrollPosition = ({ y }) => {
+    const handleScrollPosition = useCallback(({ y }) => {
         const el = articleListRef.current;
         if (!el) return;
         if (el.scrollHeight - y - el.clientHeight < 50) {
             setVisibleCount(prev => Math.min(prev + 10, visibleArticles.length));
         }
-    };
+    }, [visibleArticles.length]);
 
     return (
         <Box className={classNames(styles.newsBox, isFullscreen ? styles.opened : '')}>

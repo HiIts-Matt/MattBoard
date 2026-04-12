@@ -2,7 +2,7 @@ import { ActionIcon, Badge, Box, Checkbox, Loader, ScrollArea, Text, TextInput, 
 import styles from './Todo.module.css'
 import { IconArchive, IconChevronLeft, IconChevronRight, IconCircle, IconCircleCheck, IconPencilPlus, IconPlus, IconTrash } from "@tabler/icons-react";
 import { ModuleTitle } from '../shared/ModuleTitle';
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useToDo } from "../../../api/useToDo";
 import { classNames, formatSeparatorDate, toTitleCase } from "../../../utils/utils";
 import { useBuilderStore } from "../../Builder/BuilderStore";
@@ -43,7 +43,9 @@ export function ToDoList({ module }) {
     const listName = module?.listName;
     const toDos = useMemo(() => displayedData?.[listName] || [], [displayedData, listName]);
 
-    // Auto-archive: move completed items to archive after clearTime hours
+    const activeGrouped = useMemo(() => groupByDay(toDos.filter(item => !item?.archived)), [toDos]);
+    const archivedGrouped = useMemo(() => groupByDay(toDos.filter(item => item?.archived)), [toDos]);
+
     const clearTimeHours = module?.clearTime;
     const processingRef = useRef(new Set());
 
@@ -70,8 +72,6 @@ export function ToDoList({ module }) {
         return () => clearInterval(id);
     }, [toDos, clearTimeHours, builderMode, updateTodo]);
 
-    console.log(displayedData);
-
     if (module.fullsize) {
         return <FullsizeList displayedData={displayedData} />
     }
@@ -97,7 +97,7 @@ export function ToDoList({ module }) {
                         type="hover"
                         classNames={{ root: styles.toDoList }}
                     >
-                        {groupByDay(toDos.filter(item => !item?.archived)).map((entry) =>
+                        {activeGrouped.map((entry) =>
                             entry.type === 'separator' ? (
                                 <Box key={entry.date.toDateString()} className={styles.dateSeparator}>
                                     <Text className={styles.dateSeparatorText}>
@@ -136,7 +136,7 @@ export function ToDoList({ module }) {
                             type="hover"
                             classNames={{ root: styles.toDoList }}
                         >
-                            {groupByDay(toDos.filter(item => item?.archived)).map((entry) =>
+                            {archivedGrouped.map((entry) =>
                                 entry.type === 'separator' ? (
                                     <Box key={entry.date.toDateString()} className={styles.dateSeparator}>
                                         <Text className={styles.dateSeparatorText}>
@@ -364,7 +364,7 @@ function CreateNew({ listName }) {
     )
 }
 
-function ToDoItem({ item, listName }) {
+const ToDoItem = memo(function ToDoItem({ item, listName }) {
 
     const { updateTodo } = useToDo();
 
@@ -420,4 +420,4 @@ function ToDoItem({ item, listName }) {
             </Box>
         </Checkbox.Card>
     )
-}
+});

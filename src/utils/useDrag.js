@@ -86,22 +86,34 @@ export function useDrag({ onPositionChange }) {
 
         const onMove = (e) => {
             if (!drag.current) return;
-            const { startX, startY, containerW, containerH, origAbsLeft, origAbsTop, currentW, currentH,
-                    marginX, marginY, snapX, snapY, element, overlay } = drag.current;
+            const clientX = e.clientX;
+            const clientY = e.clientY;
+            if (drag.current.rafId) return;
+            drag.current.rafId = requestAnimationFrame(() => {
+                if (!drag.current) return;
+                drag.current.rafId = null;
+                const { startX, startY, containerW, containerH, origAbsLeft, origAbsTop, currentW, currentH,
+                        marginX, marginY, snapX, snapY, element, overlay } = drag.current;
 
-            const rawLeft = origAbsLeft + ((e.clientX - startX) / containerW) * 100;
-            const rawTop  = origAbsTop  + ((e.clientY - startY) / containerH) * 100;
+                const rawLeft = origAbsLeft + ((clientX - startX) / containerW) * 100;
+                const rawTop  = origAbsTop  + ((clientY - startY) / containerH) * 100;
 
-            const { left, top, snapping } = computeSnap(rawLeft, rawTop, currentW, currentH, marginX, marginY, snapX, snapY);
+                const { left, top, snapping } = computeSnap(rawLeft, rawTop, currentW, currentH, marginX, marginY, snapX, snapY);
 
-            element.style.transform = `translate(${((left - origAbsLeft) / 100) * containerW}px, ${((top - origAbsTop) / 100) * containerH}px)`;
-            renderSnapLines(overlay, snapping);
+                element.style.transform = `translate(${((left - origAbsLeft) / 100) * containerW}px, ${((top - origAbsTop) / 100) * containerH}px)`;
+                renderSnapLines(overlay, snapping);
+            });
         };
 
         const onUp = (e) => {
             if (!drag.current) return;
             const { startX, startY, containerW, containerH, origAbsLeft, origAbsTop, currentW, currentH,
                     marginX, marginY, snapX, snapY, element, overlay, section } = drag.current;
+
+            if (drag.current.rafId) {
+                cancelAnimationFrame(drag.current.rafId);
+                drag.current.rafId = null;
+            }
 
             handleEl.releasePointerCapture(e.pointerId);
 
@@ -126,6 +138,7 @@ export function useDrag({ onPositionChange }) {
             origAbsLeft, origAbsTop, currentW, currentH,
             marginX, marginY, snapX, snapY,
             element: moduleElement, overlay, section,
+            rafId: null,
         };
 
         handleEl.addEventListener('pointermove', onMove);

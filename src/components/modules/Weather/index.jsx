@@ -1,9 +1,8 @@
 import { Box, Collapse, Group, ScrollArea, Stack, Text } from "@mantine/core";
 import styles from './Weather.module.css'
-import { useLayoutEffect, useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { useWeather } from "../../../api/useWeather";
 import { Icon } from '@iconify/react';
-import { useMap } from "@mantine/hooks";
 import { IconChevronDown, IconChevronUp, IconDropletDown } from "@tabler/icons-react";
 import { ModuleTitle } from '../shared/ModuleTitle';
 import { ModuleAlert } from '../shared/ModuleAlert';
@@ -82,19 +81,16 @@ export function Weather({ module }) {
 }
 
 function HourlyList({ hourlyData }) {
-    const formattedData = useMap();
-
-    useLayoutEffect(() => {
-        if (hourlyData) {
-            hourlyData?.time?.forEach((hourlyTime, idx) => {
-                formattedData.set(hourlyTime, {
-                    precipitation_probability: hourlyData?.precipitation_probability?.[idx],
-                    weather_code: hourlyData?.weather_code?.[idx],
-                    temperature_2m: hourlyData?.temperature_2m?.[idx],
-                })
-            })
-        }
-    }, [hourlyData, formattedData])
+    const sortedEntries = useMemo(() => {
+        if (!hourlyData?.time) return [];
+        return hourlyData.time
+            .map((time, idx) => [time, {
+                precipitation_probability: hourlyData.precipitation_probability?.[idx],
+                weather_code: hourlyData.weather_code?.[idx],
+                temperature_2m: hourlyData.temperature_2m?.[idx],
+            }])
+            .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+    }, [hourlyData]);
 
     return (
         <ScrollArea
@@ -106,17 +102,14 @@ function HourlyList({ hourlyData }) {
                 onWheel: (e) => { e.currentTarget.scrollLeft += e.deltaY / 5 },
             }}
         >
-            {Array.from(formattedData.entries())
-                .sort(([a], [b]) => a - b)
-                .map(([time, data]) => (
-                    <HourlyItem key={time} time={time} data={data} />
-                ))
-            }
+            {sortedEntries.map(([time, data]) => (
+                <HourlyItem key={time} time={time} data={data} />
+            ))}
         </ScrollArea>
     )
 }
 
-function HourlyItem({ time, data }) {
+const HourlyItem = memo(function HourlyItem({ time, data }) {
     const label = new Date(time).toLocaleTimeString('en-US', { hour: 'numeric', hour12: true })
     const wmo = getWmo(data.weather_code)
     return (
@@ -132,7 +125,7 @@ function HourlyItem({ time, data }) {
             </Group>
         </Box>
     )
-}
+});
 
 function WeatherList({ expanded, daily }) {
     return (
