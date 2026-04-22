@@ -54,7 +54,7 @@ export function PageHandler() {
 
     return (
         <Box className={classNames(styles.root, builderMode ? styles.builderMode : '')}>
-            {background && <PhotoFrame {...background} />}
+            {background && <PhotoFrame module={background} />}
             <Box
                 className={styles.track}
                 style={{ transform: `translateX(-${activePage * 100}vw)` }}
