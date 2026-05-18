@@ -1,4 +1,4 @@
-import { Box, Loader } from "@mantine/core";
+import { Loader } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
 import styles from './pageHandler.module.css';
 import { config as localConfig } from '../appConfig/appConfig.js';
@@ -47,28 +47,28 @@ export function PageHandler() {
     }
 
     if (isLoading) return (
-        <Box style={{ width: '100vw', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ width: '100vw', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Loader color="white" />
-        </Box>
+        </div>
     );
 
     return (
-        <Box className={classNames(styles.root, builderMode ? styles.builderMode : '')}>
+        <div className={classNames(styles.root, builderMode ? styles.builderMode : '')}>
             {background && <PhotoFrame module={background} />}
-            <Box
-                className={styles.track}
+            <div
+                className={classNames(styles.track, prevPage !== null ? styles.trackTransitioning : '')}
                 style={{ transform: `translateX(-${activePage * 100}vw)` }}
             >
                 {activePages?.map((page, index) => (
-                    <Box key={page.name} className={styles.pageSlot}>
+                    <div key={page.name} className={styles.pageSlot}>
                         {(index === activePage || index === prevPage) ? (
                             <Page page={page} builderMode={builderMode} />
                         ) : (
-                            <Box className={styles.dummyPage}/>
+                            <div className={styles.dummyPage}/>
                         )}
-                    </Box>
+                    </div>
                 ))}
-            </Box>
+            </div>
             <BuilderContextMenu builderMode={builderMode} />
             <PageControls
                 activeConfig={activeConfig}
@@ -84,6 +84,6 @@ export function PageHandler() {
                 onAddModule={(pageIndex, type) => handleAddModule(pageIndex, type)}
                 onSwap={handleSwap}
             />
-        </Box>
+        </div>
     );
 }

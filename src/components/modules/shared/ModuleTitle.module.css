@@ -1,8 +1,17 @@
 .titleRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     flex-shrink: 0;
     width: 100%;
     border-bottom: var(--inner-bd);
     padding-bottom: 10px;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .left {

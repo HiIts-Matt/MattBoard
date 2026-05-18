@@ -1,4 +1,4 @@
-import { Box, Collapse, Group, ScrollArea, Stack, Text } from "@mantine/core";
+import { Collapse, ScrollArea } from "@mantine/core";
 import styles from './Weather.module.css'
 import { memo, useMemo, useState } from "react";
 import { useWeather } from "../../../api/useWeather";
@@ -49,17 +49,17 @@ export function Weather({ module }) {
     const todayWmo = current ? getWmo(current.weather_code) : null;
 
     return (
-        <Box className={styles.weatherBox} onClick={() => setExpanded(e => !e)}>
+        <div className={styles.weatherBox} onClick={() => setExpanded(e => !e)}>
             <ModuleTitle
                 title="Weather"
                 rightContent={current && (
-                    <Group className={styles.smallPreview}>
+                    <div className={styles.smallPreview}>
                         <Icon icon={todayWmo.icon} width={60} />
-                        <Stack className={styles.infoStack}>
-                            <Text className={styles.info}>{Math.round(current.temperature_2m)}{unitLabel}</Text>
-                            <Text className={styles.info}>{todayWmo.label}</Text>
-                        </Stack>
-                    </Group>
+                        <div className={styles.infoStack}>
+                            <span className={styles.info}>{Math.round(current.temperature_2m)}{unitLabel}</span>
+                            <span className={styles.info}>{todayWmo.label}</span>
+                        </div>
+                    </div>
                 )}
             />
 
@@ -76,11 +76,12 @@ export function Weather({ module }) {
                     <WeatherList daily={daily} expanded={expanded} />
                 </>
             )}
-        </Box>
+        </div>
     )
 }
 
 function HourlyList({ hourlyData }) {
+    const [now] = useState(() => Date.now());
     const sortedEntries = useMemo(() => {
         if (!hourlyData?.time) return [];
         return hourlyData.time
@@ -89,8 +90,10 @@ function HourlyList({ hourlyData }) {
                 weather_code: hourlyData.weather_code?.[idx],
                 temperature_2m: hourlyData.temperature_2m?.[idx],
             }])
-            .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
-    }, [hourlyData]);
+            .filter(([time]) => new Date(time).getTime() >= now)
+            .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+            .slice(0, 12);
+    }, [hourlyData, now]);
 
     return (
         <ScrollArea
@@ -113,47 +116,47 @@ const HourlyItem = memo(function HourlyItem({ time, data }) {
     const label = new Date(time).toLocaleTimeString('en-US', { hour: 'numeric', hour12: true })
     const wmo = getWmo(data.weather_code)
     return (
-        <Box className={styles.hourlyItem}>
-            <Text className={styles.hourlyTime}>{label}</Text>
+        <div className={styles.hourlyItem}>
+            <span className={styles.hourlyTime}>{label}</span>
             <Icon icon={wmo.icon} width={50} />
-            <Group gap={5} justify="center" w='100%'>
-                <Text className={styles.hourlyTemp}>{Math.round(data.temperature_2m)}°</Text>
-            </Group>
-            <Group gap={5} justify="center">
-                <IconDropletDown width={15} color='var(--mantine-color-blue-3)' />
-                <Text className={styles.hourlyPrecip}>{data.precipitation_probability ?? 0}%</Text>
-            </Group>
-        </Box>
+            <div className={styles.hourlyTempRow}>
+                <span className={styles.hourlyTemp}>{Math.round(data.temperature_2m)}°</span>
+            </div>
+            <div className={styles.hourlyPrecipRow}>
+                <IconDropletDown width={15} color='#99CCFF' />
+                <span className={styles.hourlyPrecip}>{data.precipitation_probability ?? 0}%</span>
+            </div>
+        </div>
     )
 });
 
 function WeatherList({ expanded, daily }) {
     return (
         <Collapse in={expanded}>
-            <Stack gap={2} className={styles.weeklyList}>
+            <div className={styles.weeklyList}>
                 {daily.time.slice(1).map((dateStr, i) => {
                     const idx = i + 1
                     const wmo = getWmo(daily.weather_code?.[idx])
                     const day = DAYS[new Date(dateStr + 'T12:00:00').getDay()]
                     const precip = daily.precipitation_probability_max?.[idx]
                     return (
-                        <Group key={dateStr} className={styles.forecastRow} wrap="nowrap" justify="space-between">
-                            <Text className={styles.forecastDay}>{day}</Text>
+                        <div key={dateStr} className={styles.forecastRow}>
+                            <span className={styles.forecastDay}>{day}</span>
                             <Icon icon={wmo.icon} className={styles.forecastIcon} height={70} />
-                            <Group gap={5}>
-                                <IconDropletDown color='var(--mantine-color-blue-3)' />
-                                <Text className={styles.precip}>{precip != null ? `${precip}%` : ''}</Text>
-                            </Group>
-                            <Group gap={6} wrap="nowrap">
-                                <IconChevronUp color='var(--mantine-color-red-filled)' />
-                                <Text className={styles.forecastHi}>{Math.round(daily.temperature_2m_max[idx])}</Text>
-                                <IconChevronDown color='var(--mantine-color-blue-7)' />
-                                <Text className={styles.forecastLo}>{Math.round(daily.temperature_2m_min[idx])}</Text>
-                            </Group>
-                        </Group>
+                            <div className={styles.forecastPrecip}>
+                                <IconDropletDown color='#99CCFF' />
+                                <span className={styles.precip}>{precip != null ? `${precip}%` : ''}</span>
+                            </div>
+                            <div className={styles.forecastTemps}>
+                                <IconChevronUp color='#fa5252' />
+                                <span className={styles.forecastHi}>{Math.round(daily.temperature_2m_max[idx])}</span>
+                                <IconChevronDown color='#4dabf7' />
+                                <span className={styles.forecastLo}>{Math.round(daily.temperature_2m_min[idx])}</span>
+                            </div>
+                        </div>
                     )
                 })}
-            </Stack>
+            </div>
         </Collapse>
     )
 }

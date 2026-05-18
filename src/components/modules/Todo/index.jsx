@@ -1,4 +1,4 @@
-import { ActionIcon, Badge, Box, Checkbox, Loader, ScrollArea, Text, TextInput, Transition } from "@mantine/core";
+import { ActionIcon, Checkbox, Loader, ScrollArea, TextInput, Transition } from "@mantine/core";
 import styles from './Todo.module.css'
 import { IconArchive, IconChevronLeft, IconChevronRight, IconCircle, IconCircleCheck, IconPencilPlus, IconPlus, IconTrash } from "@tabler/icons-react";
 import { ModuleTitle } from '../shared/ModuleTitle';
@@ -77,8 +77,8 @@ export function ToDoList({ module }) {
     }
 
     return (
-        <Box className={styles.bothWrapper}>
-            <Box className={styles.toDoContainer}>
+        <div className={styles.bothWrapper}>
+            <div className={styles.toDoContainer}>
                 <ModuleTitle
                     title={toTitleCase(listName)}
                     actions={[{
@@ -89,9 +89,9 @@ export function ToDoList({ module }) {
                 />
 
                 {toDoLoading ? (
-                    <Box>
+                    <div>
                         <Loader />
-                    </Box>
+                    </div>
                 ) : (
                     <ScrollArea
                         type="hover"
@@ -99,11 +99,11 @@ export function ToDoList({ module }) {
                     >
                         {activeGrouped.map((entry) =>
                             entry.type === 'separator' ? (
-                                <Box key={entry.date.toDateString()} className={styles.dateSeparator}>
-                                    <Text className={styles.dateSeparatorText}>
+                                <div key={entry.date.toDateString()} className={styles.dateSeparator}>
+                                    <span className={styles.dateSeparatorText}>
                                         {formatSeparatorDate(entry.date)}
-                                    </Text>
-                                </Box>
+                                    </span>
+                                </div>
                             ) : (
                                 <ToDoItem key={entry.item.id} item={entry.item} listName={listName} />
                             )
@@ -111,7 +111,7 @@ export function ToDoList({ module }) {
                     </ScrollArea>
                 )}
                 <CreateNew listName={listName} />
-            </Box>
+            </div>
             <Transition
                 mounted={displayArchives}
                 transition="pop"
@@ -119,39 +119,39 @@ export function ToDoList({ module }) {
                 timingFunction="ease"
             >
                 {(transition) => (
-                    <Box
+                    <div
                         className={classNames(
                             styles.toDoContainer,
                             styles.archivesBox
                         )}
                         style={transition}
                     >
-                        <Box className={styles.titleGroup}>
+                        <div className={styles.titleGroup}>
                             <IconArchive size={34} stroke={1.5} />
-                            <Text className={styles.smallTitle}>
+                            <span className={styles.smallTitle}>
                                 Archive
-                            </Text>
-                        </Box>
+                            </span>
+                        </div>
                         <ScrollArea
                             type="hover"
                             classNames={{ root: styles.toDoList }}
                         >
                             {archivedGrouped.map((entry) =>
                                 entry.type === 'separator' ? (
-                                    <Box key={entry.date.toDateString()} className={styles.dateSeparator}>
-                                        <Text className={styles.dateSeparatorText}>
+                                    <div key={entry.date.toDateString()} className={styles.dateSeparator}>
+                                        <span className={styles.dateSeparatorText}>
                                             {formatSeparatorDate(entry.date)}
-                                        </Text>
-                                    </Box>
+                                        </span>
+                                    </div>
                                 ) : (
                                     <ToDoItem key={entry.item.id} item={entry.item} listName={listName} />
                                 )
                             )}
                         </ScrollArea>
-                    </Box>
+                    </div>
                 )}
             </Transition>
-        </Box>
+        </div>
     )
 }
 
@@ -180,10 +180,10 @@ function FullsizeList({ displayedData }) {
     };
 
     return (
-        <Box className={styles.fullsizeContainer}>
+        <div className={styles.fullsizeContainer}>
             <ModuleTitle title='Lists' />
-            <Box className={styles.viewerRoot}>
-                <Box className={styles.listColumn}>
+            <div className={styles.viewerRoot}>
+                <div className={styles.listColumn}>
                     <ScrollArea type="hover" classNames={{ root: styles.sidebarScroll }}>
                         {allListNames.map(listName => (
                             <ListItem
@@ -197,11 +197,11 @@ function FullsizeList({ displayedData }) {
                         ))}
                     </ScrollArea>
                     <CreateNewList onAdd={handleAddList} />
-                </Box>
-                <Box className={styles.listBox}>
-                    <Box className={styles.paneHeader}>
-                        <Text className={styles.paneTitle}>{selectedList ?? 'Select a list'}</Text>
-                    </Box>
+                </div>
+                <div className={styles.listBox}>
+                    <div className={styles.paneHeader}>
+                        <span className={styles.paneTitle}>{selectedList ?? 'Select a list'}</span>
+                    </div>
                     {selectedList === null ? (
                         <EmptyState message="Select a list to get started" />
                     ) : activeItems.length === 0 ? (
@@ -210,11 +210,11 @@ function FullsizeList({ displayedData }) {
                         <ScrollArea type="hover" classNames={{ root: styles.toDoList }}>
                             {groupByDay(activeItems).map((entry) =>
                                 entry.type === 'separator' ? (
-                                    <Box key={entry.date.toDateString()} className={styles.dateSeparator}>
-                                        <Text className={styles.dateSeparatorText}>
+                                    <div key={entry.date.toDateString()} className={styles.dateSeparator}>
+                                        <span className={styles.dateSeparatorText}>
                                             {formatSeparatorDate(entry.date)}
-                                        </Text>
-                                    </Box>
+                                        </span>
+                                    </div>
                                 ) : (
                                     <ToDoItem key={entry.item.id} item={entry.item} listName={selectedList} />
                                 )
@@ -222,46 +222,46 @@ function FullsizeList({ displayedData }) {
                         </ScrollArea>
                     )}
                     {selectedList && <CreateNew listName={selectedList} />}
-                </Box>
-                <Box
+                </div>
+                <div
                     className={classNames(styles.archiveDivider, archivesOpen ? styles.archiveDividerOpen : '')}
                     onClick={() => setArchivesOpen(prev => !prev)}
                 >
                     {archivesOpen ? <IconChevronRight size={14} /> : <IconChevronLeft size={14} />}
                     <IconArchive size={16} />
-                </Box>
-                <Box className={classNames(styles.archiveBox, archivesOpen ? styles.opened : '')}>
-                    <Box className={styles.paneHeader}>
-                        <Text className={styles.paneTitle}>Archive</Text>
-                    </Box>
+                </div>
+                <div className={classNames(styles.archiveBox, archivesOpen ? styles.opened : '')}>
+                    <div className={styles.paneHeader}>
+                        <span className={styles.paneTitle}>Archive</span>
+                    </div>
                     {archivedItems.length === 0 ? (
                         <EmptyState message="Nothing archived" />
                     ) : (
                         <ScrollArea type="hover" classNames={{ root: styles.toDoList }}>
                             {groupByDay(archivedItems).map((entry) =>
                                 entry.type === 'separator' ? (
-                                    <Box key={entry.date.toDateString()} className={styles.dateSeparator}>
-                                        <Text className={styles.dateSeparatorText}>
+                                    <div key={entry.date.toDateString()} className={styles.dateSeparator}>
+                                        <span className={styles.dateSeparatorText}>
                                             {formatSeparatorDate(entry.date)}
-                                        </Text>
-                                    </Box>
+                                        </span>
+                                    </div>
                                 ) : (
                                     <ToDoItem key={entry.item.id} item={entry.item} listName={selectedList} />
                                 )
                             )}
                         </ScrollArea>
                     )}
-                </Box>
-            </Box>
-        </Box>
+                </div>
+            </div>
+        </div>
     )
 }
 
 function EmptyState({ message }) {
     return (
-        <Box className={styles.emptyState}>
-            <Text className={styles.emptyStateText}>{message}</Text>
-        </Box>
+        <div className={styles.emptyState}>
+            <span className={styles.emptyStateText}>{message}</span>
+        </div>
     );
 }
 
@@ -294,19 +294,19 @@ function CreateNewList({ onAdd }) {
 
 function ListItem({ listName, list, isSelected, onClick, onDelete }) {
     return (
-        <Box className={classNames(styles.listItem, isSelected && styles.listItemSelected)} onClick={onClick}>
-            <Text className={styles.listTitle}>{listName}</Text>
-            <Box className={styles.listItemRight}>
-                <Box className={styles.countGroup}>
-                    <Box className={styles.itemCountBox}>
+        <div className={classNames(styles.listItem, isSelected && styles.listItemSelected)} onClick={onClick}>
+            <span className={styles.listTitle}>{listName}</span>
+            <div className={styles.listItemRight}>
+                <div className={styles.countGroup}>
+                    <div className={styles.itemCountBox}>
                         <IconCircle size={14} />
-                        <Text className={styles.itemCount}>{list.filter(i => !i.archived).length}</Text>
-                    </Box>
-                    <Box className={styles.itemCountBox}>
-                        <IconCircleCheck size={14} color='var(--mantine-color-teal-6)' />
-                        <Text className={styles.itemCount}>{list.filter(i => !!i.timeCompleted && !i.archived).length}</Text>
-                    </Box>
-                </Box>
+                        <span className={styles.itemCount}>{list.filter(i => !i.archived).length}</span>
+                    </div>
+                    <div className={styles.itemCountBox}>
+                        <IconCircleCheck size={14} color='#12b886' />
+                        <span className={styles.itemCount}>{list.filter(i => !!i.timeCompleted && !i.archived).length}</span>
+                    </div>
+                </div>
                 <ActionIcon
                     className={styles.deleteListButton}
                     size="xs"
@@ -314,8 +314,8 @@ function ListItem({ listName, list, isSelected, onClick, onDelete }) {
                 >
                     <IconTrash size={13} />
                 </ActionIcon>
-            </Box>
-        </Box>
+            </div>
+        </div>
     );
 }
 
@@ -401,13 +401,13 @@ const ToDoItem = memo(function ToDoItem({ item, listName }) {
             checked={isComplete}
             onClick={toggleItem}
         >
-            <Box className={styles.itemContent}>
-                <Box className={styles.leftArea}>
+            <div className={styles.itemContent}>
+                <div className={styles.leftArea}>
                     <Checkbox.Indicator className={styles.indicator} />
-                    <Text className={styles.toDoItemText} td={isComplete ? 'line-through' : undefined}>
+                    <span className={styles.toDoItemText} style={isComplete ? { textDecoration: 'line-through' } : undefined}>
                         {item.value}
-                    </Text>
-                </Box>
+                    </span>
+                </div>
                 <ActionIcon
                     className={styles.archiveButton}
                     onClick={(e) => {
@@ -417,7 +417,7 @@ const ToDoItem = memo(function ToDoItem({ item, listName }) {
                 >
                     <IconArchive size={20} />
                 </ActionIcon>
-            </Box>
+            </div>
         </Checkbox.Card>
     )
 });

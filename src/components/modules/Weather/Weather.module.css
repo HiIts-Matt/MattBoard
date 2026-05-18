@@ -9,11 +9,15 @@
     justify-content: flex-start;
 
     .smallPreview {
+        display: flex;
+        align-items: center;
         gap: 0px;
         justify-content: flex-end;
         flex: 1;
 
         .infoStack {
+            display: flex;
+            flex-direction: column;
             gap: 0px;
             align-items: flex-end;
 
@@ -45,17 +49,38 @@
     }
 }
 
+.hourlyTempRow {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    width: 100%;
+}
+
+.hourlyPrecipRow {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+}
+
 .hourlyListViewport > div {
     display: flex !important;
     flex-direction: row;
 }
 
 .weeklyList {
-
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
     font-family: var(--main-font);
     color: var(--glyph-color-filled);
 
     .forecastRow {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        justify-content: space-between;
+
         &:not(:last-child) {
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
@@ -66,4 +91,16 @@
         }
     }
 
+    .forecastPrecip {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .forecastTemps {
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 6px;
+    }
 }

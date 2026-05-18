@@ -1,4 +1,4 @@
-import { Box, Loader } from "@mantine/core";
+import { Loader } from "@mantine/core";
 import { useApplePhoto } from "../../api/useApplePhoto";
 import { IconAlertTriangle } from "@tabler/icons-react";
 
@@ -10,21 +10,21 @@ export function PhotoFrame({ module }) {
 
     const getPhotoContent = () => {
         if (isError) return (
-            <Box className={styles.displayWrapper}>
-                <IconAlertTriangle color='var(--mantine-color-red-9)' size={60} />
-            </Box>
+            <div className={styles.displayWrapper}>
+                <IconAlertTriangle color='#c92a2a' size={60} />
+            </div>
         )
         if (isLoading) return (
-            <Box className={styles.displayWrapper}>
+            <div className={styles.displayWrapper}>
                 <Loader size='lg' />
-            </Box>
+            </div>
         )
         return <img src={photo?.url} />
     }
 
     return (
-        <Box className={styles.photoWrapper}>
+        <div className={styles.photoWrapper}>
             {getPhotoContent()}
-        </Box>
+        </div>
     )
 }

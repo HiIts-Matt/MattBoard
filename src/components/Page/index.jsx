@@ -1,6 +1,4 @@
-import { Box } from '@mantine/core';
-import { Fragment, useRef } from 'react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { PageSection } from '../PageSection';
 import styles from './Page.module.css';
 import { useBuilderStore } from '../Builder/BuilderStore';
@@ -112,7 +110,7 @@ export function Page({ page, builderMode }) {
     const { updateSectionFlex } = useBuilderStore();
 
     return (
-        <Box className={`${styles.page}${builderMode ? ` ${styles.builderMode}` : ''}`} style={page?.style} ref={pageRef}>
+        <div className={`${styles.page}${builderMode ? ` ${styles.builderMode}` : ''}`} style={page?.style} ref={pageRef}>
             {sections.flatMap((section, i) => {
                 const sectionEl = (
                     <PageSection
@@ -143,6 +141,6 @@ export function Page({ page, builderMode }) {
                 }
                 return [sectionEl];
             })}
-        </Box>
+        </div>
     );
 }

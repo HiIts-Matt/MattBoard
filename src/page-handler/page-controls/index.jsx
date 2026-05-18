@@ -1,4 +1,4 @@
-import { Box, Text, Popover, Stack, UnstyledButton, Menu, Divider, TextInput, HoverCard, HoverCardDropdown } from "@mantine/core";
+import { Menu, TextInput, HoverCard } from "@mantine/core";
 import {
     IconChevronLeft, IconChevronRight,
     IconPencil, IconDeviceFloppy, IconX, IconPlus,
@@ -31,11 +31,11 @@ export function PageControls({
     const canGoForward = activePage < pages?.length - 1;
 
     return (
-        <Box className={classNames(
+        <div className={classNames(
             styles.controller,
             builderMode ? styles.builderMode : '',
         )}>
-            <Box
+            <div
                 className={styles.arrowPill}
                 style={{
                     transform: canGoBack ? "translateX(0)" : "translateX(-150%)",
@@ -45,7 +45,7 @@ export function PageControls({
                 onClick={() => onNavigate(activePage - 1)}
             >
                 <IconChevronLeft size={24} color="white" />
-            </Box>
+            </div>
 
             <NamePillRow
                 activeConfig={activeConfig}
@@ -61,7 +61,7 @@ export function PageControls({
                 onSwap={onSwap}
             />
 
-            <Box
+            <div
                 className={styles.arrowPill}
                 style={{
                     transform: canGoForward ? "translateX(0)" : "translateX(150%)",
@@ -71,14 +71,14 @@ export function PageControls({
                 onClick={() => onNavigate(activePage + 1)}
             >
                 <IconChevronRight size={24} color="white" />
-            </Box>
-        </Box>
+            </div>
+        </div>
     );
 }
 
 function NamePillRow({ activeConfig, configData, pages, direction, activePage, onEnterBuilder, onSave, onDiscard, onAddModule, builderMode, onSwap }) {
     return (
-        <Box className={styles.namePillRow}>
+        <div className={styles.namePillRow}>
             <NamePill pages={pages} direction={direction} activePage={activePage} />
             <Toolbar
                 activeConfig={activeConfig}
@@ -90,7 +90,7 @@ function NamePillRow({ activeConfig, configData, pages, direction, activePage, o
                 onSwap={onSwap}
                 builderMode={builderMode}
             />
-        </Box>
+        </div>
     );
 }
 
@@ -106,7 +106,7 @@ function Toolbar({
 }) {
 
     return (
-        <Box className={styles.builderToolbar}>
+        <div className={styles.builderToolbar}>
             <BuilderModeButton
                 onEnterBuilder={onEnterBuilder}
                 builderMode={builderMode}
@@ -130,7 +130,7 @@ function Toolbar({
                 builderMode={builderMode}
                 configData={configData}
             />
-        </Box>
+        </div>
     );
 }
 
@@ -143,7 +143,7 @@ function BuilderModeButton({ onEnterBuilder, builderMode }) {
             disabled={builderMode}
         >
             <HoverCard.Target>
-                <Box
+                <div
                     className={classNames(
                         styles.editButton,
                         builderMode ? styles.hide : ''
@@ -151,10 +151,10 @@ function BuilderModeButton({ onEnterBuilder, builderMode }) {
                     onClick={onEnterBuilder}
                 >
                     <IconTools size={20} color="white" />
-                </Box>
+                </div>
             </HoverCard.Target>
             <HoverCard.Dropdown className={styles.saveMenu}>
-                <Text className={styles.toolTip}>Enter Builder Mode</Text>
+                <span className={styles.toolTip}>Enter Builder Mode</span>
             </HoverCard.Dropdown>
         </HoverCard>
     )
@@ -176,7 +176,7 @@ function XButton({ activeConfig, onDiscard, builderMode }) {
             disabled={!builderMode}
         >
             <HoverCard.Target>
-                <Box
+                <div
                     className={classNames(styles.toolbarPill, builderMode && styles.visible, xOpen && styles.xOpen)}
                     onClick={() => {
                         if (xOpen) {
@@ -193,26 +193,26 @@ function XButton({ activeConfig, onDiscard, builderMode }) {
                     }}
                 >
                     <IconX size={20} color="white" />
-                </Box>
+                </div>
             </HoverCard.Target>
             <HoverCard.Dropdown className={classNames(
                 styles.saveMenu,
                 xOpen ? styles.redHighlight : ''
             )}>
                 {xOpen ? (
-                    <Box className={styles.confirmBox}>
-                        <Box className={styles.titleWrapper}>
-                            <Text className={styles.titleText}>Are You Sure</Text>
-                        </Box>
-                        <Text className={styles.subText}>This will permanently delete any unsaved changes</Text>
-                    </Box>
+                    <div className={styles.confirmBox}>
+                        <div className={styles.titleWrapper}>
+                            <span className={styles.titleText}>Are You Sure</span>
+                        </div>
+                        <span className={styles.subText}>This will permanently delete any unsaved changes</span>
+                    </div>
                 ) : (
-                    <Text className={styles.toolTip}>
+                    <span className={styles.toolTip}>
                         {hasChanges
                             ? 'Discard Changes'
                             : 'Exit Builder Mode'
                         }
-                    </Text>
+                    </span>
                 )}
 
             </HoverCard.Dropdown>
@@ -230,11 +230,11 @@ function AddModule({ builderMode, onAddModule }) {
             transitionProps={{ transition: 'pop' }}
         >
             <Menu.Target>
-                <Box
+                <div
                     className={classNames(styles.toolbarPill, styles.delay60, builderMode && styles.visible)}
                 >
                     <IconPlus size={20} color="white" />
-                </Box>
+                </div>
             </Menu.Target>
             <Menu.Dropdown className={styles.saveMenu}>
                 <Menu.Label>Add Module</Menu.Label>
@@ -273,9 +273,9 @@ function SaveConfig({ onSave, builderMode, configData }) {
             onClose={() => { setSavingNew(false); setNewName(''); }}
         >
             <Menu.Target>
-                <Box className={classNames(styles.toolbarPill, styles.delay120, builderMode && styles.visible)}>
+                <div className={classNames(styles.toolbarPill, styles.delay120, builderMode && styles.visible)}>
                     <IconDeviceFloppy size={20} color="white" />
-                </Box>
+                </div>
             </Menu.Target>
             <Menu.Dropdown className={styles.saveMenu}>
                 <Menu.Label>Save Configuration</Menu.Label>
@@ -295,7 +295,7 @@ function SaveConfig({ onSave, builderMode, configData }) {
                     ))}
                 </>}
                 {savingNew ? (
-                    <Box component="form" className={styles.newConfigForm} onSubmit={submitNew}>
+                    <form className={styles.newConfigForm} onSubmit={submitNew}>
                         <TextInput
                             autoFocus
                             size="xs"
@@ -305,7 +305,7 @@ function SaveConfig({ onSave, builderMode, configData }) {
                             onKeyDown={e => e.key === 'Escape' && setSavingNew(false)}
                             classNames={{ input: styles.newConfigInput }}
                         />
-                    </Box>
+                    </form>
                 ) : (
                     <Menu.Item
                         leftSection={<IconPlus />}
@@ -324,16 +324,16 @@ function SwapConfig({ builderMode, configData, onSwap }) {
     return (
         <Menu withinPortal={false} withArrow transitionProps={{ transition: 'pop' }}>
             <Menu.Target>
-                <Box className={classNames(styles.toolbarPill, styles.delay180, builderMode && styles.visible)}>
+                <div className={classNames(styles.toolbarPill, styles.delay180, builderMode && styles.visible)}>
                     <IconSwitch size={20} color="white" />
-                </Box>
+                </div>
             </Menu.Target>
             <Menu.Dropdown className={styles.saveMenu}>
                 <Menu.Label>Swap Config</Menu.Label>
                 {configData?.configs?.map(config => (
                     <Menu.Item
                         key={config.id}
-                        leftSection={config.id === configData.active ? <IconCheck size={16} /> : <Box w={16} />}
+                        leftSection={config.id === configData.active ? <IconCheck size={16} /> : <span style={{ width: 16 }} />}
                         onClick={() => onSwap(config.id)}
                     >
                         {config.name}
@@ -366,8 +366,8 @@ function NamePill({ pages, direction, activePage }) {
     }, [activePage]);
 
     return (
-        <Box className={styles.namePillClip}>
-            <Box
+        <div className={styles.namePillClip}>
+            <div
                 className={styles.namePill}
                 style={{
                     transform: showLabel ? "translateY(0)" : "translateY(150%)",
@@ -375,9 +375,9 @@ function NamePill({ pages, direction, activePage }) {
                     pointerEvents: showLabel ? "auto" : "none",
                 }}
             >
-                <Box className={styles.namePillContent}>
+                <div className={styles.namePillContent}>
                     {outgoing && (
-                        <Text
+                        <span
                             className={showLabel
                                 ? `${styles.nameText} ${direction === 1 ? styles.slideOutLeft : styles.slideOutRight}`
                                 : styles.nameText
@@ -385,18 +385,18 @@ function NamePill({ pages, direction, activePage }) {
                             style={showLabel ? { position: "absolute" } : undefined}
                         >
                             {outgoing?.name}
-                        </Text>
+                        </span>
                     )}
                     {showLabel && (
-                        <Text
+                        <span
                             key={activePage}
                             className={`${styles.nameText} ${direction === 1 ? styles.slideInFromRight : styles.slideInFromLeft}`}
                         >
                             {currentPage?.name}
-                        </Text>
+                        </span>
                     )}
-                </Box>
-            </Box>
-        </Box>
+                </div>
+            </div>
+        </div>
     );
 }

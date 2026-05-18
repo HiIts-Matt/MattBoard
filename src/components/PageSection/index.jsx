@@ -1,4 +1,3 @@
-import { Box } from "@mantine/core";
 import styles from './PageSection.module.css';
 import { getPositionStyle } from "../../utils/positions";
 import { components } from "../../utils/componentMap";
@@ -11,9 +10,9 @@ class ModuleErrorBoundary extends Component {
     static getDerivedStateFromError(error) { return { error }; }
     render() {
         if (this.state.error) return (
-            <Box style={{ color: 'white', background: 'rgba(200,0,0,0.7)', padding: 12, borderRadius: 8, fontSize: 12, wordBreak: 'break-all' }}>
+            <div style={{ color: 'white', background: 'rgba(200,0,0,0.7)', padding: 12, borderRadius: 8, fontSize: 12, wordBreak: 'break-all' }}>
                 <b>{this.props.moduleType} crashed:</b><br />{this.state.error?.message}
-            </Box>
+            </div>
         );
         return this.props.children;
     }
@@ -22,9 +21,9 @@ class ModuleErrorBoundary extends Component {
 export function PageSection({ section, sectionIdx, totalSections, fullscreenModule, setFullscreenModule, builderMode, pageRef, sectionRef }) {
     const hasFullscreenModule = section?.modules?.some(m => m === fullscreenModule);
     return (
-        <Box
+        <div
             ref={sectionRef}
-            flex={section.flex || 1}
+            style={{ flex: section.flex || 1 }}
             className={classNames(
                 styles.section,
                 hasFullscreenModule ? styles.hasFullscreenModule : ''
@@ -42,7 +41,7 @@ export function PageSection({ section, sectionIdx, totalSections, fullscreenModu
                     pageRef={pageRef}
                 />
             ))}
-        </Box>
+        </div>
     );
 }
 
@@ -86,7 +85,7 @@ function Module({ module, fullscreenModule, setFullscreenModule, builderMode, ca
     if (!SelectedComponent) return null;
 
     return (
-        <Box
+        <div
             ref={moduleRef}
             data-module-id={module.id}
             className={classNames(
@@ -121,6 +120,6 @@ function Module({ module, fullscreenModule, setFullscreenModule, builderMode, ca
                     canMoveDown={canMoveDown}
                 />
             )}
-        </Box>
+        </div>
     );
 }

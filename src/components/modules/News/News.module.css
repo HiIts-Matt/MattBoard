@@ -113,6 +113,12 @@
         width: 100%;
     }
 
+    .feedRow {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: stretch;
+    }
+
     .articleAnchor {
         text-decoration: none;
         color: inherit;
@@ -166,6 +172,9 @@
             color: var(--glyph-color-solid);
             text-align: left;
             width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .bottomText {

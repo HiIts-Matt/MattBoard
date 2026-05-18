@@ -1,4 +1,3 @@
-import { Box, Text } from "@mantine/core"
 import { memo, useEffect, useRef, useState } from "react"
 import styles from './Clock.module.css'
 import Clock from "react-clock"
@@ -10,13 +9,14 @@ export function ClockComponent({ module }) {
     const clearRef = useRef(null)
 
     useEffect(() => {
-        const msUntilNextSecond = 1000 - new Date().getMilliseconds()
+        const now = new Date()
+        const msUntilNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds()
 
         const timeout = setTimeout(() => {
             setTime(new Date())
-            const interval = setInterval(() => setTime(new Date()), 1000)
+            const interval = setInterval(() => setTime(new Date()), 60000)
             clearRef.current = () => clearInterval(interval)
-        }, msUntilNextSecond)
+        }, msUntilNextMinute)
 
         return () => {
             clearTimeout(timeout)
@@ -56,7 +56,7 @@ const BothWrapper = memo(function BothWrapper({ bigClock, children }) {
     const style = bigClock && side > 0 ? { width: side, height: side } : undefined
 
     return (
-        <Box
+        <div
             ref={ref}
             className={classNames(
                 styles.bothWrapper,
@@ -65,28 +65,27 @@ const BothWrapper = memo(function BothWrapper({ bigClock, children }) {
             style={style}
         >
             {children}
-        </Box>
+        </div>
     )
 });
 
 const Digital = memo(function Digital({ time }) {
     const hours = time.getHours() % 12 || 12
     const minutes = time.getMinutes().toString().padStart(2, '0')
-    const seconds = time.getSeconds().toString().padStart(2, '0')
     const ampm = time.getHours() >= 12 ? 'PM' : 'AM'
 
     return (
-        <Box className={classNames(
+        <div className={classNames(
             styles.colorScheme,
             styles.digitalWrapper,
         )}>
-            <Text className={styles.digitalTime}>
-                {hours}:{minutes}:{seconds}
-            </Text>
-            <Text className={styles.digitalAmPm}>
+            <span className={styles.digitalTime}>
+                {hours}:{minutes}
+            </span>
+            <span className={styles.digitalAmPm}>
                 {ampm}
-            </Text>
-        </Box>
+            </span>
+        </div>
     )
 });
 
@@ -96,7 +95,7 @@ const Analog = memo(function Analog({ time, module }) {
     const showBorder = module?.showBorder ?? true;
 
     return (
-        <Box className={classNames(
+        <div className={classNames(
             styles.colorScheme,
             styles.analogWrapper,
             bigClock ? styles.analogWrapperBig : ''
@@ -112,6 +111,6 @@ const Analog = memo(function Analog({ time, module }) {
                 )}
                 renderNumbers={module?.showNumbers}
             />
-        </Box>
+        </div>
     )
 });

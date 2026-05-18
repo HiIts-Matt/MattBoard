@@ -1,4 +1,4 @@
-import { Box, Loader, Text } from '@mantine/core';
+import { Loader } from '@mantine/core';
 import { IconAlertTriangle } from '@tabler/icons-react';
 import styles from './ModuleAlert.module.css';
 import { classNames } from '../../../utils/utils';
@@ -12,28 +12,28 @@ export function ModuleAlert({
     emptyMessage = 'Nothing to show',
 }) {
     if (!isSetup) return (
-        <Box className={styles.stack}>
+        <div className={styles.stack}>
             <IconAlertTriangle size={42} color='red' />
-            <Text className={classNames(styles.message, styles.error)}>Module Requires Setup</Text>
-        </Box>
+            <span className={classNames(styles.message, styles.error)}>Module Requires Setup</span>
+        </div>
     );
     if (isError) return (
-        <Box className={styles.stack}>
+        <div className={styles.stack}>
             <IconAlertTriangle size={42} color='red' />
-            <Text className={classNames(styles.message, styles.error)}>{errorMessage}</Text>
-        </Box>
+            <span className={classNames(styles.message, styles.error)}>{errorMessage}</span>
+        </div>
     );
     if (isLoading) return (
-        <Box className={styles.stack}>
+        <div className={styles.stack}>
             <Loader color='var(--glyph-color-minimal)' />
-            <Text className={styles.message}>Loading...</Text>
-        </Box>
+            <span className={styles.message}>Loading...</span>
+        </div>
     );
     if (isEmpty) return (
-        <Box className={styles.stack}>
+        <div className={styles.stack}>
             <IconAlertTriangle size={42} color='red' />
-            <Text className={classNames(styles.message, styles.error)}>{emptyMessage}</Text>
-        </Box>
+            <span className={classNames(styles.message, styles.error)}>{emptyMessage}</span>
+        </div>
     );
     return null;
 }

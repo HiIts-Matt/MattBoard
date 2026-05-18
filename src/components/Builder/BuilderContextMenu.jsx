@@ -1,4 +1,4 @@
-import { Box, Text, Switch, Select, NumberInput, ActionIcon, Divider, Stack, Transition, Tooltip, UnstyledButton, TextInput, Slider, SegmentedControl } from '@mantine/core';
+import { Switch, Select, NumberInput, ActionIcon, Divider, Transition, Tooltip, UnstyledButton, TextInput, Slider, SegmentedControl } from '@mantine/core';
 import { IconLocationSearch, IconTrash, IconPlus, IconX, IconCheck, IconPlugConnectedX } from '@tabler/icons-react';
 import { useCalendarAuth } from '../../api/useCalendarAuth';
 import { useNews } from '../../api/useNews';
@@ -64,8 +64,8 @@ export function BuilderContextMenu({ builderMode }) {
 
                     }}
                 >
-                    <Box ref={menuRef} className={styles.menu} style={transitionStyle}>
-                        <Box className={styles.header}>
+                    <div ref={menuRef} className={styles.menu} style={transitionStyle}>
+                        <div className={styles.header}>
                             <Select
                                 variant="unstyled"
                                 searchable
@@ -96,12 +96,12 @@ export function BuilderContextMenu({ builderMode }) {
                                     <IconTrash size={14} />
                                 </ActionIcon>
                             </Tooltip>
-                        </Box>
+                        </div>
 
                         {settings.length > 0 && (
                             <>
                                 <Divider color="rgba(255, 255, 255, 0.3)" />
-                                <Stack gap={0} className={styles.settings}>
+                                <div className={styles.settings}>
                                     {settings.map(setting => {
                                         if (setting.type === 'settingGroup') return (
                                             <SettingGroupRow
@@ -147,10 +147,10 @@ export function BuilderContextMenu({ builderMode }) {
                                             />
                                         );
                                     })}
-                                </Stack>
+                                </div>
                             </>
                         )}
-                    </Box>
+                    </div>
                 </div>
             )}
         </Transition>
@@ -160,16 +160,16 @@ export function BuilderContextMenu({ builderMode }) {
 function SettingGroupRow({ setting, moduleValues, onChangeSetting }) {
     const enabled = !!moduleValues?.[setting.toggleKey];
     return (
-        <Box className={styles.settingGroup}>
-            <Box className={styles.groupHeader}>
-                <Text className={styles.label}>{setting.label}</Text>
+        <div className={styles.settingGroup}>
+            <div className={styles.groupHeader}>
+                <span className={styles.label}>{setting.label}</span>
                 <Switch
                     size="xs"
                     checked={enabled}
                     onChange={e => onChangeSetting(setting.toggleKey, e.currentTarget.checked)}
                 />
-            </Box>
-            <Box className={classNames(styles.groupChildren, !enabled && styles.groupChildrenDisabled)}>
+            </div>
+            <div className={classNames(styles.groupChildren, !enabled && styles.groupChildrenDisabled)}>
                 {setting.children?.map(child => (
                     <SettingRow
                         key={child.key}
@@ -178,26 +178,26 @@ function SettingGroupRow({ setting, moduleValues, onChangeSetting }) {
                         onChange={val => onChangeSetting(child.key, val)}
                     />
                 ))}
-            </Box>
-        </Box>
+            </div>
+        </div>
     );
 }
 
 function SettingRow({ setting, value, onChange, onBlur }) {
     if (setting.type === 'boolean') return (
-        <Box className={styles.row}>
-            <Text className={styles.label}>{setting.label}</Text>
+        <div className={styles.row}>
+            <span className={styles.label}>{setting.label}</span>
             <Switch
                 size="xs"
                 checked={!!value}
                 onChange={e => onChange(e.currentTarget.checked)}
             />
-        </Box>
+        </div>
     );
 
     if (setting.type === 'select') return (
-        <Box className={styles.row}>
-            <Text className={styles.label}>{setting.label}</Text>
+        <div className={styles.row}>
+            <span className={styles.label}>{setting.label}</span>
             <Select
                 size="xs"
                 value={value ?? null}
@@ -207,12 +207,12 @@ function SettingRow({ setting, value, onChange, onBlur }) {
                 classNames={{ input: styles.input }}
                 comboboxProps={{ zIndex: 600 }}
             />
-        </Box>
+        </div>
     );
 
     if (setting.type === 'text') return (
-        <Box className={styles.textRow}>
-            <Text className={styles.label}>{setting.label}</Text>
+        <div className={styles.textRow}>
+            <span className={styles.label}>{setting.label}</span>
             <TextInput
                 size="xs"
                 value={value ?? ''}
@@ -221,12 +221,12 @@ function SettingRow({ setting, value, onChange, onBlur }) {
                 onBlur={onBlur}
                 classNames={{ input: styles.input }}
             />
-        </Box>
+        </div>
     );
 
     if (setting.type === 'number') return (
-        <Box className={styles.row}>
-            <Text className={styles.label}>{setting.label}</Text>
+        <div className={styles.row}>
+            <span className={styles.label}>{setting.label}</span>
             <NumberInput
                 size="xs"
                 value={value ?? ''}
@@ -234,15 +234,15 @@ function SettingRow({ setting, value, onChange, onBlur }) {
                 w={100}
                 classNames={{ input: styles.input }}
             />
-        </Box>
+        </div>
     );
 
     if (setting.type === 'slider') return (
-        <Box className={classNames(styles.row, styles.sliderRow)}>
-            <Box className={styles.sliderHeader}>
-                <Text className={styles.label}>{setting.label}</Text>
-                <Text className={styles.sliderValue}>{value ?? setting.min ?? 0}</Text>
-            </Box>
+        <div className={classNames(styles.row, styles.sliderRow)}>
+            <div className={styles.sliderHeader}>
+                <span className={styles.label}>{setting.label}</span>
+                <span className={styles.sliderValue}>{value ?? setting.min ?? 0}</span>
+            </div>
             <Slider
                 value={value ?? setting.min ?? 0}
                 onChange={onChange}
@@ -252,11 +252,11 @@ function SettingRow({ setting, value, onChange, onBlur }) {
                 size="xs"
                 classNames={{ root: styles.sliderRoot, track: styles.sliderTrack, thumb: styles.sliderThumb }}
             />
-        </Box>
+        </div>
     );
 
     if (setting.type === 'control') return (
-        <Box className={styles.controlRow}>
+        <div className={styles.controlRow}>
             <SegmentedControl
                 value={value ? 'true' : 'false'}
                 onChange={val => onChange(val === 'true')}
@@ -272,7 +272,7 @@ function SettingRow({ setting, value, onChange, onBlur }) {
                     label: styles.segmentedLabel,
                 }}
             />
-        </Box>
+        </div>
     );
 
     const needsSetup = setting.required && (!value || (Array.isArray(value) && value.length === 0));
@@ -288,11 +288,11 @@ function GoogleAuthRow() {
     const needsSetup = !isLoading && !connected;
 
     return (
-        <Box className={classNames(styles.row, styles.googleAuthRow)}>
-            <Box className={styles.titleBox} style={needsSetup ? { backgroundColor: 'var(--mantine-color-red-light)' } : undefined}>
-                <Text className={styles.title}>Google Calendar</Text>
-                <Box className={styles.rightSection}>
-                    <Box className={classNames(styles.statusDot, (!isLoading && connected) ? styles.connected : styles.disconnected)} />
+        <div className={classNames(styles.row, styles.googleAuthRow)}>
+            <div className={styles.titleBox} style={needsSetup ? { backgroundColor: 'var(--mantine-color-red-light)' } : undefined}>
+                <span className={styles.title}>Google Calendar</span>
+                <div className={styles.rightSection}>
+                    <div className={classNames(styles.statusDot, (!isLoading && connected) ? styles.connected : styles.disconnected)} />
                     {connected && (
                         <ActionIcon
                             variant="subtle"
@@ -304,33 +304,33 @@ function GoogleAuthRow() {
                             <IconPlugConnectedX size={16} />
                         </ActionIcon>
                     )}
-                </Box>
-            </Box>
+                </div>
+            </div>
             {!isLoading && !connected && (
-                <Box className={styles.googleAuthContent}>
-                    <Text className={styles.googleAuthStep}>
+                <div className={styles.googleAuthContent}>
+                    <span className={styles.googleAuthStep}>
                         <span className={styles.stepNum}>1</span>
                         Visit on any device:
-                    </Text>
-                    <Box className={styles.authUrlRow}>
-                        <Text className={styles.authUrl} truncate>{authUrl}</Text>
+                    </span>
+                    <div className={styles.authUrlRow}>
+                        <span className={styles.authUrl}>{authUrl}</span>
                         <ActionIcon size="xs" variant="subtle" onClick={() => navigator.clipboard.writeText(authUrl)}>
                             <IconCheck size={12} />
                         </ActionIcon>
-                    </Box>
-                    <Text className={styles.googleAuthStep}>
+                    </div>
+                    <span className={styles.googleAuthStep}>
                         <span className={styles.stepNum}>2</span>
                         Sign in with Google
-                    </Text>
+                    </span>
                     <UnstyledButton
                         className={styles.connectThisDevice}
                         onClick={openAuthTab}
                     >
                         Sign in on this device →
                     </UnstyledButton>
-                </Box>
+                </div>
             )}
-        </Box>
+        </div>
     );
 }
 
@@ -351,24 +351,24 @@ function FeedUrlsRow({ value = [], onChange, needsSetup }) {
     }
 
     return (
-        <Box className={classNames(styles.row, styles.feedUrls, needsSetup ? styles.needsSetup : '')}>
-            <Box className={styles.titleBox}>
-                <Text className={styles.title}>RSS Feeds</Text>
-                {needsSetup && <Text className={styles.setupRequired}>Setup required</Text>}
-            </Box>
+        <div className={classNames(styles.row, styles.feedUrls, needsSetup ? styles.needsSetup : '')}>
+            <div className={styles.titleBox}>
+                <span className={styles.title}>RSS Feeds</span>
+                {needsSetup && <span className={styles.setupRequired}>Setup required</span>}
+            </div>
             {value.map(url => {
                 const status = feedStatuses?.[url];
                 return (
-                    <Box key={url} className={classNames(styles.feedItem, status === 'error' && styles.feedItemError)}>
-                        <Box className={classNames(styles.feedStatusDot, styles[`feedStatus_${status}`])} />
-                        <Text className={styles.feedLabel} truncate title={url}>{feedLabel(url)}</Text>
+                    <div key={url} className={classNames(styles.feedItem, status === 'error' && styles.feedItemError)}>
+                        <div className={classNames(styles.feedStatusDot, styles[`feedStatus_${status}`])} />
+                        <span className={styles.feedLabel} title={url}>{feedLabel(url)}</span>
                         <ActionIcon size="xs" variant="subtle" color="red" onClick={() => onChange(value.filter(u => u !== url))}>
                             <IconX size={12} />
                         </ActionIcon>
-                    </Box>
+                    </div>
                 );
             })}
-            <Box className={styles.feedAddRow}>
+            <div className={styles.feedAddRow}>
                 <TextInput
                     size="xs"
                     placeholder="New RSS Url"
@@ -381,8 +381,8 @@ function FeedUrlsRow({ value = [], onChange, needsSetup }) {
                 <ActionIcon size="md" onClick={add} disabled={!input.trim()} className={styles.actionIcon}>
                     <IconPlus size={14} />
                 </ActionIcon>
-            </Box>
-        </Box>
+            </div>
+        </div>
     );
 }
 
@@ -418,10 +418,10 @@ function LocationRow({ value, onChange, needsSetup }) {
     }
 
     return (
-        <Box className={classNames(styles.row, styles.location)}>
-            <Box className={styles.titleBox} style={needsSetup ? { backgroundColor: 'var(--mantine-color-red-light)' } : undefined}>
-                <Text className={styles.title}>Location</Text>
-            </Box>
+        <div className={classNames(styles.row, styles.location)}>
+            <div className={styles.titleBox} style={needsSetup ? { backgroundColor: 'var(--mantine-color-red-light)' } : undefined}>
+                <span className={styles.title}>Location</span>
+            </div>
             <UnstyledButton
                 className={styles.currLocationButton}
                 onClick={useCurrentLocation}
@@ -432,7 +432,7 @@ function LocationRow({ value, onChange, needsSetup }) {
             </UnstyledButton>
 
             <Divider color="rgba(255,255,255,0.15)" label="OR" />
-            <Box px={10}>
+            <div style={{ padding: '0 10px' }}>
                 <Select
                     size="xs"
                     placeholder="Search address…"
@@ -452,11 +452,11 @@ function LocationRow({ value, onChange, needsSetup }) {
                     classNames={{ input: styles.input, dropdown: styles.typeDropdown, option: styles.typeOption }}
                     comboboxProps={{ zIndex: 600 }}
                 />
-            </Box>
+            </div>
             <Divider color="rgba(255,255,255,0.15)" label="OR" labelProps={{ style: { color: 'rgba(255,255,255,0.3)', fontSize: 10 } }} />
-            <Box className={styles.coordRow}>
-                <Box className={styles.coordSection}>
-                    <Text className={styles.coordLabel}>Lat</Text>
+            <div className={styles.coordRow}>
+                <div className={styles.coordSection}>
+                    <span className={styles.coordLabel}>Lat</span>
                     <NumberInput
                         size="xs"
                         placeholder="Lat"
@@ -465,9 +465,9 @@ function LocationRow({ value, onChange, needsSetup }) {
                         decimalScale={5}
                         classNames={{ root: styles.root, input: styles.input, label: styles.label }}
                     />
-                </Box>
-                <Box className={styles.coordSection}>
-                    <Text className={styles.coordLabel}>Long</Text>
+                </div>
+                <div className={styles.coordSection}>
+                    <span className={styles.coordLabel}>Long</span>
                     <NumberInput
                         size="xs"
                         placeholder="Lon"
@@ -476,8 +476,8 @@ function LocationRow({ value, onChange, needsSetup }) {
                         decimalScale={5}
                         classNames={{ root: styles.root, input: styles.input, label: styles.label }}
                     />
-                </Box>
-            </Box>
-        </Box>
+                </div>
+            </div>
+        </div>
     );
 }

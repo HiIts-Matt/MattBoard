@@ -1,4 +1,4 @@
-import { Anchor, Box, Group, ScrollArea, Stack, Text } from '@mantine/core'
+import { ScrollArea } from '@mantine/core'
 import styles from './News.module.css'
 import { classNames } from '../../../utils/utils';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
@@ -20,18 +20,18 @@ function timeAgo(dateStr) {
 
 const ArticleItem = memo(function ArticleItem({ article }) {
     return (
-        <Anchor
+        <a
             href={article.link}
             target="_blank"
             rel="noreferrer"
             className={classNames(styles.article, styles.articleAnchor)}
         >
-            <Text className={styles.articleTitle}>{article.title}</Text>
-            <Text className={styles.subText} truncate>{article?.contentSnippet}</Text>
-            <Text className={styles.bottomText}>
+            <span className={styles.articleTitle}>{article.title}</span>
+            <span className={styles.subText}>{article?.contentSnippet}</span>
+            <span className={styles.bottomText}>
                 {[article.source, timeAgo(article.pubDate)].filter(Boolean).join(' / ')}
-            </Text>
-        </Anchor>
+            </span>
+        </a>
     );
 });
 
@@ -94,7 +94,7 @@ export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
     }, [visibleArticles.length]);
 
     return (
-        <Box className={classNames(styles.newsBox, isFullscreen ? styles.opened : '')}>
+        <div className={classNames(styles.newsBox, isFullscreen ? styles.opened : '')}>
             <ModuleTitle
                 icon={<IconNews color='var(--glyph-color-filled)' size={40} />}
                 title="News"
@@ -134,12 +134,12 @@ export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
                             <ArticleItem key={i} article={article} />
                         ))}
                     </ScrollArea.Autosize>
-                    <Stack className={styles.feedColumns} gap={0}>
+                    <div className={styles.feedColumns}>
                         {sourceRows.map((row, rowIdx) => (
-                            <Group key={rowIdx} className={styles.feedRow} align="stretch" gap={0} wrap="nowrap">
+                            <div key={rowIdx} className={styles.feedRow}>
                                 {row.map(({ source, articles }) => (
-                                    <Stack key={source} className={styles.feedColumnWrapper} gap={0}>
-                                        <Text className={styles.feedColumnTitle}>{source}</Text>
+                                    <div key={source} className={styles.feedColumnWrapper}>
+                                        <span className={styles.feedColumnTitle}>{source}</span>
                                         <ScrollArea
                                             type="hover"
                                             classNames={{ root: styles.feedColumn }}
@@ -148,13 +148,13 @@ export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
                                                 <ArticleItem key={i} article={article} />
                                             ))}
                                         </ScrollArea>
-                                    </Stack>
+                                    </div>
                                 ))}
-                            </Group>
+                            </div>
                         ))}
-                    </Stack>
+                    </div>
                 </>
             )}
-        </Box>
+        </div>
     )
 }
