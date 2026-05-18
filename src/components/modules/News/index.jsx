@@ -1,4 +1,3 @@
-import { ScrollArea } from '@mantine/core'
 import styles from './News.module.css'
 import { classNames } from '../../../utils/utils';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
@@ -6,6 +5,7 @@ import { useNews } from '../../../api/useNews';
 import { IconArrowsMaximize, IconArrowsMinimize, IconMoodConfuzed, IconMoodHappy, IconNews } from '@tabler/icons-react';
 import { ModuleTitle } from '../shared/ModuleTitle';
 import { ModuleAlert } from '../shared/ModuleAlert';
+import { ScrollBox } from '../../primitives';
 
 function timeAgo(dateStr) {
     if (!dateStr) return '';
@@ -85,10 +85,9 @@ export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
         return rows;
     }, [articlesBySource]);
 
-    const handleScrollPosition = useCallback(({ y }) => {
-        const el = articleListRef.current;
-        if (!el) return;
-        if (el.scrollHeight - y - el.clientHeight < 50) {
+    const handleScroll = useCallback((e) => {
+        const el = e.currentTarget;
+        if (el.scrollHeight - el.scrollTop - el.clientHeight < 50) {
             setVisibleCount(prev => Math.min(prev + 10, visibleArticles.length));
         }
     }, [visibleArticles.length]);
@@ -123,31 +122,26 @@ export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
 
             {!isLoading && !isError && sorted.length > 0 && (
                 <>
-                    <ScrollArea.Autosize
-                        type="hover"
-                        scrollbars="y"
-                        classNames={{ root: styles.articleList, viewport: styles.articleListViewport }}
-                        viewportRef={articleListRef}
-                        onScrollPositionChange={handleScrollPosition}
+                    <ScrollBox
+                        ref={articleListRef}
+                        className={styles.articleList}
+                        onScroll={handleScroll}
                     >
                         {displayedArticles.map((article, i) => (
                             <ArticleItem key={i} article={article} />
                         ))}
-                    </ScrollArea.Autosize>
+                    </ScrollBox>
                     <div className={styles.feedColumns}>
                         {sourceRows.map((row, rowIdx) => (
                             <div key={rowIdx} className={styles.feedRow}>
                                 {row.map(({ source, articles }) => (
                                     <div key={source} className={styles.feedColumnWrapper}>
                                         <span className={styles.feedColumnTitle}>{source}</span>
-                                        <ScrollArea
-                                            type="hover"
-                                            classNames={{ root: styles.feedColumn }}
-                                        >
+                                        <ScrollBox className={styles.feedColumn}>
                                             {articles.map((article, i) => (
                                                 <ArticleItem key={i} article={article} />
                                             ))}
-                                        </ScrollArea>
+                                        </ScrollBox>
                                     </div>
                                 ))}
                             </div>

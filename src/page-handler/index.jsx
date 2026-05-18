@@ -1,6 +1,6 @@
-import { Loader } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
 import styles from './pageHandler.module.css';
+import { Spinner } from "../components/primitives";
 import { config as localConfig } from '../appConfig/appConfig.js';
 import { Page } from "../components/Page";
 import { PageControls } from "./page-controls";
@@ -48,7 +48,7 @@ export function PageHandler() {
 
     if (isLoading) return (
         <div style={{ width: '100vw', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Loader color="white" />
+            <Spinner color="white" />
         </div>
     );
 

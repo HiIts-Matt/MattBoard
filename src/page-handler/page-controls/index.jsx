@@ -1,4 +1,4 @@
-import { Menu, TextInput, HoverCard } from "@mantine/core";
+import { Input, HoverPopover, DropdownMenu, MenuItem, MenuLabel } from "../../components/primitives";
 import {
     IconChevronLeft, IconChevronRight,
     IconPencil, IconDeviceFloppy, IconX, IconPlus,
@@ -136,27 +136,16 @@ function Toolbar({
 
 function BuilderModeButton({ onEnterBuilder, builderMode }) {
     return (
-        <HoverCard
-            withinPortal={false}
-            withArrow
-            transitionProps={{ transition: 'pop' }}
+        <HoverPopover
+            className={classNames(styles.editButton, builderMode ? styles.hide : '')}
+            onClick={onEnterBuilder}
             disabled={builderMode}
+            dropdownClassName={styles.saveMenu}
+            dropdown={<span className={styles.toolTip}>Enter Builder Mode</span>}
+            position="top"
         >
-            <HoverCard.Target>
-                <div
-                    className={classNames(
-                        styles.editButton,
-                        builderMode ? styles.hide : ''
-                    )}
-                    onClick={onEnterBuilder}
-                >
-                    <IconTools size={20} color="white" />
-                </div>
-            </HoverCard.Target>
-            <HoverCard.Dropdown className={styles.saveMenu}>
-                <span className={styles.toolTip}>Enter Builder Mode</span>
-            </HoverCard.Dropdown>
-        </HoverCard>
+            <IconTools size={20} color="white" />
+        </HoverPopover>
     )
 }
 
@@ -169,54 +158,45 @@ function XButton({ activeConfig, onDiscard, builderMode }) {
     const [xOpen, setXOpen, resetXState] = useTempState(false, seconds(3))
 
     return (
-        <HoverCard
-            withinPortal={false}
-            withArrow
-            transitionProps={{ transition: 'pop' }}
+        <HoverPopover
+            className={classNames(styles.toolbarPill, builderMode && styles.visible, xOpen && styles.xOpen)}
+            onClick={() => {
+                if (xOpen) {
+                    onDiscard();
+                    resetXState();
+                }
+                else if (!xOpen && !hasChanges) {
+                    onDiscard();
+                    resetXState();
+                }
+                else {
+                    setXOpen(true);
+                }
+            }}
             disabled={!builderMode}
-        >
-            <HoverCard.Target>
-                <div
-                    className={classNames(styles.toolbarPill, builderMode && styles.visible, xOpen && styles.xOpen)}
-                    onClick={() => {
-                        if (xOpen) {
-                            onDiscard();
-                            resetXState();
-                        }
-                        else if (!xOpen && !hasChanges) {
-                            onDiscard();
-                            resetXState();
-                        }
-                        else {
-                            setXOpen(true);
-                        }
-                    }}
-                >
-                    <IconX size={20} color="white" />
-                </div>
-            </HoverCard.Target>
-            <HoverCard.Dropdown className={classNames(
+            dropdownClassName={classNames(
                 styles.saveMenu,
                 xOpen ? styles.redHighlight : ''
-            )}>
-                {xOpen ? (
-                    <div className={styles.confirmBox}>
-                        <div className={styles.titleWrapper}>
-                            <span className={styles.titleText}>Are You Sure</span>
-                        </div>
-                        <span className={styles.subText}>This will permanently delete any unsaved changes</span>
+            )}
+            dropdown={xOpen ? (
+                <div className={styles.confirmBox}>
+                    <div className={styles.titleWrapper}>
+                        <span className={styles.titleText}>Are You Sure</span>
                     </div>
-                ) : (
-                    <span className={styles.toolTip}>
-                        {hasChanges
-                            ? 'Discard Changes'
-                            : 'Exit Builder Mode'
-                        }
-                    </span>
-                )}
-
-            </HoverCard.Dropdown>
-        </HoverCard >
+                    <span className={styles.subText}>This will permanently delete any unsaved changes</span>
+                </div>
+            ) : (
+                <span className={styles.toolTip}>
+                    {hasChanges
+                        ? 'Discard Changes'
+                        : 'Exit Builder Mode'
+                    }
+                </span>
+            )}
+            position='top'
+        >
+            <IconX size={20} color="white" />
+        </HoverPopover>
     )
 }
 
@@ -224,30 +204,26 @@ function AddModule({ builderMode, onAddModule }) {
     const moduleTypes = Object.keys(components);
 
     return (
-        <Menu
-            withinPortal={false}
-            withArrow
-            transitionProps={{ transition: 'pop' }}
+        <DropdownMenu
+            className={classNames(styles.toolbarPill, styles.delay60, builderMode && styles.visible)}
+            dropdownClassName={styles.saveMenu}
+            position="top"
+            items={
+                <>
+                    <MenuLabel>Add Module</MenuLabel>
+                    {moduleTypes.map(type => (
+                        <MenuItem
+                            key={type}
+                            onClick={() => onAddModule(type)}
+                        >
+                            {type.split(1).map(([firstChar, ...rest]) => [firstChar.toUpperCase(), rest])}
+                        </MenuItem>
+                    ))}
+                </>
+            }
         >
-            <Menu.Target>
-                <div
-                    className={classNames(styles.toolbarPill, styles.delay60, builderMode && styles.visible)}
-                >
-                    <IconPlus size={20} color="white" />
-                </div>
-            </Menu.Target>
-            <Menu.Dropdown className={styles.saveMenu}>
-                <Menu.Label>Add Module</Menu.Label>
-                {moduleTypes.map(type => (
-                    <Menu.Item
-                        key={type}
-                        onClick={() => onAddModule(type)}
-                    >
-                        {type.split(1).map(([firstChar, ...rest]) => [firstChar.toUpperCase(), rest])}
-                    </Menu.Item>
-                ))}
-            </Menu.Dropdown>
-        </Menu>
+            <IconPlus size={20} color="white" />
+        </DropdownMenu>
     )
 }
 
@@ -266,81 +242,80 @@ function SaveConfig({ onSave, builderMode, configData }) {
     }
 
     return (
-        <Menu
-            withinPortal={false}
-            withArrow
-            transitionProps={{ transition: 'pop' }}
+        <DropdownMenu
+            className={classNames(styles.toolbarPill, styles.delay120, builderMode && styles.visible)}
+            dropdownClassName={styles.saveMenu}
+            position="top"
             onClose={() => { setSavingNew(false); setNewName(''); }}
-        >
-            <Menu.Target>
-                <div className={classNames(styles.toolbarPill, styles.delay120, builderMode && styles.visible)}>
-                    <IconDeviceFloppy size={20} color="white" />
-                </div>
-            </Menu.Target>
-            <Menu.Dropdown className={styles.saveMenu}>
-                <Menu.Label>Save Configuration</Menu.Label>
-                <Menu.Item leftSection={<IconDeviceFloppy />} onClick={() => onSave()}>
-                    Overwrite Current
-                </Menu.Item>
-                {otherConfigs.length > 0 && <>
-                    <Menu.Label>Overwrite other config</Menu.Label>
-                    {otherConfigs.map(config => (
-                        <Menu.Item
-                            key={config.id}
-                            leftSection={<IconDeviceFloppy />}
-                            onClick={() => onSave(config.id)}
+            items={
+                <>
+                    <MenuLabel>Save Configuration</MenuLabel>
+                    <MenuItem leftSection={<IconDeviceFloppy />} onClick={() => onSave()}>
+                        Overwrite Current
+                    </MenuItem>
+                    {otherConfigs.length > 0 && <>
+                        <MenuLabel>Overwrite other config</MenuLabel>
+                        {otherConfigs.map(config => (
+                            <MenuItem
+                                key={config.id}
+                                leftSection={<IconDeviceFloppy />}
+                                onClick={() => onSave(config.id)}
+                            >
+                                {config.name}
+                            </MenuItem>
+                        ))}
+                    </>}
+                    {savingNew ? (
+                        <form className={styles.newConfigForm} onSubmit={submitNew}>
+                            <Input
+                                autoFocus
+                                placeholder="Config name"
+                                value={newName}
+                                onChange={e => setNewName(e.currentTarget.value)}
+                                onKeyDown={e => e.key === 'Escape' && setSavingNew(false)}
+                                classNames={{ input: styles.newConfigInput }}
+                            />
+                        </form>
+                    ) : (
+                        <MenuItem
+                            leftSection={<IconPlus />}
+                            closeOnClick={false}
+                            onClick={() => setSavingNew(true)}
                         >
-                            {config.name}
-                        </Menu.Item>
-                    ))}
-                </>}
-                {savingNew ? (
-                    <form className={styles.newConfigForm} onSubmit={submitNew}>
-                        <TextInput
-                            autoFocus
-                            size="xs"
-                            placeholder="Config name"
-                            value={newName}
-                            onChange={e => setNewName(e.currentTarget.value)}
-                            onKeyDown={e => e.key === 'Escape' && setSavingNew(false)}
-                            classNames={{ input: styles.newConfigInput }}
-                        />
-                    </form>
-                ) : (
-                    <Menu.Item
-                        leftSection={<IconPlus />}
-                        closeMenuOnClick={false}
-                        onClick={() => setSavingNew(true)}
-                    >
-                        Save as new...
-                    </Menu.Item>
-                )}
-            </Menu.Dropdown>
-        </Menu>
+                            Save as new...
+                        </MenuItem>
+                    )}
+                </>
+            }
+        >
+            <IconDeviceFloppy size={20} color="white" />
+        </DropdownMenu>
     );
 }
 
 function SwapConfig({ builderMode, configData, onSwap }) {
     return (
-        <Menu withinPortal={false} withArrow transitionProps={{ transition: 'pop' }}>
-            <Menu.Target>
-                <div className={classNames(styles.toolbarPill, styles.delay180, builderMode && styles.visible)}>
-                    <IconSwitch size={20} color="white" />
-                </div>
-            </Menu.Target>
-            <Menu.Dropdown className={styles.saveMenu}>
-                <Menu.Label>Swap Config</Menu.Label>
-                {configData?.configs?.map(config => (
-                    <Menu.Item
-                        key={config.id}
-                        leftSection={config.id === configData.active ? <IconCheck size={16} /> : <span style={{ width: 16 }} />}
-                        onClick={() => onSwap(config.id)}
-                    >
-                        {config.name}
-                    </Menu.Item>
-                ))}
-            </Menu.Dropdown>
-        </Menu>
+        <DropdownMenu
+            className={classNames(styles.toolbarPill, styles.delay180, builderMode && styles.visible)}
+            dropdownClassName={styles.saveMenu}
+            position="top"
+            items={
+                <>
+                    <MenuLabel>Swap Config</MenuLabel>
+                    {configData?.configs?.map(config => (
+                        <MenuItem
+                            key={config.id}
+                            leftSection={config.id === configData.active ? <IconCheck size={16} /> : <span style={{ width: 16 }} />}
+                            onClick={() => onSwap(config.id)}
+                        >
+                            {config.name}
+                        </MenuItem>
+                    ))}
+                </>
+            }
+        >
+            <IconSwitch size={20} color="white" />
+        </DropdownMenu>
     );
 }
 

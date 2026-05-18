@@ -94,13 +94,6 @@
         flex-shrink: 0;
     }
 
-    .articleListViewport > div {
-        display: block !important;
-        width: 100%;
-        min-width: 0 !important;
-        max-width: 100%;
-    }
-
     .feedColumns {
         display: flex;
         flex-direction: column;

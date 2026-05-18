@@ -5,33 +5,38 @@ import "react-clock/dist/Clock.css"
 import { classNames } from "../../../utils/utils"
 
 export function ClockComponent({ module }) {
-    const [time, setTime] = useState(new Date())
-    const clearRef = useRef(null)
+    const [mountTime] = useState(() => new Date())
+    const [time, setTime] = useState(mountTime)
 
     useEffect(() => {
+        let timeoutId
+
+        const tickMinute = () => {
+            setTime(new Date())
+            const now = new Date()
+            const msUntilNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds()
+            timeoutId = setTimeout(tickMinute, msUntilNextMinute)
+        }
+
         const now = new Date()
         const msUntilNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds()
-
-        const timeout = setTimeout(() => {
-            setTime(new Date())
-            const interval = setInterval(() => setTime(new Date()), 60000)
-            clearRef.current = () => clearInterval(interval)
-        }, msUntilNextMinute)
-
-        return () => {
-            clearTimeout(timeout)
-            clearRef.current?.()
-        }
+        timeoutId = setTimeout(tickMinute, msUntilNextMinute)
+        return () => clearTimeout(timeoutId)
     }, [])
+
+    // Negative CSS animation-delay so the second hand starts at the current
+    // wall-clock second instead of at zero. Captured once at mount so the
+    // inline style never changes and the animation never restarts.
+    const secondOffset = `-${mountTime.getSeconds() + mountTime.getMilliseconds() / 1000}s`
 
     const variant = module?.variant || 'digital'
     const bigClock = module?.fullsize
 
     if (variant === 'digital') return <Digital time={time} />
-    if (variant === 'analog') return <Analog time={time} component={module} />
+    if (variant === 'analog') return <Analog time={time} module={module} secondOffset={secondOffset} />
     if (variant === 'both') return (
         <BothWrapper bigClock={bigClock}>
-            <Analog time={time} module={module} />
+            <Analog time={time} module={module} secondOffset={secondOffset} />
             <Digital time={time} type='both' />
         </BothWrapper>
     )
@@ -89,17 +94,20 @@ const Digital = memo(function Digital({ time }) {
     )
 });
 
-const Analog = memo(function Analog({ time, module }) {
+const Analog = memo(function Analog({ time, module, secondOffset }) {
     const bigClock = module?.size === 'lg'
     const showMarks = module?.showMarks ?? true
     const showBorder = module?.showBorder ?? true;
 
     return (
-        <div className={classNames(
-            styles.colorScheme,
-            styles.analogWrapper,
-            bigClock ? styles.analogWrapperBig : ''
-        )}>
+        <div
+            className={classNames(
+                styles.colorScheme,
+                styles.analogWrapper,
+                bigClock ? styles.analogWrapperBig : ''
+            )}
+            style={{ '--clock-second-offset': secondOffset }}
+        >
             <Clock
                 value={time}
                 size={bigClock ? 'calc(100% - 20px)' : '100%'}

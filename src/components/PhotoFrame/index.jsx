@@ -1,6 +1,6 @@
-import { Loader } from "@mantine/core";
 import { useApplePhoto } from "../../api/useApplePhoto";
 import { IconAlertTriangle } from "@tabler/icons-react";
+import { Spinner } from "../primitives";
 
 import styles from './PhotoFrame.module.css'
 
@@ -16,7 +16,7 @@ export function PhotoFrame({ module }) {
         )
         if (isLoading) return (
             <div className={styles.displayWrapper}>
-                <Loader size='lg' />
+                <Spinner size='lg' />
             </div>
         )
         return <img src={photo?.url} />

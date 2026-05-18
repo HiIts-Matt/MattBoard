@@ -1,6 +1,6 @@
-import { ActionIcon, Tooltip } from '@mantine/core';
 import styles from './ModuleTitle.module.css';
 import { classNames } from '../../../utils/utils';
+import { IconButton, Tooltip } from '../../primitives';
 
 export function ModuleTitle({ icon, title, onTitleClick, actions, rightContent }) {
     const left = (
@@ -19,12 +19,12 @@ export function ModuleTitle({ icon, title, onTitleClick, actions, rightContent }
             <div className={styles.actions}>
                 {actions.map((action, i) => (
                     <Tooltip key={i} label={action.tooltip} withArrow disabled={!action.tooltip}>
-                        <ActionIcon
+                        <IconButton
                             className={classNames(styles.actionButton, action.className)}
                             onClick={action.onClick}
                         >
                             {action.icon}
-                        </ActionIcon>
+                        </IconButton>
                     </Tooltip>
                 ))}
             </div>

@@ -32,6 +32,8 @@
 .hourlyList {
     height: fit-content;
     border-bottom: var(--inner-bd);
+    display: flex;
+    flex-direction: row;
 
     .hourlyItem {
         height: 150px;
@@ -61,11 +63,6 @@
     gap: 5px;
     align-items: center;
     justify-content: center;
-}
-
-.hourlyListViewport > div {
-    display: flex !important;
-    flex-direction: row;
 }
 
 .weeklyList {

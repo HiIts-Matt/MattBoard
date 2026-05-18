@@ -2,12 +2,13 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { Modal, Stack, TextInput, Textarea, Button, Group, Text, ActionIcon, SegmentedControl } from '@mantine/core';
 import { useState } from 'react';
 import { useCalendar } from '../../../api/useCalendar';
 import styles from './Calendar.module.css';
 import { IconX, IconCalendarOff } from '@tabler/icons-react';
 import { useCalendarAuth } from '../../../api/useCalendarAuth';
+import { Button, IconButton, Input, Textarea, Segmented } from '../../primitives';
+import { displayModal, useModal } from '../../ModalHandler';
 
 function toLocalDateTimeInput(isoString) {
     if (!isoString) return '';
@@ -25,11 +26,84 @@ function NotConnected({ onConnect }) {
     return (
         <div className={styles.notConnected}>
             <IconCalendarOff size={52} className={styles.notConnectedIcon} />
-            <Text className={styles.notConnectedTitle}>Google Calendar</Text>
-            <Text className={styles.notConnectedSub}>Not connected</Text>
+            <span className={styles.notConnectedTitle}>Google Calendar</span>
+            <span className={styles.notConnectedSub}>Not connected</span>
             <Button className={styles.connectButton} onClick={onConnect}>
                 Connect with Google
             </Button>
+        </div>
+    );
+}
+
+function EventEditModal({ mode, eventId, initialForm, calendarId, createEvent, updateEvent, deleteEvent }) {
+    const { close } = useModal();
+    const [form, setForm] = useState(initialForm);
+    const [saving, setSaving] = useState(false);
+    const [deleting, setDeleting] = useState(false);
+
+    const setField = (key, value) => setForm(f => ({ ...f, [key]: value }));
+
+    const handleSave = async () => {
+        if (!form.title.trim()) return;
+        setSaving(true);
+        const payload = {
+            calendarId, title: form.title, description: form.description,
+            location: form.location, allDay: form.allDay, start: form.start,
+            end: form.end || form.start,
+        };
+        if (mode === 'create') await createEvent(payload);
+        else await updateEvent({ id: eventId, ...payload });
+        setSaving(false);
+        close();
+    };
+
+    const handleDelete = async () => {
+        setDeleting(true);
+        await deleteEvent({ id: eventId, calendarId });
+        setDeleting(false);
+        close();
+    };
+
+    return (
+        <div className={styles.modalStack}>
+            <div className={styles.titleGroup}>
+                <div className={styles.headingStack}>
+                    <span className={styles.modalTitle}>
+                        {mode === 'create' ? 'New Event' : 'Edit Event'}
+                    </span>
+                    <Input
+                        placeholder='Event Title'
+                        variant='unstyled'
+                        value={form.title}
+                        onChange={e => setField('title', e.target.value)}
+                        required
+                        autoFocus
+                    />
+                </div>
+                <IconButton className={styles.xButton} onClick={close}>
+                    <IconX />
+                </IconButton>
+            </div>
+            <Segmented
+                value={form.allDay ? 'allDay' : 'timed'}
+                onChange={value => setField('allDay', value === 'allDay')}
+                data={[{ label: 'All Day', value: 'allDay' }, { label: 'Between Times', value: 'timed' }]}
+                className={styles.allDayControl}
+                fullWidth
+            />
+            <Input label="Start" type={form.allDay ? 'date' : 'datetime-local'} value={form.start} onChange={e => setField('start', e.target.value)} />
+            <Input label="End" type={form.allDay ? 'date' : 'datetime-local'} value={form.end} onChange={e => setField('end', e.target.value)} />
+            <Input label="Location" value={form.location} onChange={e => setField('location', e.target.value)} />
+            <Textarea label="Description" value={form.description} onChange={e => setField('description', e.target.value)} rows={3} />
+            <div className={styles.modalActions}>
+                {mode === 'edit' ? (
+                    <Button className={styles.deleteButton} loading={deleting} onClick={handleDelete}>Delete</Button>
+                ) : <span />}
+                <div className={styles.modalActionsRight}>
+                    <Button onClick={close}>Cancel</Button>
+                    <Button loading={saving} onClick={handleSave}>Save</Button>
+                </div>
+            </div>
         </div>
     );
 }
@@ -40,9 +114,6 @@ export default function CalendarFullsize({ module }) {
     const { calendarId = 'primary', refetchTime } = module ?? {};
     const { events, isAuthError, createEvent, updateEvent, deleteEvent } = useCalendar({ calendarId, refetchTime });
     const { openAuthTab } = useCalendarAuth();
-    const [modal, setModal] = useState(null);
-    const [saving, setSaving] = useState(false);
-    const [deleting, setDeleting] = useState(false);
 
     if (isAuthError) return (
         <div className={styles.calendarWrapper}>
@@ -52,32 +123,46 @@ export default function CalendarFullsize({ module }) {
 
     const openCreate = (dateInfo) => {
         const allDay = dateInfo.allDay;
-        setModal({
-            mode: 'create',
-            form: {
-                ...emptyForm,
-                allDay,
-                start: allDay ? toLocalDateInput(dateInfo.startStr) : toLocalDateTimeInput(dateInfo.startStr),
-                end: allDay ? toLocalDateInput(dateInfo.endStr) : toLocalDateTimeInput(dateInfo.endStr),
-            },
-        });
+        const initialForm = {
+            ...emptyForm,
+            allDay,
+            start: allDay ? toLocalDateInput(dateInfo.startStr) : toLocalDateTimeInput(dateInfo.startStr),
+            end: allDay ? toLocalDateInput(dateInfo.endStr) : toLocalDateTimeInput(dateInfo.endStr),
+        };
+        displayModal(
+            <EventEditModal
+                mode="create"
+                initialForm={initialForm}
+                calendarId={calendarId}
+                createEvent={createEvent}
+                updateEvent={updateEvent}
+                deleteEvent={deleteEvent}
+            />
+        );
     };
 
     const openEdit = (clickInfo) => {
         const e = clickInfo.event;
         const allDay = e.allDay;
-        setModal({
-            mode: 'edit',
-            eventId: e.id,
-            form: {
-                title: e.title,
-                description: e.extendedProps.description ?? '',
-                location: e.extendedProps.location ?? '',
-                allDay,
-                start: allDay ? toLocalDateInput(e.startStr) : toLocalDateTimeInput(e.startStr),
-                end: allDay ? toLocalDateInput(e.endStr) : toLocalDateTimeInput(e.endStr),
-            },
-        });
+        const initialForm = {
+            title: e.title,
+            description: e.extendedProps.description ?? '',
+            location: e.extendedProps.location ?? '',
+            allDay,
+            start: allDay ? toLocalDateInput(e.startStr) : toLocalDateTimeInput(e.startStr),
+            end: allDay ? toLocalDateInput(e.endStr) : toLocalDateTimeInput(e.endStr),
+        };
+        displayModal(
+            <EventEditModal
+                mode="edit"
+                eventId={e.id}
+                initialForm={initialForm}
+                calendarId={calendarId}
+                createEvent={createEvent}
+                updateEvent={updateEvent}
+                deleteEvent={deleteEvent}
+            />
+        );
     };
 
     const handleDrop = async (dropInfo) => {
@@ -102,30 +187,6 @@ export default function CalendarFullsize({ module }) {
         });
     };
 
-    const setField = (key, value) => setModal(m => ({ ...m, form: { ...m.form, [key]: value } }));
-
-    const handleSave = async () => {
-        if (!modal.form.title.trim()) return;
-        setSaving(true);
-        const { form } = modal;
-        const payload = {
-            calendarId, title: form.title, description: form.description,
-            location: form.location, allDay: form.allDay, start: form.start,
-            end: form.end || form.start,
-        };
-        if (modal.mode === 'create') await createEvent(payload);
-        else await updateEvent({ id: modal.eventId, ...payload });
-        setSaving(false);
-        setModal(null);
-    };
-
-    const handleDelete = async () => {
-        setDeleting(true);
-        await deleteEvent({ id: modal.eventId, calendarId });
-        setDeleting(false);
-        setModal(null);
-    };
-
     const fullCalendarEvents = events.map(e => ({
         id: e.id, title: e.title, start: e.start, end: e.end, allDay: e.allDay,
         extendedProps: { description: e.description, location: e.location },
@@ -145,56 +206,6 @@ export default function CalendarFullsize({ module }) {
                 eventResize={handleResize}
                 height="100%"
             />
-
-            <Modal
-                opened={modal !== null}
-                onClose={() => setModal(null)}
-                withCloseButton={false}
-                centered
-                classNames={{ content: styles.modal, overlay: styles.overlay }}
-                radius='var(--component-)'
-                withinPortal={false}
-            >
-                <Stack gap="sm">
-                    <Group className={styles.titleGroup}>
-                        <Stack className={styles.headingStack}>
-                            <Text className={styles.modalTitle}>
-                                {modal?.mode === 'create' ? 'New Event' : 'Edit Event'}
-                            </Text>
-                            <TextInput
-                                placeholder='Event Title'
-                                variant='unstyled'
-                                value={modal?.form.title ?? ''}
-                                onChange={e => setField('title', e.target.value)}
-                                required
-                                data-autofocus
-                            />
-                        </Stack>
-                        <ActionIcon className={styles.xButton} onClick={() => setModal(null)}>
-                            <IconX />
-                        </ActionIcon>
-                    </Group>
-                    <SegmentedControl
-                        value={modal?.form.allDay ? 'allDay' : 'timed'}
-                        onChange={value => setField('allDay', value === 'allDay')}
-                        data={[{ label: 'All Day', value: 'allDay' }, { label: 'Between Times', value: 'timed' }]}
-                        className={styles.allDayControl}
-                    />
-                    <TextInput label="Start" type={modal?.form.allDay ? 'date' : 'datetime-local'} value={modal?.form.start ?? ''} onChange={e => setField('start', e.target.value)} />
-                    <TextInput label="End" type={modal?.form.allDay ? 'date' : 'datetime-local'} value={modal?.form.end ?? ''} onChange={e => setField('end', e.target.value)} />
-                    <TextInput label="Location" value={modal?.form.location ?? ''} onChange={e => setField('location', e.target.value)} />
-                    <Textarea label="Description" value={modal?.form.description ?? ''} onChange={e => setField('description', e.target.value)} rows={3} />
-                    <Group justify="space-between" mt="xs">
-                        {modal?.mode === 'edit' ? (
-                            <Button color="red" variant="subtle" loading={deleting} onClick={handleDelete}>Delete</Button>
-                        ) : <span />}
-                        <Group gap="sm">
-                            <Button variant="subtle" onClick={() => setModal(null)}>Cancel</Button>
-                            <Button loading={saving} onClick={handleSave}>Save</Button>
-                        </Group>
-                    </Group>
-                </Stack>
-            </Modal>
         </div>
     );
 }

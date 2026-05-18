@@ -1,4 +1,4 @@
-import { Switch, Select, NumberInput, ActionIcon, Divider, Transition, Tooltip, UnstyledButton, TextInput, Slider, SegmentedControl } from '@mantine/core';
+import { Select } from '@mantine/core';
 import { IconLocationSearch, IconTrash, IconPlus, IconX, IconCheck, IconPlugConnectedX } from '@tabler/icons-react';
 import { useCalendarAuth } from '../../api/useCalendarAuth';
 import { useNews } from '../../api/useNews';
@@ -10,6 +10,7 @@ import styles from './BuilderContextMenu.module.css';
 import { classNames, seconds } from '../../utils/utils';
 import { useTempState } from '../../hooks/useTempState';
 import { useMenuPosition } from './useMenuPosition';
+import { IconButton, Switch, Input, Slider, Segmented, Divider, UnstyledButton, Transition, Tooltip } from '../primitives';
 
 export function BuilderContextMenu({ builderMode }) {
     const { selectedModuleId, pages, updateModuleSetting, updateModuleSettings, removeModule, swapModuleType, selectModule, renameBuilderToDoList } = useBuilderStore();
@@ -84,23 +85,21 @@ export function BuilderContextMenu({ builderMode }) {
                                 transitionProps={{ transition: 'pop', duration: 150 }}
                                 zIndex={600}
                             >
-                                <ActionIcon
+                                <IconButton
                                     className={classNames(
                                         styles.deleteButton,
                                         deleteOpen ? styles.open : '',
                                     )}
                                     onClick={deleteOpen ? () => removeModule(selectedModuleId) : () => setDeleteOpen(true)}
-                                    size="sm"
-                                    radius={100}
                                 >
                                     <IconTrash size={14} />
-                                </ActionIcon>
+                                </IconButton>
                             </Tooltip>
                         </div>
 
                         {settings.length > 0 && (
                             <>
-                                <Divider color="rgba(255, 255, 255, 0.3)" />
+                                <Divider />
                                 <div className={styles.settings}>
                                     {settings.map(setting => {
                                         if (setting.type === 'settingGroup') return (
@@ -164,7 +163,6 @@ function SettingGroupRow({ setting, moduleValues, onChangeSetting }) {
             <div className={styles.groupHeader}>
                 <span className={styles.label}>{setting.label}</span>
                 <Switch
-                    size="xs"
                     checked={enabled}
                     onChange={e => onChangeSetting(setting.toggleKey, e.currentTarget.checked)}
                 />
@@ -188,7 +186,6 @@ function SettingRow({ setting, value, onChange, onBlur }) {
         <div className={styles.row}>
             <span className={styles.label}>{setting.label}</span>
             <Switch
-                size="xs"
                 checked={!!value}
                 onChange={e => onChange(e.currentTarget.checked)}
             />
@@ -213,8 +210,7 @@ function SettingRow({ setting, value, onChange, onBlur }) {
     if (setting.type === 'text') return (
         <div className={styles.textRow}>
             <span className={styles.label}>{setting.label}</span>
-            <TextInput
-                size="xs"
+            <Input
                 value={value ?? ''}
                 placeholder={setting.placeholder}
                 onChange={e => onChange(e.currentTarget.value)}
@@ -227,11 +223,11 @@ function SettingRow({ setting, value, onChange, onBlur }) {
     if (setting.type === 'number') return (
         <div className={styles.row}>
             <span className={styles.label}>{setting.label}</span>
-            <NumberInput
-                size="xs"
+            <Input
+                type="number"
                 value={value ?? ''}
-                onChange={onChange}
-                w={100}
+                onChange={e => onChange(e.currentTarget.value === '' ? '' : Number(e.currentTarget.value))}
+                style={{ width: 100 }}
                 classNames={{ input: styles.input }}
             />
         </div>
@@ -249,22 +245,20 @@ function SettingRow({ setting, value, onChange, onBlur }) {
                 min={setting.min ?? 0}
                 max={setting.max ?? 1}
                 step={setting.steps ?? 0.1}
-                size="xs"
-                classNames={{ root: styles.sliderRoot, track: styles.sliderTrack, thumb: styles.sliderThumb }}
+                className={styles.sliderRoot}
             />
         </div>
     );
 
     if (setting.type === 'control') return (
         <div className={styles.controlRow}>
-            <SegmentedControl
+            <Segmented
                 value={value ? 'true' : 'false'}
                 onChange={val => onChange(val === 'true')}
                 data={[
                     { value: 'false', label: setting.falseLabel },
                     { value: 'true', label: setting.trueLabel },
                 ]}
-                radius="xl"
                 fullWidth
                 classNames={{
                     root: styles.segmentedRoot,
@@ -294,15 +288,13 @@ function GoogleAuthRow() {
                 <div className={styles.rightSection}>
                     <div className={classNames(styles.statusDot, (!isLoading && connected) ? styles.connected : styles.disconnected)} />
                     {connected && (
-                        <ActionIcon
-                            variant="subtle"
+                        <IconButton
                             className={styles.disconnectButton}
                             onClick={() => disconnect()}
                             loading={isDisconnecting}
-                            size={18}
                         >
                             <IconPlugConnectedX size={16} />
-                        </ActionIcon>
+                        </IconButton>
                     )}
                 </div>
             </div>
@@ -314,9 +306,9 @@ function GoogleAuthRow() {
                     </span>
                     <div className={styles.authUrlRow}>
                         <span className={styles.authUrl}>{authUrl}</span>
-                        <ActionIcon size="xs" variant="subtle" onClick={() => navigator.clipboard.writeText(authUrl)}>
+                        <IconButton onClick={() => navigator.clipboard.writeText(authUrl)}>
                             <IconCheck size={12} />
-                        </ActionIcon>
+                        </IconButton>
                     </div>
                     <span className={styles.googleAuthStep}>
                         <span className={styles.stepNum}>2</span>
@@ -362,15 +354,14 @@ function FeedUrlsRow({ value = [], onChange, needsSetup }) {
                     <div key={url} className={classNames(styles.feedItem, status === 'error' && styles.feedItemError)}>
                         <div className={classNames(styles.feedStatusDot, styles[`feedStatus_${status}`])} />
                         <span className={styles.feedLabel} title={url}>{feedLabel(url)}</span>
-                        <ActionIcon size="xs" variant="subtle" color="red" onClick={() => onChange(value.filter(u => u !== url))}>
+                        <IconButton onClick={() => onChange(value.filter(u => u !== url))}>
                             <IconX size={12} />
-                        </ActionIcon>
+                        </IconButton>
                     </div>
                 );
             })}
             <div className={styles.feedAddRow}>
-                <TextInput
-                    size="xs"
+                <Input
                     placeholder="New RSS Url"
                     value={input}
                     onChange={e => setInput(e.currentTarget.value)}
@@ -378,9 +369,9 @@ function FeedUrlsRow({ value = [], onChange, needsSetup }) {
                     classNames={{ input: styles.input }}
                     style={{ flex: 1 }}
                 />
-                <ActionIcon size="md" onClick={add} disabled={!input.trim()} className={styles.actionIcon}>
+                <IconButton onClick={add} disabled={!input.trim()} className={styles.actionIcon}>
                     <IconPlus size={14} />
-                </ActionIcon>
+                </IconButton>
             </div>
         </div>
     );
@@ -431,7 +422,7 @@ function LocationRow({ value, onChange, needsSetup }) {
                 {locating ? 'Locating…' : 'Use Current Location'}
             </UnstyledButton>
 
-            <Divider color="rgba(255,255,255,0.15)" label="OR" />
+            <Divider label="OR" />
             <div style={{ padding: '0 10px' }}>
                 <Select
                     size="xs"
@@ -453,28 +444,36 @@ function LocationRow({ value, onChange, needsSetup }) {
                     comboboxProps={{ zIndex: 600 }}
                 />
             </div>
-            <Divider color="rgba(255,255,255,0.15)" label="OR" labelProps={{ style: { color: 'rgba(255,255,255,0.3)', fontSize: 10 } }} />
+            <Divider label="OR" />
             <div className={styles.coordRow}>
                 <div className={styles.coordSection}>
                     <span className={styles.coordLabel}>Lat</span>
-                    <NumberInput
-                        size="xs"
+                    <Input
+                        type="number"
+                        step="0.00001"
                         placeholder="Lat"
                         value={value?.lat ?? ''}
-                        onChange={lat => onChange({ ...value, lat })}
-                        decimalScale={5}
-                        classNames={{ root: styles.root, input: styles.input, label: styles.label }}
+                        onChange={e => {
+                            const v = e.currentTarget.value;
+                            onChange({ ...value, lat: v === '' ? '' : Number(v) });
+                        }}
+                        className={styles.root}
+                        classNames={{ input: styles.input, label: styles.label }}
                     />
                 </div>
                 <div className={styles.coordSection}>
                     <span className={styles.coordLabel}>Long</span>
-                    <NumberInput
-                        size="xs"
+                    <Input
+                        type="number"
+                        step="0.00001"
                         placeholder="Lon"
                         value={value?.lon ?? ''}
-                        onChange={lon => onChange({ ...value, lon })}
-                        decimalScale={5}
-                        classNames={{ root: styles.root, input: styles.input, label: styles.label }}
+                        onChange={e => {
+                            const v = e.currentTarget.value;
+                            onChange({ ...value, lon: v === '' ? '' : Number(v) });
+                        }}
+                        className={styles.root}
+                        classNames={{ input: styles.input, label: styles.label }}
                     />
                 </div>
             </div>

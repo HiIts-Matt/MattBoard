@@ -4,6 +4,7 @@ import { createTheme, MantineProvider } from '@mantine/core';
 import { Page } from './components/Page';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PageHandler } from './page-handler';
+import { ModalHandler } from './components/ModalHandler';
 import { Component } from 'react';
 
 class ErrorBoundary extends Component {
@@ -32,6 +33,7 @@ function App() {
                     cssVariablesResolver={cssVariablesResolver}
                 >
                     <PageHandler />
+                    <ModalHandler />
                 </MantineProvider>
             </QueryClientProvider>
         </ErrorBoundary>

@@ -4,6 +4,7 @@
     justify-content: space-between;
     pointer-events: none;
     padding: 10px;
+    padding-bottom: 0px;
     z-index: 1;
     transition: background 0.2s;
 
@@ -24,6 +25,7 @@
     cursor: pointer;
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
         opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 10px;
 }
 
 .namePillClip {
@@ -31,6 +33,7 @@
     padding-top: 2px;
     padding-left: 2px;
     padding-right: 2px;
+    padding-bottom: 10px;
 }
 
 .namePill {
@@ -169,6 +172,7 @@
     gap: 8px;
     position: absolute;
     right: -205px;
+    padding-bottom: 10px;
 
     .newConfigForm {
         padding: 6px 8px;
@@ -198,34 +202,6 @@
         color: var(--nav-text-color);
         padding: 0px;
         pointer-events: all;
-
-        :global(.mantine-Menu-label) {
-            border-bottom: var(--nav-divider);
-            text-align: left;
-            background: var(--mantine-color-gray-light);
-            color: var(--nav-text-color);
-            font-family: var(--main-font);
-
-            &:not(:first-child) {
-                border-top: var(--nav-divider);
-            }
-        }
-
-        :global(.mantine-Menu-item) {
-            color: var(--nav-text-color);
-            background: transparent;
-            transition: all 0.15s;
-            font-size: 12px;
-            font-family: var(--main-font);
-
-            svg {
-                width: 20px;
-            }
-
-            &:hover {
-                background: var(--mantine-color-gray-light);
-            }
-        }
 
         .confirmBox {
             border-radius: 10px;

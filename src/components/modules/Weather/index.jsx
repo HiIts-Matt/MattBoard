@@ -1,4 +1,3 @@
-import { Collapse, ScrollArea } from "@mantine/core";
 import styles from './Weather.module.css'
 import { memo, useMemo, useState } from "react";
 import { useWeather } from "../../../api/useWeather";
@@ -6,6 +5,7 @@ import { Icon } from '@iconify/react';
 import { IconChevronDown, IconChevronUp, IconDropletDown } from "@tabler/icons-react";
 import { ModuleTitle } from '../shared/ModuleTitle';
 import { ModuleAlert } from '../shared/ModuleAlert';
+import { Collapse, ScrollBox } from '../../primitives';
 
 const WMO = {
     0: { label: 'Clear', icon: 'meteocons:clear-day-fill' },
@@ -96,19 +96,15 @@ function HourlyList({ hourlyData }) {
     }, [hourlyData, now]);
 
     return (
-        <ScrollArea
-            type="hover"
+        <ScrollBox
             scrollbars="x"
-            offsetScrollbars="x"
-            classNames={{ root: styles.hourlyList, viewport: styles.hourlyListViewport }}
-            viewportProps={{
-                onWheel: (e) => { e.currentTarget.scrollLeft += e.deltaY / 5 },
-            }}
+            className={styles.hourlyList}
+            onWheel={(e) => { e.currentTarget.scrollLeft += e.deltaY / 5 }}
         >
             {sortedEntries.map(([time, data]) => (
                 <HourlyItem key={time} time={time} data={data} />
             ))}
-        </ScrollArea>
+        </ScrollBox>
     )
 }
 

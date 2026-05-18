@@ -1,0 +1,652 @@
+/* ─── Spinner ────────────────────────────────────────────────────────────── */
+
+.spinner {
+    box-sizing: border-box;
+    border-radius: 50%;
+    border-style: solid;
+    border-color: rgba(255, 255, 255, 0.15);
+    border-top-color: var(--glyph-color-solid);
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+.spinner_xs { width: 14px; height: 14px; border-width: 2px; }
+.spinner_sm { width: 18px; height: 18px; border-width: 2px; }
+.spinner_md { width: 24px; height: 24px; border-width: 3px; }
+.spinner_lg { width: 40px; height: 40px; border-width: 4px; }
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ─── IconButton ─────────────────────────────────────────────────────────── */
+
+.iconButton {
+    appearance: none;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: inherit;
+    font: inherit;
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+}
+
+.iconButton:hover {
+    background: var(--dark-bg);
+}
+
+.iconButton:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* ─── Button ─────────────────────────────────────────────────────────────── */
+
+.button {
+    appearance: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--glyph-color-filled);
+    font-family: var(--main-font);
+    font-size: var(--body-fz);
+    transition: background 0.15s, border-color 0.15s, opacity 0.15s;
+}
+
+.button:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* ─── UnstyledButton (just a button reset) ───────────────────────────────── */
+
+.unstyled {
+    appearance: none;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
+    display: inline-flex;
+    align-items: center;
+}
+
+.unstyled:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* ─── Input (text/number, with optional left/right sections + label) ─────── */
+
+.inputRoot {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.inputLabel {
+    font-family: var(--main-font);
+    font-size: 12px;
+    color: var(--glyph-color-minimal);
+}
+
+.inputWrapper {
+    position: relative;
+    display: block;
+    min-width: 0;
+    width: 100%;
+}
+
+.input {
+    appearance: none;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 6px 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    color: var(--glyph-color-filled);
+    font-family: var(--main-font);
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+}
+
+.input:focus {
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.input::placeholder {
+    color: var(--glyph-color-minimal);
+}
+
+.input:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.hasLeftSection {
+    padding-left: 30px;
+}
+
+.hasRightSection {
+    padding-right: 30px;
+}
+
+.inputSection {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--glyph-color-solid);
+    pointer-events: none;
+}
+
+.inputSectionLeft {
+    left: 6px;
+}
+
+.inputSectionRight {
+    right: 6px;
+    pointer-events: auto;
+}
+
+.inputUnstyled .input {
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+/* ─── Textarea ──────────────────────────────────────────────────────────── */
+
+.textareaRoot {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.textarea {
+    appearance: none;
+    padding: 6px 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    color: var(--glyph-color-filled);
+    font-family: var(--main-font);
+    font-size: 13px;
+    outline: none;
+    resize: vertical;
+    min-height: 60px;
+    transition: border-color 0.15s;
+}
+
+.textarea:focus {
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.textarea::placeholder {
+    color: var(--glyph-color-minimal);
+}
+
+/* ─── Switch ─────────────────────────────────────────────────────────────── */
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 32px;
+    height: 18px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.switch input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.switchTrack {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 999px;
+    transition: background 0.15s;
+}
+
+.switchTrack::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 14px;
+    height: 14px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.15s;
+}
+
+.switch input:checked + .switchTrack {
+    background: var(--mantine-color-teal-6, #12b886);
+}
+
+.switch input:checked + .switchTrack::after {
+    transform: translateX(14px);
+}
+
+.switch input:disabled + .switchTrack {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ─── SegmentedControl ───────────────────────────────────────────────────── */
+
+.segmented {
+    position: relative;
+    display: inline-flex;
+    align-items: stretch;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    padding: 2px;
+    box-sizing: border-box;
+}
+
+.segmentedFull {
+    display: flex;
+    width: 100%;
+}
+
+.segmentedIndicator {
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 4px;
+    transition: left 0.2s cubic-bezier(0.4, 0, 0.2, 1), width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+.segmentedLabel {
+    appearance: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    flex: 1;
+    padding: 4px 10px;
+    color: var(--glyph-color-minimal);
+    font-family: var(--main-font);
+    font-size: 12px;
+    transition: color 0.15s;
+    z-index: 1;
+    text-align: center;
+}
+
+.segmentedLabel:hover {
+    color: var(--glyph-color-solid);
+}
+
+.segmentedLabel[data-active] {
+    color: var(--glyph-color-filled);
+}
+
+/* ─── Slider (native range, restyled) ────────────────────────────────────── */
+
+.slider {
+    appearance: none;
+    width: 100%;
+    height: 18px;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+}
+
+.slider::-webkit-slider-runnable-track {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+}
+
+.slider::-moz-range-track {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 2px;
+}
+
+.slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    margin-top: -5px;
+    background: var(--glyph-color-filled);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: var(--glyph-color-filled);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* ─── Checkbox (used as a styled box for indicators) ─────────────────────── */
+
+.checkboxIndicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+    flex-shrink: 0;
+    color: transparent;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.checkboxIndicator[data-checked] {
+    background: var(--mantine-color-teal-6, #12b886);
+    border-color: var(--mantine-color-teal-6, #12b886);
+    color: white;
+}
+
+/* ─── Divider ────────────────────────────────────────────────────────────── */
+
+.divider {
+    width: 100%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    margin: 0;
+}
+
+.dividerWithLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 10px;
+    font-family: var(--main-font);
+}
+
+.dividerWithLabel::before,
+.dividerWithLabel::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* ─── ScrollBox (replaces Mantine ScrollArea) ────────────────────────────── */
+
+.scrollBox {
+    overflow: auto;
+    min-height: 0;
+    min-width: 0;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+
+.scrollBox::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.scrollBox::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scrollBox::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 3px;
+}
+
+.scrollBox::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.scrollBoxX {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+.scrollBoxY {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+/* ─── Collapse ───────────────────────────────────────────────────────────── */
+
+.collapse {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.2s ease;
+}
+
+.collapse[data-open] {
+    grid-template-rows: 1fr;
+}
+
+.collapseInner {
+    overflow: hidden;
+    min-height: 0;
+}
+
+/* ─── Transition (pop/fade scaling content) ─────────────────────────────── */
+
+.transition {
+    opacity: 0;
+    transform: scale(0.92);
+    transition-property: opacity, transform;
+    transition-timing-function: ease;
+    transition-duration: 200ms;
+    transform-origin: center;
+}
+
+.transition[data-open] {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ─── Popover / HoverPopover / Tooltip ───────────────────────────────────── */
+
+.popoverRoot {
+    position: relative;
+    display: inline-block;
+}
+
+.popoverDropdown {
+    position: absolute;
+    z-index: 100;
+    width: max-content;
+    max-width: 90vw;
+    --popover-offset: 8px;
+    animation: popoverIn 0.15s ease both;
+}
+
+@keyframes popoverIn {
+    from { opacity: 0; transform: var(--popover-from); }
+    to { opacity: 1; transform: var(--popover-to); }
+}
+
+.popover_top {
+    bottom: 100%;
+    left: 50%;
+    --popover-from: translate(-50%, 4px) scale(0.96);
+    --popover-to: translate(-50%, 0) scale(1);
+    transform: translate(-50%, 0);
+    margin-bottom: var(--popover-offset);
+}
+
+.popover_bottom {
+    top: 100%;
+    left: 50%;
+    --popover-from: translate(-50%, -4px) scale(0.96);
+    --popover-to: translate(-50%, 0) scale(1);
+    transform: translate(-50%, 0);
+    margin-top: var(--popover-offset);
+}
+
+.popover_left {
+    right: 100%;
+    top: 50%;
+    --popover-from: translate(4px, -50%) scale(0.96);
+    --popover-to: translate(0, -50%) scale(1);
+    transform: translate(0, -50%);
+    margin-right: var(--popover-offset);
+}
+
+.popover_right {
+    left: 100%;
+    top: 50%;
+    --popover-from: translate(-4px, -50%) scale(0.96);
+    --popover-to: translate(0, -50%) scale(1);
+    transform: translate(0, -50%);
+    margin-left: var(--popover-offset);
+}
+
+.popoverArrow {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: inherit;
+    transform: rotate(45deg);
+    border: inherit;
+}
+
+.arrow_top {
+    bottom: -4px;
+    left: 50%;
+    margin-left: -4px;
+    border-top: none;
+    border-left: none;
+}
+
+.arrow_bottom {
+    top: -4px;
+    left: 50%;
+    margin-left: -4px;
+    border-bottom: none;
+    border-right: none;
+}
+
+.arrow_left {
+    right: -4px;
+    top: 50%;
+    margin-top: -4px;
+    border-top: none;
+    border-right: none;
+}
+
+.arrow_right {
+    left: -4px;
+    top: 50%;
+    margin-top: -4px;
+    border-bottom: none;
+    border-left: none;
+}
+
+/* ─── Menu (DropdownMenu / MenuItem / MenuLabel) ─────────────────────────── */
+
+.menuItem {
+    appearance: none;
+    width: 100%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px 10px;
+    color: inherit;
+    font-family: var(--main-font);
+    font-size: 12px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.15s;
+}
+
+.menuItem:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.menuItem:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.menuItem svg {
+    width: 20px;
+    flex-shrink: 0;
+}
+
+.menuItemLeft {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.menuItemLabel {
+    flex: 1;
+    min-width: 0;
+}
+
+.menuLabel {
+    text-align: left;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--glyph-color-solid);
+    font-family: var(--main-font);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.menuLabel:not(:first-child) {
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ─── Tooltip bubble (small text label) ──────────────────────────────────── */
+
+.tooltipBubble {
+    display: inline-block;
+    padding: 4px 8px;
+    background: rgba(0, 0, 0, 0.9);
+    color: var(--glyph-color-filled);
+    font-family: var(--main-font);
+    font-size: 12px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    white-space: nowrap;
+    pointer-events: none;
+}

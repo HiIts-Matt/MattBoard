@@ -274,53 +274,74 @@
     }
 }
 
-.overlay {
-    background: none;
+.modalStack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    min-width: 360px;
 }
 
-:global(.mantine-Modal-content).modal {
-    border-radius: var(--component-rd);
-    background: white;
-    opacity: 0.5;
-    backdrop-filter: var(--bg-effect);
+.titleGroup {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    gap: 10px;
 
+    .headingStack {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        flex: 1;
+        align-items: stretch;
 
-
-    .titleGroup {
-        align-items: baseline;
-        justify-content: space-between;
-        padding-bottom: 10px;
-        border-bottom: 1px solid var(--mantine-color-dark-6);
-
-        .headingStack {
-            gap: 3px;
-            flex: 1;
-            align-items: stretch;
-
-            .modalTitle {
-                font-size: var(--title-fz);
-                font-family: var(--main-font);
-                color: rgba(0, 0, 0, 0.85);
-                line-height: 1;
-                text-align: start;
-            }
-
-            :global(.mantine-TextInput-input) {
-                background: none;
-                border: 1px solid var(--mantine-color-gray-3);
-                padding-left: 5px;
-            }
+        .modalTitle {
+            font-size: var(--title-fz);
+            font-family: var(--main-font);
+            color: var(--glyph-color-filled);
+            line-height: 1;
+            text-align: start;
         }
 
-        .xButton {
-            background-color: rgba(0, 0, 0, 0.08);
-            width: 50px;
-            height: 50px;
-
-            svg {
-                color: rgba(0, 0, 0, 0.6);
-            }
+        input {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding-left: 5px;
+            color: var(--glyph-color-filled);
         }
-
     }
+
+    .xButton {
+        background-color: rgba(255, 255, 255, 0.08);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+
+        svg {
+            color: var(--glyph-color-solid);
+        }
+    }
+}
+
+.modalActions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+}
+
+.modalActionsRight {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.deleteButton {
+    color: var(--mantine-color-red-5);
+    background: transparent;
+    border-color: transparent;
 }

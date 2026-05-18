@@ -1,10 +1,10 @@
-import { Box, Button, Popover, Text, ActionIcon } from '@mantine/core';
 import { lazy, Suspense, useState } from 'react';
 import { useCalendar } from '../../../api/useCalendar';
 import styles from './Calendar.module.css';
 import { IconCalendarOff, IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import { useCalendarAuth } from '../../../api/useCalendarAuth';
 import { classNames } from '../../../utils/utils';
+import { Button, IconButton, HoverPopover } from '../../primitives';
 
 const CalendarFullsize = lazy(() => import('./CalendarFullsize'));
 
@@ -12,8 +12,8 @@ function NotConnected({ onConnect }) {
     return (
         <div className={styles.notConnected}>
             <IconCalendarOff size={52} className={styles.notConnectedIcon} />
-            <Text className={styles.notConnectedTitle}>Google Calendar</Text>
-            <Text className={styles.notConnectedSub}>Not connected</Text>
+            <span className={styles.notConnectedTitle}>Google Calendar</span>
+            <span className={styles.notConnectedSub}>Not connected</span>
             <Button className={styles.connectButton} onClick={onConnect}>
                 Connect with Google
             </Button>
@@ -64,39 +64,32 @@ function formatEventTime(event) {
 }
 
 function DayCell({ date, isToday, events }) {
-    const [opened, setOpened] = useState(false);
     const hasEvents = events.length > 0;
 
     return (
-        <Popover
-            opened={opened && hasEvents}
+        <HoverPopover
             position="top"
-            withinPortal
-            shadow="md"
             offset={4}
+            disabled={!hasEvents}
+            className={classNames(styles.dayCell, isToday && styles.dayCellToday)}
+            dropdownClassName={styles.dayPopover}
+            dropdown={
+                <>
+                    <div className={styles.popoverDate}>
+                        {date.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' })}
+                    </div>
+                    {events.map((e, i) => (
+                        <div key={e.id ?? i} className={styles.popoverEvent}>
+                            <span className={styles.popoverEventTitle}>{e.title}</span>
+                            <span className={styles.popoverEventTime}>{formatEventTime(e)}</span>
+                        </div>
+                    ))}
+                </>
+            }
         >
-            <Popover.Target>
-                <Box
-                    className={classNames(styles.dayCell, isToday && styles.dayCellToday)}
-                    onMouseEnter={() => setOpened(true)}
-                    onMouseLeave={() => setOpened(false)}
-                >
-                    <Text className={styles.dayNumber}>{date.getDate()}</Text>
-                    {hasEvents && <Box className={styles.eventDot} />}
-                </Box>
-            </Popover.Target>
-            <Popover.Dropdown className={styles.dayPopover}>
-                <Text className={styles.popoverDate}>
-                    {date.toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric' })}
-                </Text>
-                {events.map((e, i) => (
-                    <Box key={e.id ?? i} className={styles.popoverEvent}>
-                        <Text className={styles.popoverEventTitle}>{e.title}</Text>
-                        <Text className={styles.popoverEventTime}>{formatEventTime(e)}</Text>
-                    </Box>
-                ))}
-            </Popover.Dropdown>
-        </Popover>
+            <span className={styles.dayNumber}>{date.getDate()}</span>
+            {hasEvents && <div className={styles.eventDot} />}
+        </HoverPopover>
     );
 }
 
@@ -133,25 +126,25 @@ function CalendarWidget({ module }) {
     const monthLabel = firstOfMonth.toLocaleDateString([], { month: 'long', year: 'numeric' });
 
     if (isAuthError) return (
-        <Box className={styles.widget}>
+        <div className={styles.widget}>
             <NotConnected onConnect={openAuthTab} />
-        </Box>
+        </div>
     );
 
     return (
-        <Box className={styles.widget}>
-            <Box className={styles.widgetHeader}>
-                <ActionIcon className={styles.widgetNavButton} onClick={prevMonth} size="sm" variant="subtle">
+        <div className={styles.widget}>
+            <div className={styles.widgetHeader}>
+                <IconButton className={styles.widgetNavButton} onClick={prevMonth}>
                     <IconChevronLeft size={14} />
-                </ActionIcon>
-                <Text className={styles.widgetMonthTitle}>{monthLabel}</Text>
-                <ActionIcon className={styles.widgetNavButton} onClick={nextMonth} size="sm" variant="subtle">
+                </IconButton>
+                <span className={styles.widgetMonthTitle}>{monthLabel}</span>
+                <IconButton className={styles.widgetNavButton} onClick={nextMonth}>
                     <IconChevronRight size={14} />
-                </ActionIcon>
-            </Box>
-            <Box className={styles.dayGrid}>
+                </IconButton>
+            </div>
+            <div className={styles.dayGrid}>
                 {DAY_NAMES.map(d => (
-                    <Text key={d} className={styles.dayName}>{d}</Text>
+                    <span key={d} className={styles.dayName}>{d}</span>
                 ))}
                 {cells.map((date, i) =>
                     date ? (
@@ -162,11 +155,11 @@ function CalendarWidget({ module }) {
                             events={eventDayMap.get(date.toDateString()) ?? []}
                         />
                     ) : (
-                        <Box key={i} />
+                        <div key={i} />
                     )
                 )}
-            </Box>
-        </Box>
+            </div>
+        </div>
     );
 }
 

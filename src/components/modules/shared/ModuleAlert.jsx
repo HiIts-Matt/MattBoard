@@ -1,7 +1,7 @@
-import { Loader } from '@mantine/core';
 import { IconAlertTriangle } from '@tabler/icons-react';
 import styles from './ModuleAlert.module.css';
 import { classNames } from '../../../utils/utils';
+import { Spinner } from '../../primitives';
 
 export function ModuleAlert({
     isLoading,
@@ -25,7 +25,7 @@ export function ModuleAlert({
     );
     if (isLoading) return (
         <div className={styles.stack}>
-            <Loader color='var(--glyph-color-minimal)' />
+            <Spinner color='var(--glyph-color-minimal)' />
             <span className={styles.message}>Loading...</span>
         </div>
     );

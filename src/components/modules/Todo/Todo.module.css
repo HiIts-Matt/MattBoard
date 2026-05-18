@@ -313,6 +313,8 @@
 }
 
 .toDoItem {
+    appearance: none;
+    width: 100%;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -321,8 +323,11 @@
     transition: all 0.15s;
     word-break: break-word;
     color: rgba(255, 255, 255, 0.7);
+    background: transparent;
     border: none;
     border-radius: 0px;
+    text-align: left;
+    font: inherit;
 
 
     &:not(:last-child) {
@@ -337,6 +342,7 @@
         .indicator {
             background: var(--light-bg);
             border: var(--inner-bd);
+            color: var(--glyph-color-filled);
         }
     }
 
@@ -366,11 +372,10 @@
                 height: 30px;
                 border-radius: 15px;
                 background-color: var(--dark-bg);
-
-                :global(.mantine-CheckboxIndicator-icon) {
-                    width: 14px;
-                    height: 14px;
-                }
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
             }
 
             .toDoItemText {

@@ -1,11 +1,11 @@
-import { ActionIcon, Checkbox, Loader, ScrollArea, TextInput, Transition } from "@mantine/core";
 import styles from './Todo.module.css'
-import { IconArchive, IconChevronLeft, IconChevronRight, IconCircle, IconCircleCheck, IconPencilPlus, IconPlus, IconTrash } from "@tabler/icons-react";
+import { IconArchive, IconCheck, IconChevronLeft, IconChevronRight, IconCircle, IconCircleCheck, IconPencilPlus, IconPlus, IconTrash } from "@tabler/icons-react";
 import { ModuleTitle } from '../shared/ModuleTitle';
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useToDo } from "../../../api/useToDo";
 import { classNames, formatSeparatorDate, toTitleCase } from "../../../utils/utils";
 import { useBuilderStore } from "../../Builder/BuilderStore";
+import { IconButton, Input, ScrollBox, Spinner, Transition } from "../../primitives";
 
 function groupByDay(items) {
     const sorted = [...items].sort((a, b) =>
@@ -90,13 +90,10 @@ export function ToDoList({ module }) {
 
                 {toDoLoading ? (
                     <div>
-                        <Loader />
+                        <Spinner />
                     </div>
                 ) : (
-                    <ScrollArea
-                        type="hover"
-                        classNames={{ root: styles.toDoList }}
-                    >
+                    <ScrollBox className={styles.toDoList}>
                         {activeGrouped.map((entry) =>
                             entry.type === 'separator' ? (
                                 <div key={entry.date.toDateString()} className={styles.dateSeparator}>
@@ -108,7 +105,7 @@ export function ToDoList({ module }) {
                                 <ToDoItem key={entry.item.id} item={entry.item} listName={listName} />
                             )
                         )}
-                    </ScrollArea>
+                    </ScrollBox>
                 )}
                 <CreateNew listName={listName} />
             </div>
@@ -132,10 +129,7 @@ export function ToDoList({ module }) {
                                 Archive
                             </span>
                         </div>
-                        <ScrollArea
-                            type="hover"
-                            classNames={{ root: styles.toDoList }}
-                        >
+                        <ScrollBox className={styles.toDoList}>
                             {archivedGrouped.map((entry) =>
                                 entry.type === 'separator' ? (
                                     <div key={entry.date.toDateString()} className={styles.dateSeparator}>
@@ -147,7 +141,7 @@ export function ToDoList({ module }) {
                                     <ToDoItem key={entry.item.id} item={entry.item} listName={listName} />
                                 )
                             )}
-                        </ScrollArea>
+                        </ScrollBox>
                     </div>
                 )}
             </Transition>
@@ -184,7 +178,7 @@ function FullsizeList({ displayedData }) {
             <ModuleTitle title='Lists' />
             <div className={styles.viewerRoot}>
                 <div className={styles.listColumn}>
-                    <ScrollArea type="hover" classNames={{ root: styles.sidebarScroll }}>
+                    <ScrollBox className={styles.sidebarScroll}>
                         {allListNames.map(listName => (
                             <ListItem
                                 key={listName}
@@ -195,7 +189,7 @@ function FullsizeList({ displayedData }) {
                                 onDelete={() => handleDeleteList(listName)}
                             />
                         ))}
-                    </ScrollArea>
+                    </ScrollBox>
                     <CreateNewList onAdd={handleAddList} />
                 </div>
                 <div className={styles.listBox}>
@@ -207,7 +201,7 @@ function FullsizeList({ displayedData }) {
                     ) : activeItems.length === 0 ? (
                         <EmptyState message="This list is empty" />
                     ) : (
-                        <ScrollArea type="hover" classNames={{ root: styles.toDoList }}>
+                        <ScrollBox className={styles.toDoList}>
                             {groupByDay(activeItems).map((entry) =>
                                 entry.type === 'separator' ? (
                                     <div key={entry.date.toDateString()} className={styles.dateSeparator}>
@@ -219,7 +213,7 @@ function FullsizeList({ displayedData }) {
                                     <ToDoItem key={entry.item.id} item={entry.item} listName={selectedList} />
                                 )
                             )}
-                        </ScrollArea>
+                        </ScrollBox>
                     )}
                     {selectedList && <CreateNew listName={selectedList} />}
                 </div>
@@ -237,7 +231,7 @@ function FullsizeList({ displayedData }) {
                     {archivedItems.length === 0 ? (
                         <EmptyState message="Nothing archived" />
                     ) : (
-                        <ScrollArea type="hover" classNames={{ root: styles.toDoList }}>
+                        <ScrollBox className={styles.toDoList}>
                             {groupByDay(archivedItems).map((entry) =>
                                 entry.type === 'separator' ? (
                                     <div key={entry.date.toDateString()} className={styles.dateSeparator}>
@@ -249,7 +243,7 @@ function FullsizeList({ displayedData }) {
                                     <ToDoItem key={entry.item.id} item={entry.item} listName={selectedList} />
                                 )
                             )}
-                        </ScrollArea>
+                        </ScrollBox>
                     )}
                 </div>
             </div>
@@ -274,7 +268,7 @@ function CreateNewList({ onAdd }) {
         setValue('');
     };
     return (
-        <TextInput
+        <Input
             classNames={{
                 root: styles.inputRoot,
                 input: styles.createNewInput,
@@ -286,7 +280,7 @@ function CreateNewList({ onAdd }) {
             onKeyDown={e => e.key === 'Enter' && submit()}
             leftSection={<IconPlus />}
             rightSection={value ? (
-                <ActionIcon onClick={submit}><IconPencilPlus /></ActionIcon>
+                <IconButton onClick={submit}><IconPencilPlus /></IconButton>
             ) : undefined}
         />
     );
@@ -307,13 +301,12 @@ function ListItem({ listName, list, isSelected, onClick, onDelete }) {
                         <span className={styles.itemCount}>{list.filter(i => !!i.timeCompleted && !i.archived).length}</span>
                     </div>
                 </div>
-                <ActionIcon
+                <IconButton
                     className={styles.deleteListButton}
-                    size="xs"
                     onClick={(e) => { e.stopPropagation(); onDelete(); }}
                 >
                     <IconTrash size={13} />
-                </ActionIcon>
+                </IconButton>
             </div>
         </div>
     );
@@ -341,7 +334,7 @@ function CreateNew({ listName }) {
     }
 
     return (
-        <TextInput
+        <Input
             onKeyDown={(e) => {
                 if (e.key === 'Enter') newToDo();
             }}
@@ -354,11 +347,11 @@ function CreateNew({ listName }) {
             value={value}
             onChange={e => setValue(e.currentTarget.value)}
             disabled={addTodo.isPending}
-            leftSection={addTodo.isPending ? <Loader size="xs" /> : <IconPlus />}
+            leftSection={addTodo.isPending ? <Spinner size="xs" /> : <IconPlus />}
             rightSection={hasValue ? (
-                <ActionIcon onClick={newToDo} disabled={addTodo.isPending}>
+                <IconButton onClick={newToDo} disabled={addTodo.isPending}>
                     <IconPencilPlus />
-                </ActionIcon>
+                </IconButton>
             ) : undefined}
         />
     )
@@ -396,19 +389,22 @@ const ToDoItem = memo(function ToDoItem({ item, listName }) {
     }
 
     return (
-        <Checkbox.Card
+        <button
+            type="button"
             className={styles.toDoItem}
-            checked={isComplete}
+            data-checked={isComplete || undefined}
             onClick={toggleItem}
         >
             <div className={styles.itemContent}>
                 <div className={styles.leftArea}>
-                    <Checkbox.Indicator className={styles.indicator} />
+                    <span className={styles.indicator}>
+                        {isComplete && <IconCheck size={14} />}
+                    </span>
                     <span className={styles.toDoItemText} style={isComplete ? { textDecoration: 'line-through' } : undefined}>
                         {item.value}
                     </span>
                 </div>
-                <ActionIcon
+                <IconButton
                     className={styles.archiveButton}
                     onClick={(e) => {
                         e.stopPropagation();
@@ -416,8 +412,8 @@ const ToDoItem = memo(function ToDoItem({ item, listName }) {
                     }}
                 >
                     <IconArchive size={20} />
-                </ActionIcon>
+                </IconButton>
             </div>
-        </Checkbox.Card>
+        </button>
     )
 });

@@ -19,6 +19,11 @@
         border: 2px solid var(--mantine-color-gray-0);
     }
 
+    :global(.react-clock__second-hand) {
+        animation: clockSecondTick 60s steps(60) infinite;
+        animation-delay: var(--clock-second-offset, 0s);
+    }
+
     :global(.react-clock__second-hand__body) {
         background-color: var(--mantine-color-red-6);
     }
@@ -47,6 +52,11 @@
             background-color: transparent;
         }
     }
+}
+
+@keyframes clockSecondTick {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .bothWrapper {
@@ -108,7 +118,7 @@
 
     .digitalTime {
         font-family: var(--main-font);
-        min-width: 9ch;
+        min-width: 5ch;
         font-size: 48px;
         color: var(--mantine-color-gray-0);
         letter-spacing: 4px;
