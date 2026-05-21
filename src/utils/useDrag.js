@@ -1,5 +1,4 @@
 import { useRef } from 'react';
-import { flushSync } from 'react-dom';
 import { computeAnchoredPosition } from './positions';
 
 const EDGE_MARGIN_PX = 10;
@@ -129,7 +128,7 @@ export function useDrag({ onPositionChange }) {
             handleEl.removeEventListener('pointercancel', onUp);
 
             element.style.transform = '';
-            flushSync(() => onPositionChange(computeAnchoredPosition(left, top, currentW, currentH)));
+            onPositionChange(computeAnchoredPosition(left, top, currentW, currentH));
         };
 
         drag.current = {
