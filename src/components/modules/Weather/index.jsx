@@ -1,11 +1,14 @@
 import styles from './Weather.module.css'
 import { memo, useMemo, useState } from "react";
 import { useWeather } from "../../../api/useWeather";
-import { Icon } from '@iconify/react';
+import { Icon, addCollection } from '@iconify/react';
+import meteocons from '@iconify-json/meteocons/icons.json';
 import { IconChevronDown, IconChevronUp, IconDropletDown } from "@tabler/icons-react";
 import { ModuleTitle } from '../shared/ModuleTitle';
 import { ModuleAlert } from '../shared/ModuleAlert';
 import { Collapse, ScrollBox } from '../../primitives';
+
+addCollection(meteocons);
 
 const WMO = {
     0: { label: 'Clear', icon: 'meteocons:clear-day-fill' },
