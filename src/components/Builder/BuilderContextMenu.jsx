@@ -1,4 +1,4 @@
-import { Select } from '@mantine/core';
+import { Select as MantineSelect } from '@mantine/core';
 import { IconLocationSearch, IconTrash, IconPlus, IconX, IconCheck, IconPlugConnectedX } from '@tabler/icons-react';
 import { useCalendarAuth } from '../../api/useCalendarAuth';
 import { useCalendarList } from '../../api/useCalendarList';
@@ -11,7 +11,7 @@ import styles from './BuilderContextMenu.module.css';
 import { classNames, seconds } from '../../utils/utils';
 import { useTempState } from '../../hooks/useTempState';
 import { useMenuPosition } from './useMenuPosition';
-import { IconButton, Switch, Input, Slider, Segmented, Divider, UnstyledButton, Transition, Tooltip } from '../primitives';
+import { IconButton, Switch, Input, Slider, Segmented, Divider, UnstyledButton, Transition, Tooltip, Select } from '../primitives';
 
 export function BuilderContextMenu({ builderMode }) {
     const { selectedModuleId, pages, updateModuleSetting, updateModuleSettings, removeModule, swapModuleType, selectModule, renameBuilderToDoList } = useBuilderStore();
@@ -68,7 +68,7 @@ export function BuilderContextMenu({ builderMode }) {
                 >
                     <div ref={menuRef} className={styles.menu} style={transitionStyle}>
                         <div className={styles.header}>
-                            <Select
+                            <MantineSelect
                                 variant="unstyled"
                                 searchable
                                 size="xs"
@@ -196,7 +196,7 @@ function SettingRow({ setting, value, onChange, onBlur }) {
     if (setting.type === 'select') return (
         <div className={styles.row}>
             <span className={styles.label}>{setting.label}</span>
-            <Select
+            <MantineSelect
                 size="xs"
                 value={value ?? null}
                 onChange={onChange}
@@ -292,15 +292,12 @@ function CalendarPickerRow({ value, onChange }) {
         <div className={styles.row}>
             <span className={styles.label}>Calendar</span>
             <Select
-                size="xs"
                 value={value ?? null}
                 onChange={onChange}
-                data={options}
+                options={options}
                 placeholder={connected ? (isLoading ? 'Loading…' : 'Pick a calendar') : 'Not connected'}
                 disabled={!connected || isLoading}
-                w={160}
-                classNames={{ input: styles.input, dropdown: styles.typeDropdown, option: styles.typeOption }}
-                comboboxProps={{ zIndex: 600 }}
+                style={{ width: 160 }}
             />
         </div>
     );
@@ -453,7 +450,7 @@ function LocationRow({ value, onChange, needsSetup }) {
 
             <Divider label="OR" />
             <div style={{ padding: '0 10px' }}>
-                <Select
+                <MantineSelect
                     size="xs"
                     placeholder="Search address…"
                     searchable

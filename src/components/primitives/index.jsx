@@ -1,6 +1,7 @@
 import styles from './primitives.module.css';
 import { classNames as cx } from '../../utils/utils';
 import { createContext, forwardRef, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useDelayedUnmount } from '../../hooks/useDelayedUnmount';
 
 const MenuContext = createContext({ close: () => {} });
@@ -426,6 +427,65 @@ export function MenuItem({
 
 export function MenuLabel({ children, className }) {
     return <div className={cx(styles.menuLabel, className)}>{children}</div>;
+}
+
+// ─── Select (custom touch-safe dropdown with portal) ─────────────────────────
+
+export function Select({ value, onChange, options, placeholder, disabled, className, style }) {
+    const [open, setOpen] = useState(false);
+    const [pos, setPos] = useState(null);
+    const triggerRef = useRef(null);
+
+    const close = useCallback(() => setOpen(false), []);
+
+    function handleToggle() {
+        if (disabled) return;
+        if (!open) {
+            const rect = triggerRef.current.getBoundingClientRect();
+            setPos({ top: rect.bottom + 4, left: rect.left, width: rect.width });
+        }
+        setOpen(o => !o);
+    }
+
+    useEffect(() => {
+        if (!open) return;
+        const handler = e => { if (!triggerRef.current?.contains(e.target)) close(); };
+        document.addEventListener('pointerdown', handler);
+        return () => document.removeEventListener('pointerdown', handler);
+    }, [open, close]);
+
+    const selected = options.find(o => o.value === value);
+
+    return (
+        <div ref={triggerRef} className={cx(styles.selectRoot, className)} style={style}>
+            <button type="button" className={styles.selectTrigger} disabled={disabled} onClick={handleToggle}>
+                <span className={cx(styles.selectValue, !selected && styles.selectPlaceholder)}>
+                    {selected ? selected.label : (placeholder ?? 'Select…')}
+                </span>
+                <span className={styles.selectChevron} data-open={open || undefined}>▾</span>
+            </button>
+            {open && pos && createPortal(
+                <div
+                    className={styles.selectDropdown}
+                    style={{ top: pos.top, left: pos.left, minWidth: pos.width }}
+                    onPointerDown={e => e.stopPropagation()}
+                >
+                    {options.map(o => (
+                        <button
+                            key={o.value}
+                            type="button"
+                            className={styles.selectOption}
+                            data-active={o.value === value || undefined}
+                            onClick={() => { onChange(o.value); close(); }}
+                        >
+                            {o.label}
+                        </button>
+                    ))}
+                </div>,
+                document.body,
+            )}
+        </div>
+    );
 }
 
 // ─── Tooltip (thin wrapper over HoverPopover for text labels) ────────────────
