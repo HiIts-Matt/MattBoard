@@ -68,7 +68,7 @@ export const config = {
                     id: 'calendar-main',
                     type: 'calendar',
                     fullsize: true,
-                    calendarId: 'id here'
+                    calendarId: 'primary'
                 }
             ]
         }

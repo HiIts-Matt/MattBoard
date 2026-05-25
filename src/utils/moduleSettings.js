@@ -28,7 +28,7 @@ export const moduleSettings = {
     ],
     calendar: [
         { type: 'googleAuth' },
-        { key: 'calendarId', label: 'Calendar ID', type: 'text', placeholder: 'primary' },
+        { key: 'calendarId', label: 'Calendar', type: 'calendarPicker' },
         { key: 'fullsize', trueLabel: 'Full size', falseLabel: 'Widget', type: 'control' },
     ],
 };

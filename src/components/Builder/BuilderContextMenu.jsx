@@ -1,6 +1,7 @@
 import { Select } from '@mantine/core';
 import { IconLocationSearch, IconTrash, IconPlus, IconX, IconCheck, IconPlugConnectedX } from '@tabler/icons-react';
 import { useCalendarAuth } from '../../api/useCalendarAuth';
+import { useCalendarList } from '../../api/useCalendarList';
 import { useNews } from '../../api/useNews';
 import { useEffect, useState } from 'react';
 import { useBuilderStore } from './BuilderStore';
@@ -271,10 +272,38 @@ function SettingRow({ setting, value, onChange, onBlur }) {
 
     const needsSetup = setting.required && (!value || (Array.isArray(value) && value.length === 0));
     if (setting.type === 'googleAuth') return <GoogleAuthRow />;
+    if (setting.type === 'calendarPicker') return <CalendarPickerRow value={value} onChange={onChange} />;
     if (setting.type === 'location') return <LocationRow value={value} onChange={onChange} needsSetup={needsSetup} />;
     if (setting.type === 'feedUrls') return <FeedUrlsRow value={value} onChange={onChange} needsSetup={needsSetup} />;
 
     return null;
+}
+
+function CalendarPickerRow({ value, onChange }) {
+    const { connected } = useCalendarAuth();
+    const { calendars, isLoading } = useCalendarList({ enabled: connected });
+
+    const options = calendars.map(c => ({
+        value: c.id,
+        label: c.primary ? `${c.name} (primary)` : c.name,
+    }));
+
+    return (
+        <div className={styles.row}>
+            <span className={styles.label}>Calendar</span>
+            <Select
+                size="xs"
+                value={value ?? null}
+                onChange={onChange}
+                data={options}
+                placeholder={connected ? (isLoading ? 'Loading…' : 'Pick a calendar') : 'Not connected'}
+                disabled={!connected || isLoading}
+                w={160}
+                classNames={{ input: styles.input, dropdown: styles.typeDropdown, option: styles.typeOption }}
+                comboboxProps={{ zIndex: 600 }}
+            />
+        </div>
+    );
 }
 
 function GoogleAuthRow() {

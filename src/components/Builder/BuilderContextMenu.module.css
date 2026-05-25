@@ -126,7 +126,8 @@
     &:not(.location):not(.feedUrls):not(.sliderRow):not(.googleAuthRow) {
         padding: 2px 10px;
 
-        &:first-child {
+        &:first-child,
+        .googleAuthRow + & {
             padding-top: 10px;
         }
 
