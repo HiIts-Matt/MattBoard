@@ -12,6 +12,7 @@
     transition: opacity 0.25s ease;
     width: var(--component-w);
     height: auto;
+    /* CSS blur mode: backdrop-filter applied via data-blur-mode on :root */
 
     &.fullsize {
         width: calc(100% - 20px);
@@ -26,6 +27,10 @@
 .dimmed {
     opacity: 0;
     pointer-events: none;
+}
+
+:global([data-blur-mode="css"]) .component {
+    backdrop-filter: blur(var(--module-backdrop-blur, 5px));
 }
 
 .backgroundComponent {

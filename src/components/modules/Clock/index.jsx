@@ -3,6 +3,7 @@ import styles from './Clock.module.css'
 import Clock from "react-clock"
 import "react-clock/dist/Clock.css"
 import { classNames } from "../../../utils/utils"
+import { useBlurBackground } from "../../../hooks/useBlurBackground"
 
 export function ClockComponent({ module }) {
     const [mountTime] = useState(() => new Date())
@@ -33,7 +34,7 @@ export function ClockComponent({ module }) {
     const bigClock = module?.fullsize
 
     if (variant === 'digital') return <Digital time={time} />
-    if (variant === 'analog') return <Analog time={time} module={module} secondOffset={secondOffset} />
+    if (variant === 'analog') return <Analog time={time} module={module} secondOffset={secondOffset} withBlur />
     if (variant === 'both') return (
         <BothWrapper bigClock={bigClock}>
             <Analog time={time} module={module} secondOffset={secondOffset} />
@@ -45,6 +46,7 @@ export function ClockComponent({ module }) {
 const BothWrapper = memo(function BothWrapper({ bigClock, children }) {
     const ref = useRef(null)
     const [side, setSide] = useState(0)
+    const blurStyle = useBlurBackground(ref)
 
     useEffect(() => {
         if (!bigClock) return
@@ -67,7 +69,10 @@ const BothWrapper = memo(function BothWrapper({ bigClock, children }) {
                 styles.bothWrapper,
                 bigClock ? styles.bothWrapperBig : '',
             )}
-            style={style}
+            style={{
+                ...style,
+                ...(blurStyle || {}),
+            }}
         >
             {children}
         </div>
@@ -94,19 +99,25 @@ const Digital = memo(function Digital({ time }) {
     )
 });
 
-const Analog = memo(function Analog({ time, module, secondOffset }) {
+const Analog = memo(function Analog({ time, module, secondOffset, withBlur = false }) {
     const bigClock = module?.size === 'lg'
     const showMarks = module?.showMarks ?? true
     const showBorder = module?.showBorder ?? true;
+    const analogRef = useRef(null)
+    const blurStyle = useBlurBackground(analogRef, { enabled: withBlur })
 
     return (
         <div
+            ref={analogRef}
             className={classNames(
                 styles.colorScheme,
                 styles.analogWrapper,
                 bigClock ? styles.analogWrapperBig : ''
             )}
-            style={{ '--clock-second-offset': secondOffset }}
+            style={{
+                '--clock-second-offset': secondOffset,
+                ...(blurStyle || {}),
+            }}
         >
             <Clock
                 value={time}

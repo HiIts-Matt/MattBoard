@@ -10,6 +10,7 @@ import { useConfig } from "../api/useConfig";
 import { useToDo } from "../api/useToDo";
 import { useBuilderMode } from "../hooks/useBuilderMode";
 import { BuilderContextMenu } from "../components/Builder/BuilderContextMenu";
+import { useThemeStore, DEFAULT_THEME } from "../stores/ThemeStore";
 
 export function PageHandler() {
     const [activePage, setActivePage] = useState(0);
@@ -22,6 +23,7 @@ export function PageHandler() {
 
     const {
         builderPages,
+        builderTheme,
         enterBuilder,
         exitBuilder,
         handleSave,
@@ -30,10 +32,23 @@ export function PageHandler() {
     } = useBuilderMode(save, config, data);
 
     const { data: toDoData } = useToDo();
+    const { setActiveTheme } = useThemeStore();
 
     const builderMode = builderPages !== null;
     const activePages = builderMode ? builderPages : config.pages;
     const background = config.background;
+
+    const activeTheme = (builderMode ? builderTheme : null) ?? config.theme ?? DEFAULT_THEME;
+
+    useEffect(() => {
+        setActiveTheme(activeTheme);
+        const { blur, blurAmount } = activeTheme;
+        document.documentElement.style.setProperty(
+            '--module-backdrop-blur',
+            blur === 'css' ? `${blurAmount ?? 5}px` : '0px',
+        );
+        document.documentElement.setAttribute('data-blur-mode', blur ?? 'none');
+    }, [activeTheme]);
 
     useEffect(() => () => clearTimeout(transitionRef.current), []);
 
@@ -78,7 +93,7 @@ export function PageHandler() {
                 activePage={activePage}
                 onNavigate={goToPage}
                 builderMode={builderMode}
-                onEnterBuilder={() => enterBuilder(config.pages, toDoData)}
+                onEnterBuilder={() => enterBuilder(config.pages, toDoData, config.theme)}
                 onSave={handleSave}
                 onDiscard={exitBuilder}
                 onAddModule={(pageIndex, type) => handleAddModule(pageIndex, type)}

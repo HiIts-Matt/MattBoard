@@ -1,6 +1,10 @@
 import { hours, minutes } from "../utils/utils";
 
 export const config = {
+    theme: {
+        blur: 'none',
+        blurAmount: 5,
+    },
     background: {
         changeTime: minutes(2),
         brightness: 0.5,

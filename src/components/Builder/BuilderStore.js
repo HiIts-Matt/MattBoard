@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { DEFAULT_THEME } from '../../stores/ThemeStore';
 
 function mapModules(pages, fn) {
     return pages.map(page => ({
@@ -26,12 +27,18 @@ export const useBuilderStore = create((set, get) => ({
     pages: null,
     selectedModuleId: null,
     builderToDoData: null,
+    theme: null,
 
-    enterBuilder: (pages, builderToDoData = null) => set({
+    enterBuilder: (pages, builderToDoData = null, theme = null) => set({
         pages: structuredClone(pages),
         builderToDoData: builderToDoData ? structuredClone(builderToDoData) : null,
+        theme: theme ? structuredClone(theme) : null,
     }),
-    exitBuilder: () => set({ pages: null, selectedModuleId: null, builderToDoData: null }),
+    exitBuilder: () => set({ pages: null, selectedModuleId: null, builderToDoData: null, theme: null }),
+
+    updateTheme: (updates) => set(state => ({
+        theme: { ...(state.theme ?? DEFAULT_THEME), ...updates },
+    })),
     setBuilderToDoData: (builderToDoData) => set({ builderToDoData: structuredClone(builderToDoData) }),
     renameBuilderToDoList: (oldName, newName) => set(state => {
         if (!state.builderToDoData || oldName === newName || !state.builderToDoData[oldName] || state.builderToDoData[newName]) return state;

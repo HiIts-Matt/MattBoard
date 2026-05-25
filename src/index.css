@@ -69,6 +69,11 @@ body {
   margin: 0;
 }
 
+/* Pre-rendered blur: module backgrounds become transparent so blurred image shows through */
+:root[data-blur-mode="prerendered"] {
+  --bg-color: transparent;
+}
+
 #root {
   width: 100%;
   overflow: hidden;

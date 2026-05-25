@@ -4,6 +4,7 @@ import { components } from "../../utils/componentMap";
 import { classNames } from "../../utils/utils";
 import { BuilderHandle } from "../Builder/BuilderHandle";
 import { useEffect, useLayoutEffect, useRef, useState, Component } from "react";
+import { useBlurBackground } from "../../hooks/useBlurBackground";
 
 class ModuleErrorBoundary extends Component {
     constructor(props) { super(props); this.state = { error: null }; }
@@ -50,12 +51,16 @@ function Module({ module, fullscreenModule, setFullscreenModule, builderMode, ca
     const isBackground = module?.variant === 'cover';
     const isFullscreen = fullscreenModule === module;
     const isDimmed = fullscreenModule !== null && !isFullscreen;
-    const isFullsize = module?.fullsize
+    const isFullsize = module?.fullsize;
 
     const moduleRef = useRef(null);
     const [pos, setPos] = useState(null);
     const [useFullscreenPos, setUseFullscreenPos] = useState(false);
-    const timeoutRef = useRef(null)
+    const timeoutRef = useRef(null);
+
+    // Circular clocks apply blur to their own face element; skip the module wrapper
+    const isCircleClock = module.type === 'clock' && (module.variant === 'analog' || module.variant === 'both');
+    const blurStyle = useBlurBackground(moduleRef, { enabled: !isCircleClock });
 
     useLayoutEffect(() => {
         if (isFullscreen) {
@@ -71,16 +76,16 @@ function Module({ module, fullscreenModule, setFullscreenModule, builderMode, ca
             setUseFullscreenPos(false);
             timeoutRef.current = setTimeout(() => {
                 if (timeoutRef.current) {
-                    clearTimeout(timeoutRef.current)
+                    clearTimeout(timeoutRef.current);
                 }
                 setPos(null);
-            }, 300)
+            }, 300);
         }
     }, [isFullscreen]);
 
     useEffect(() => {
-        if (pos) setUseFullscreenPos(true)
-    }, [pos])
+        if (pos) setUseFullscreenPos(true);
+    }, [pos]);
 
     if (!SelectedComponent) return null;
 
@@ -103,7 +108,11 @@ function Module({ module, fullscreenModule, setFullscreenModule, builderMode, ca
                         ? { top: 10, left: 10, right: 10, bottom: 10 }
                         : { top: pos.top, left: pos.left, right: pos.right, bottom: pos.bottom }
                     ),
-                } : {})
+                } : {}),
+                ...(blurStyle ? {
+                    ...blurStyle,
+                    borderRadius: 'var(--component-rd)',
+                } : {}),
             }}
         >
             <ModuleErrorBoundary moduleType={module.type}>

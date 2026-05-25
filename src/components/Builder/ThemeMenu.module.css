@@ -1,0 +1,96 @@
+.panel {
+    position: fixed;
+    z-index: 500;
+    min-width: 220px;
+    background: var(--ctx-menu-bg);
+    border-radius: var(--ctx-menu-radius);
+    outline: var(--ctx-menu-outline);
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    padding: 6px 12px;
+    background: var(--mantine-color-gray-light);
+    border-bottom: var(--ctx-menu-divider);
+
+    .title {
+        font-family: var(--main-font);
+        font-size: 13px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.9);
+        letter-spacing: 0.5px;
+    }
+}
+
+.body {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sectionLabel {
+    font-family: var(--main-font);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.segmentedRoot {
+    width: 100%;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--ctx-menu-pill-radius);
+}
+
+.segmentedIndicator {
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: var(--ctx-menu-pill-radius);
+    box-shadow: none;
+}
+
+.segmentedLabel {
+    line-height: 1;
+    padding-top: 6px;
+    padding-bottom: 3px;
+    font-family: var(--main-font);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.45);
+    border-radius: var(--ctx-menu-pill-radius);
+
+    &:hover {
+        color: rgba(255, 255, 255, 0.75);
+    }
+
+    &[data-active] {
+        color: var(--ctx-menu-text-color);
+    }
+}
+
+.sliderRow {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.sliderHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sliderLabel {
+    font-family: var(--main-font);
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.sliderValue {
+    font-family: var(--main-font);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+}

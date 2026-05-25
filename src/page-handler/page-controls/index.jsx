@@ -1,13 +1,16 @@
-import { Input, HoverPopover, DropdownMenu, MenuItem, MenuLabel } from "../../components/primitives";
+import { Input, HoverPopover, DropdownMenu, MenuItem, MenuLabel, Segmented, Slider } from "../../components/primitives";
 import {
     IconChevronLeft, IconChevronRight,
-    IconPencil, IconDeviceFloppy, IconX, IconPlus,
+    IconDeviceFloppy, IconX, IconPlus,
     IconSwitch,
     IconCheck,
-    IconTools
+    IconTools,
+    IconPalette,
 } from "@tabler/icons-react";
 import styles from "./PageControls.module.css";
-import { useLayoutEffect, useRef, useState } from "react";
+import themeStyles from "../../components/Builder/ThemeMenu.module.css";
+import { createPortal } from "react-dom";
+import { forwardRef, useLayoutEffect, useRef, useState, useEffect } from "react";
 import { components } from "../../utils/componentMap"
 import { classNames, seconds } from "../../utils/utils";
 import { useTempState } from "../../hooks/useTempState.jsx";
@@ -77,8 +80,21 @@ export function PageControls({
 }
 
 function NamePillRow({ activeConfig, configData, pages, direction, activePage, onEnterBuilder, onSave, onDiscard, onAddModule, builderMode, onSwap }) {
+    const [themeOpen, setThemeOpen] = useState(false);
+    const themeButtonRef = useRef(null);
+
+    useEffect(() => {
+        if (!builderMode) setThemeOpen(false);
+    }, [builderMode]);
+
     return (
         <div className={styles.namePillRow}>
+            <ThemeButton
+                ref={themeButtonRef}
+                builderMode={builderMode}
+                open={themeOpen}
+                onToggle={() => setThemeOpen(o => !o)}
+            />
             <NamePill pages={pages} direction={direction} activePage={activePage} />
             <Toolbar
                 activeConfig={activeConfig}
@@ -90,7 +106,103 @@ function NamePillRow({ activeConfig, configData, pages, direction, activePage, o
                 onSwap={onSwap}
                 builderMode={builderMode}
             />
+            {themeOpen && builderMode && (
+                <ThemePanel anchorRef={themeButtonRef} onClose={() => setThemeOpen(false)} />
+            )}
         </div>
+    );
+}
+
+const ThemeButton = forwardRef(function ThemeButton({ builderMode, open, onToggle }, ref) {
+    return (
+        <div className={styles.leftToolbar}>
+            <button
+                ref={ref}
+                className={classNames(styles.toolbarPill, builderMode && styles.visible, open && styles.themeButtonActive)}
+                onClick={() => builderMode && onToggle()}
+                aria-label="Theme settings"
+            >
+                <IconPalette size={20} color="white" />
+            </button>
+        </div>
+    );
+});
+
+function ThemePanel({ anchorRef, onClose }) {
+    const { theme, updateTheme } = useBuilderStore();
+    const panelRef = useRef(null);
+    const blur = theme?.blur ?? 'none';
+    const blurAmount = theme?.blurAmount ?? 5;
+
+    const [pos, setPos] = useState(null);
+
+    useLayoutEffect(() => {
+        if (!anchorRef.current) return;
+        const rect = anchorRef.current.getBoundingClientRect();
+        setPos({ bottom: window.innerHeight - rect.top + 8, left: rect.left });
+    }, []);
+
+    useEffect(() => {
+        const anchor = anchorRef.current;
+        const handler = (e) => {
+            if (
+                panelRef.current && !panelRef.current.contains(e.target) &&
+                anchor && !anchor.contains(e.target)
+            ) {
+                onClose();
+            }
+        };
+        document.addEventListener('pointerdown', handler);
+        return () => document.removeEventListener('pointerdown', handler);
+    }, [onClose]);
+
+    if (!pos) return null;
+
+    return createPortal(
+        <div
+            ref={panelRef}
+            className={themeStyles.panel}
+            style={{ bottom: pos.bottom, left: pos.left }}
+            onPointerDown={e => e.stopPropagation()}
+        >
+            <div className={themeStyles.header}>
+                <span className={themeStyles.title}>Theme</span>
+            </div>
+            <div className={themeStyles.body}>
+                <span className={themeStyles.sectionLabel}>Background Blur</span>
+                <Segmented
+                    value={blur}
+                    onChange={v => updateTheme({ blur: v })}
+                    data={[
+                        { value: 'none', label: 'None' },
+                        { value: 'css', label: 'CSS' },
+                        { value: 'prerendered', label: 'Pre-rendered' },
+                    ]}
+                    fullWidth
+                    classNames={{
+                        root: themeStyles.segmentedRoot,
+                        indicator: themeStyles.segmentedIndicator,
+                        label: themeStyles.segmentedLabel,
+                    }}
+                />
+                {blur !== 'none' && (
+                    <div className={themeStyles.sliderRow}>
+                        <div className={themeStyles.sliderHeader}>
+                            <span className={themeStyles.sliderLabel}>Blur Amount</span>
+                            <span className={themeStyles.sliderValue}>{blurAmount}px</span>
+                        </div>
+                        <Slider
+                            value={blurAmount}
+                            onChange={v => updateTheme({ blurAmount: v })}
+                            min={0}
+                            max={10}
+                            step={0.5}
+                        />
+                    </div>
+                )}
+            </div>
+        </div>,
+        document.body,
     );
 }
 
@@ -338,7 +450,7 @@ function NamePill({ pages, direction, activePage }) {
             const timer = setTimeout(() => setOutgoing(null), 350);
             return () => clearTimeout(timer);
         }
-    }, [activePage]);
+    }, [activePage, pages]);
 
     return (
         <div className={styles.namePillClip}>
