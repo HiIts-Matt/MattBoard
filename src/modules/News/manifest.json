@@ -1,0 +1,7 @@
+{
+  "id": "news",
+  "name": "News",
+  "description": "RSS news feed with sentiment filtering",
+  "tier": "free",
+  "minSize": { "w": 1, "h": 1 }
+}

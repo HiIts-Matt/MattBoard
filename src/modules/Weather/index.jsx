@@ -1,12 +1,12 @@
-import styles from './Weather.module.css'
+﻿import styles from './Weather.module.css'
 import { memo, useMemo, useState } from "react";
-import { useWeather } from "../../../api/useWeather";
+import { useWeather } from "../../api/useWeather";
 import { Icon, addCollection } from '@iconify/react';
 import meteocons from '@iconify-json/meteocons/icons.json';
 import { IconChevronDown, IconChevronUp, IconDropletDown } from "@tabler/icons-react";
 import { ModuleTitle } from '../shared/ModuleTitle';
 import { ModuleAlert } from '../shared/ModuleAlert';
-import { Collapse, ScrollBox } from '../../primitives';
+import { Collapse, ScrollBox } from '../../components/primitives';
 
 addCollection(meteocons);
 
@@ -159,3 +159,5 @@ function WeatherList({ expanded, daily }) {
         </Collapse>
     )
 }
+
+export default Weather;

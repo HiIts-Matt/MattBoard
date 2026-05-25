@@ -1,0 +1,7 @@
+{
+  "id": "calendar",
+  "name": "Calendar",
+  "description": "Google Calendar widget and full-page view",
+  "tier": "free",
+  "minSize": { "w": 1, "h": 1 }
+}

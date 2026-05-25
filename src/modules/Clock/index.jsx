@@ -1,9 +1,9 @@
-import { memo, useEffect, useRef, useState } from "react"
+﻿import { memo, useEffect, useRef, useState } from "react"
 import styles from './Clock.module.css'
 import Clock from "react-clock"
 import "react-clock/dist/Clock.css"
-import { classNames } from "../../../utils/utils"
-import { useBlurBackground } from "../../../hooks/useBlurBackground"
+import { classNames } from "../../utils/utils"
+import { useBlurBackground } from "../../hooks/useBlurBackground"
 
 export function ClockComponent({ module }) {
     const [mountTime] = useState(() => new Date())
@@ -133,3 +133,5 @@ const Analog = memo(function Analog({ time, module, secondOffset, withBlur = fal
         </div>
     )
 });
+
+export default ClockComponent;

@@ -3,6 +3,7 @@ import { create } from 'zustand';
 export const DEFAULT_THEME = {
     blur: 'none',
     blurAmount: 5,
+    tier: 'free',
 };
 
 export const useThemeStore = create((set) => ({

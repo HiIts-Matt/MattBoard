@@ -1,6 +1,6 @@
-import styles from './ModuleTitle.module.css';
-import { classNames } from '../../../utils/utils';
-import { IconButton, Tooltip } from '../../primitives';
+﻿import styles from './ModuleTitle.module.css';
+import { classNames } from '../../utils/utils';
+import { IconButton, Tooltip } from '../../components/primitives';
 
 export function ModuleTitle({ icon, title, onTitleClick, actions, rightContent }) {
     const left = (

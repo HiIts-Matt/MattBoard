@@ -1,0 +1,7 @@
+{
+  "id": "todo",
+  "name": "Todo",
+  "description": "Todo list with archive support",
+  "tier": "free",
+  "minSize": { "w": 1, "h": 1 }
+}

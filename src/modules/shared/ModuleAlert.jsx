@@ -1,7 +1,7 @@
-import { IconAlertTriangle } from '@tabler/icons-react';
+﻿import { IconAlertTriangle } from '@tabler/icons-react';
 import styles from './ModuleAlert.module.css';
-import { classNames } from '../../../utils/utils';
-import { Spinner } from '../../primitives';
+import { classNames } from '../../utils/utils';
+import { Spinner } from '../../components/primitives';
 
 export function ModuleAlert({
     isLoading,

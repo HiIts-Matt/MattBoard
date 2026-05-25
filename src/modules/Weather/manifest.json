@@ -1,0 +1,7 @@
+{
+  "id": "weather",
+  "name": "Weather",
+  "description": "Current weather and forecast",
+  "tier": "free",
+  "minSize": { "w": 1, "h": 1 }
+}

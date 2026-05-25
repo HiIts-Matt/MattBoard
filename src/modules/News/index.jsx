@@ -1,11 +1,11 @@
-import styles from './News.module.css'
-import { classNames } from '../../../utils/utils';
+﻿import styles from './News.module.css'
+import { classNames } from '../../utils/utils';
 import { memo, useCallback, useMemo, useRef, useState } from 'react';
-import { useNews } from '../../../api/useNews';
+import { useNews } from '../../api/useNews';
 import { IconArrowsMaximize, IconArrowsMinimize, IconMoodConfuzed, IconMoodHappy, IconNews } from '@tabler/icons-react';
 import { ModuleTitle } from '../shared/ModuleTitle';
 import { ModuleAlert } from '../shared/ModuleAlert';
-import { ScrollBox } from '../../primitives';
+import { ScrollBox } from '../../components/primitives';
 
 function timeAgo(dateStr) {
     if (!dateStr) return '';
@@ -152,3 +152,5 @@ export function NewsDisplay({ module, isFullscreen, onToggleFullscreen }) {
         </div>
     )
 }
+
+export default NewsDisplay;

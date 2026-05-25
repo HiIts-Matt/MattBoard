@@ -1,14 +1,14 @@
-import FullCalendar from '@fullcalendar/react';
+﻿import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { useState } from 'react';
-import { useCalendar } from '../../../api/useCalendar';
+import { useCalendar } from '../../api/useCalendar';
 import styles from './Calendar.module.css';
 import { IconX, IconCalendarOff } from '@tabler/icons-react';
-import { useCalendarAuth } from '../../../api/useCalendarAuth';
-import { Button, IconButton, Input, Textarea, Segmented } from '../../primitives';
-import { displayModal, useModal } from '../../ModalHandler';
+import { useCalendarAuth } from '../../api/useCalendarAuth';
+import { Button, IconButton, Input, Textarea, Segmented } from '../../components/primitives';
+import { displayModal, useModal } from '../../components/ModalHandler';
 
 function toLocalDateTimeInput(isoString) {
     if (!isoString) return '';

@@ -1,10 +1,10 @@
-import { lazy, Suspense, useState } from 'react';
-import { useCalendar } from '../../../api/useCalendar';
+﻿import { lazy, Suspense, useState } from 'react';
+import { useCalendar } from '../../api/useCalendar';
 import styles from './Calendar.module.css';
 import { IconCalendarOff, IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
-import { useCalendarAuth } from '../../../api/useCalendarAuth';
-import { classNames } from '../../../utils/utils';
-import { Button, IconButton, HoverPopover } from '../../primitives';
+import { useCalendarAuth } from '../../api/useCalendarAuth';
+import { classNames } from '../../utils/utils';
+import { Button, IconButton, HoverPopover } from '../../components/primitives';
 
 const CalendarFullsize = lazy(() => import('./CalendarFullsize'));
 
@@ -163,3 +163,5 @@ function CalendarWidget({ module }) {
     );
 }
 
+
+export default CalendarModule;

@@ -1,0 +1,7 @@
+{
+  "id": "clock",
+  "name": "Clock",
+  "description": "Digital or analog clock display",
+  "tier": "free",
+  "minSize": { "w": 1, "h": 1 }
+}
