@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import styles from './pageHandler.module.css';
 import { Spinner } from "../components/primitives";
 import { config as localConfig } from '../appConfig/appConfig.js';
@@ -10,7 +10,14 @@ import { useConfig } from "../api/useConfig";
 import { useToDo } from "../api/useToDo";
 import { useBuilderMode } from "../hooks/useBuilderMode";
 import { BuilderContextMenu } from "../components/Builder/BuilderContextMenu";
-import { useThemeStore, DEFAULT_THEME } from "../stores/ThemeStore";
+import { useThemeStore, DEFAULT_THEME, applyTheme } from "../stores/ThemeStore";
+
+const FrozenPage = memo(function FrozenPage({ page, builderMode, active }) {
+    return <Page page={page} builderMode={builderMode} />;
+}, (prev, next) => {
+    if (next.active) return false;
+    return true;
+});
 
 export function PageHandler() {
     const [activePage, setActivePage] = useState(0);
@@ -42,12 +49,7 @@ export function PageHandler() {
 
     useEffect(() => {
         setActiveTheme(activeTheme);
-        const { blur, blurAmount } = activeTheme;
-        document.documentElement.style.setProperty(
-            '--module-backdrop-blur',
-            blur === 'css' ? `${blurAmount ?? 5}px` : '0px',
-        );
-        document.documentElement.setAttribute('data-blur-mode', blur ?? 'none');
+        applyTheme(activeTheme);
     }, [activeTheme]);
 
     useEffect(() => () => clearTimeout(transitionRef.current), []);
@@ -76,11 +78,7 @@ export function PageHandler() {
             >
                 {activePages?.map((page, index) => (
                     <div key={page.name} className={styles.pageSlot}>
-                        {(index === activePage || index === prevPage) ? (
-                            <Page page={page} builderMode={builderMode} />
-                        ) : (
-                            <div className={styles.dummyPage}/>
-                        )}
+                        <FrozenPage page={page} builderMode={builderMode} active={index === activePage || index === prevPage} />
                     </div>
                 ))}
             </div>

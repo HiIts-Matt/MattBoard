@@ -12,14 +12,6 @@
     }
 }
 
-.dummyPage {
-    width: 100vw;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    min-height: 100%;
-}
-
 .track {
     display: flex;
     flex-direction: row;
@@ -35,4 +27,8 @@
 .pageSlot {
     width: 100vw;
     height: 100%;
+}
+
+.pageSlotHidden {
+    visibility: hidden;
 }

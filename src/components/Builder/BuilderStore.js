@@ -39,6 +39,18 @@ export const useBuilderStore = create((set, get) => ({
     updateTheme: (updates) => set(state => ({
         theme: { ...(state.theme ?? DEFAULT_THEME), ...updates },
     })),
+    updateModuleTheme: (moduleId, updates) => set(state => {
+        const base = state.theme ?? DEFAULT_THEME;
+        return {
+            theme: {
+                ...base,
+                moduleOverrides: {
+                    ...(base.moduleOverrides ?? {}),
+                    [moduleId]: { ...(base.moduleOverrides?.[moduleId] ?? {}), ...updates },
+                },
+            },
+        };
+    }),
     setBuilderToDoData: (builderToDoData) => set({ builderToDoData: structuredClone(builderToDoData) }),
     renameBuilderToDoList: (oldName, newName) => set(state => {
         if (!state.builderToDoData || oldName === newName || !state.builderToDoData[oldName] || state.builderToDoData[newName]) return state;

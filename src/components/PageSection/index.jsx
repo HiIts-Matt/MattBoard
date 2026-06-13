@@ -93,6 +93,7 @@ function Module({ module, fullscreenModule, setFullscreenModule, builderMode, ca
         <div
             ref={moduleRef}
             data-module-id={module.id}
+            data-module-type={module.type}
             className={classNames(
                 isBackground ? styles.backgroundComponent : styles.component,
                 isDimmed ? styles.dimmed : '',

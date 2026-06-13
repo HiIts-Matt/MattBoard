@@ -18,6 +18,17 @@
         transition: opacity 0.15s;
         pointer-events: none;
     }
+
+    @media (aspect-ratio > 1) {
+        height: 100%;
+        width: 8px;
+        cursor: ew-resize;
+
+        .sectionDividerGrip {
+            width: 2px;
+            height: 40px;
+        }
+    }
 }
 
 .page {
@@ -26,6 +37,11 @@
     flex-direction: column;
     position: relative;
     min-height: 100%;
+    height: 100%;
+
+    @media (aspect-ratio > 1) {
+        flex-direction: row;
+    }
 
     &::before {
         content: '';

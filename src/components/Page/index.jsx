@@ -37,6 +37,10 @@ function deriveSections(modules = []) {
     return sections;
 }
 
+function isLandscape() {
+    return window.matchMedia('(aspect-ratio > 1)').matches;
+}
+
 function SectionDivider({ getSectionA, getSectionB, onResize }) {
     const dividerRef = useRef(null);
 
@@ -46,27 +50,29 @@ function SectionDivider({ getSectionA, getSectionB, onResize }) {
         divEl.setPointerCapture(e.pointerId);
         divEl.classList.add(styles.sectionDividerActive);
 
+        const horizontal = isLandscape();
         const sectionA = getSectionA();
         const sectionB = getSectionB();
-        const startY = e.clientY;
-        const startHA = sectionA.getBoundingClientRect().height;
-        const startHB = sectionB.getBoundingClientRect().height;
-        const totalH = startHA + startHB;
+        const rect = (el) => el.getBoundingClientRect();
+        const startPos = horizontal ? e.clientX : e.clientY;
+        const startSizeA = horizontal ? rect(sectionA).width : rect(sectionA).height;
+        const startSizeB = horizontal ? rect(sectionB).width : rect(sectionB).height;
+        const totalSize = startSizeA + startSizeB;
 
         const fA = parseFloat(getComputedStyle(sectionA).flexGrow) || 1;
         const fB = parseFloat(getComputedStyle(sectionB).flexGrow) || 1;
         const totalFlex = fA + fB;
 
-        const compute = (clientY) => {
-            const dy = clientY - startY;
-            const clampedHA = Math.max(totalH * MIN_FLEX_FRACTION, Math.min(totalH * (1 - MIN_FLEX_FRACTION), startHA + dy));
-            const newFlexA = (clampedHA / totalH) * totalFlex;
+        const compute = (clientPos) => {
+            const delta = clientPos - startPos;
+            const clampedA = Math.max(totalSize * MIN_FLEX_FRACTION, Math.min(totalSize * (1 - MIN_FLEX_FRACTION), startSizeA + delta));
+            const newFlexA = (clampedA / totalSize) * totalFlex;
             const newFlexB = totalFlex - newFlexA;
             return { newFlexA, newFlexB };
         };
 
         const onMove = (e) => {
-            const { newFlexA, newFlexB } = compute(e.clientY);
+            const { newFlexA, newFlexB } = compute(horizontal ? e.clientX : e.clientY);
             sectionA.style.flex = newFlexA;
             sectionB.style.flex = newFlexB;
         };
@@ -78,11 +84,10 @@ function SectionDivider({ getSectionA, getSectionB, onResize }) {
             divEl.removeEventListener('pointerup', onUp);
             divEl.removeEventListener('pointercancel', onUp);
 
-            // Reset inline styles — React will re-render with correct flex from store
             sectionA.style.flex = '';
             sectionB.style.flex = '';
 
-            const { newFlexA, newFlexB } = compute(e.clientY);
+            const { newFlexA, newFlexB } = compute(horizontal ? e.clientX : e.clientY);
             onResize(newFlexA, newFlexB);
         };
 

@@ -14,6 +14,45 @@
 }
 
 :root {
+  /* ── Dynamic theme vars (overwritten by applyTheme() at runtime) ── */
+  --bg-color: rgba(50, 50, 50, 0.6);
+  --bg-effect: none;
+  --module-backdrop-blur: 0px;
+  --component-rd: 12px;
+  --main-font: "Space Grotesk", sans-serif;
+  --glyph-color-filled: rgba(255, 255, 255, 1);
+  --glyph-color-solid: rgba(255, 255, 255, 0.7);
+  --glyph-color-minimal: rgba(255, 255, 255, 0.5);
+
+  /* ── Static app vars (never change) ── */
+  --dark-bg: rgba(0, 0, 0, 0.2);
+  --light-bg: rgba(255, 255, 255, 0.2);
+  --component-pd: 16px;
+  --component-w: 400px;
+  --bd: none;
+  --inner-bd: 1px solid rgba(255, 255, 255, 0.5);
+  --dimmed-bd: 1px solid rgba(255, 255, 255, 0.2);
+  --title-fz: 32px;
+  --small-title-fz: 14px;
+  --body-fz: 12px;
+  --main-spacing: 10px;
+
+  /* ── Nav ── */
+  --nav-element-bg: black;
+  --nav-pill-radius: 100px;
+  --nav-outline: 2px solid rgba(255, 255, 255, 0.3);
+  --nav-outline-hover: 2px solid white;
+  --nav-text-color: white;
+  --nav-divider: 1px solid rgba(255, 255, 255, 0.3);
+
+  /* ── Context menus (reference nav vars) ── */
+  --ctx-menu-bg: var(--nav-element-bg);
+  --ctx-menu-radius: var(--component-rd);
+  --ctx-menu-outline: var(--nav-outline);
+  --ctx-menu-text-color: var(--nav-text-color);
+  --ctx-menu-divider: var(--nav-divider);
+  --ctx-menu-pill-radius: var(--nav-pill-radius);
+
   --text: #6b6375;
   --text-h: #08060d;
   --bg: #fff;

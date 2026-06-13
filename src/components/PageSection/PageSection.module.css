@@ -1,5 +1,11 @@
 .section {
     position: relative;
+    min-height: 0;
+
+    @media (aspect-ratio > 1) {
+        min-width: 0;
+        height: 100%;
+    }
 
     &.hasFullscreenModule {
         position: static;

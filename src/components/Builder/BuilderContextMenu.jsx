@@ -5,8 +5,7 @@ import { useCalendarList } from '../../api/useCalendarList';
 import { useNews } from '../../api/useNews';
 import { useEffect, useState } from 'react';
 import { useBuilderStore } from './BuilderStore';
-import { moduleSettings } from '../../utils/moduleSettings';
-import { components } from '../../utils/componentMap';
+import { moduleSettings, moduleRegistry } from '../../utils/moduleRegistry';
 import styles from './BuilderContextMenu.module.css';
 import { classNames, seconds } from '../../utils/utils';
 import { useTempState } from '../../hooks/useTempState';
@@ -15,7 +14,7 @@ import { IconButton, Switch, Input, Slider, Segmented, Divider, UnstyledButton, 
 
 export function BuilderContextMenu({ builderMode }) {
     const { selectedModuleId, pages, updateModuleSetting, updateModuleSettings, removeModule, swapModuleType, selectModule, renameBuilderToDoList } = useBuilderStore();
-    const moduleTypes = Object.keys(components);
+    const moduleTypes = Object.entries(moduleRegistry).map(([id, m]) => ({ value: id, label: m.name }));
     const [displayedModule, setDisplayedModule] = useState(null);
     const [listNameDraft, setListNameDraft] = useState('');
 
