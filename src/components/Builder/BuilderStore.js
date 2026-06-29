@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { DEFAULT_THEME } from '../../stores/ThemeStore';
+import { DEFAULT_BACKGROUND, normalizeBackground } from '../../utils/background';
 
 function mapModules(pages, fn) {
     return pages.map(page => ({
@@ -28,13 +29,21 @@ export const useBuilderStore = create((set, get) => ({
     selectedModuleId: null,
     builderToDoData: null,
     theme: null,
+    background: null,
 
-    enterBuilder: (pages, builderToDoData = null, theme = null) => set({
+    enterBuilder: (pages, builderToDoData = null, theme = null, background = null) => set({
         pages: structuredClone(pages),
         builderToDoData: builderToDoData ? structuredClone(builderToDoData) : null,
         theme: theme ? structuredClone(theme) : null,
+        background: normalizeBackground(background),
     }),
-    exitBuilder: () => set({ pages: null, selectedModuleId: null, builderToDoData: null, theme: null }),
+    exitBuilder: () => set({ pages: null, selectedModuleId: null, builderToDoData: null, theme: null, background: null }),
+
+    // Shallow-merge top-level background keys. Nested apple/nasa objects are
+    // passed whole by the panel (which reads current background to merge).
+    updateBackground: (updates) => set(state => ({
+        background: { ...(state.background ?? DEFAULT_BACKGROUND), ...updates },
+    })),
 
     updateTheme: (updates) => set(state => ({
         theme: { ...(state.theme ?? DEFAULT_THEME), ...updates },

@@ -1,7 +1,0 @@
-{
-  "id": "photo",
-  "name": "Photo",
-  "description": "Background photo slideshow",
-  "tier": "free",
-  "minSize": { "w": 1, "h": 1 }
-}

@@ -11,6 +11,15 @@
     }
 }
 
+.dim {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity 0.4s ease;
+}
+
 .displayWrapper {
     background: black;
     height: 100vh;

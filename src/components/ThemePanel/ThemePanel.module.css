@@ -40,7 +40,7 @@
 
 .headerTitle {
     font-family: var(--main-font);
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--ctx-menu-text-color);
     letter-spacing: 0.5px;

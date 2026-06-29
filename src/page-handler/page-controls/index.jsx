@@ -6,12 +6,15 @@ import {
     IconCheck,
     IconTools,
     IconPalette,
+    IconPhoto,
 } from "@tabler/icons-react";
 import styles from "./PageControls.module.css";
-import { forwardRef, useLayoutEffect, useRef, useState, useEffect } from "react";
+import { useLayoutEffect, useRef, useState, useEffect } from "react";
 import { ThemePanel } from "../../components/ThemePanel";
+import { BackgroundPanel } from "../../components/BackgroundPanel";
 import { moduleRegistry } from "../../utils/moduleRegistry"
 import { classNames, seconds } from "../../utils/utils";
+import { normalizeBackground } from "../../utils/background";
 import { useTempState } from "../../hooks/useTempState.jsx";
 import { useBuilderStore } from "../../components/Builder/BuilderStore";
 
@@ -80,19 +83,24 @@ export function PageControls({
 
 function NamePillRow({ activeConfig, configData, pages, direction, activePage, onEnterBuilder, onSave, onDiscard, onAddModule, builderMode, onSwap }) {
     const [themeOpen, setThemeOpen] = useState(false);
+    const [bgOpen, setBgOpen] = useState(false);
     const themeButtonRef = useRef(null);
+    const bgButtonRef = useRef(null);
 
     useEffect(() => {
-        if (!builderMode) setThemeOpen(false);
+        if (!builderMode) { setThemeOpen(false); setBgOpen(false); }
     }, [builderMode]);
 
     return (
         <div className={styles.namePillRow}>
-            <ThemeButton
-                ref={themeButtonRef}
+            <LeftToolbar
+                themeRef={themeButtonRef}
+                bgRef={bgButtonRef}
                 builderMode={builderMode}
-                open={themeOpen}
-                onToggle={() => setThemeOpen(o => !o)}
+                themeOpen={themeOpen}
+                bgOpen={bgOpen}
+                onToggleTheme={() => { setThemeOpen(o => !o); setBgOpen(false); }}
+                onToggleBg={() => { setBgOpen(o => !o); setThemeOpen(false); }}
             />
             <NamePill pages={pages} direction={direction} activePage={activePage} />
             <Toolbar
@@ -113,24 +121,38 @@ function NamePillRow({ activeConfig, configData, pages, direction, activePage, o
                 activePage={activePage}
                 triggerRef={themeButtonRef}
             />
+            <BackgroundPanel
+                open={bgOpen && builderMode}
+                onClose={() => setBgOpen(false)}
+                builderMode={builderMode}
+                triggerRef={bgButtonRef}
+            />
         </div>
     );
 }
 
-const ThemeButton = forwardRef(function ThemeButton({ builderMode, open, onToggle }, ref) {
+function LeftToolbar({ themeRef, bgRef, builderMode, themeOpen, bgOpen, onToggleTheme, onToggleBg }) {
     return (
         <div className={styles.leftToolbar}>
             <button
-                ref={ref}
-                className={classNames(styles.toolbarPill, builderMode && styles.visible, open && styles.themeButtonActive)}
-                onClick={() => builderMode && onToggle()}
+                ref={themeRef}
+                className={classNames(styles.toolbarPill, builderMode && styles.visible, themeOpen && styles.themeButtonActive)}
+                onClick={() => builderMode && onToggleTheme()}
                 aria-label="Theme settings"
             >
                 <IconPalette size={20} color="white" />
             </button>
+            <button
+                ref={bgRef}
+                className={classNames(styles.toolbarPill, styles.delay60, builderMode && styles.visible, bgOpen && styles.themeButtonActive)}
+                onClick={() => builderMode && onToggleBg()}
+                aria-label="Background settings"
+            >
+                <IconPhoto size={20} color="white" />
+            </button>
         </div>
     );
-});
+}
 
 
 function Toolbar({
@@ -189,10 +211,20 @@ function BuilderModeButton({ onEnterBuilder, builderMode }) {
 }
 
 function XButton({ activeConfig, onDiscard, builderMode }) {
-    const { pages: builderPages } = useBuilderStore();
+    const { pages: builderPages, theme: builderTheme, background: builderBackground } = useBuilderStore();
 
-    const hasChanges = builderPages !== null &&
-        JSON.stringify(builderPages) !== JSON.stringify(activeConfig.pages)
+    const pagesChanged = builderPages !== null &&
+        JSON.stringify(builderPages) !== JSON.stringify(activeConfig.pages);
+
+    const themeChanged = builderTheme !== null &&
+        JSON.stringify(builderTheme) !== JSON.stringify(activeConfig.theme);
+
+    // Background is normalized on builder entry, so normalize both sides to
+    // avoid flagging default/legacy field differences as real changes.
+    const backgroundChanged = builderBackground !== null &&
+        JSON.stringify(normalizeBackground(builderBackground)) !== JSON.stringify(normalizeBackground(activeConfig.background));
+
+    const hasChanges = pagesChanged || themeChanged || backgroundChanged;
 
     const [xOpen, setXOpen, resetXState] = useTempState(false, seconds(3))
 

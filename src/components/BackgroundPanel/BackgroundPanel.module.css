@@ -1,0 +1,278 @@
+.panel {
+    position: fixed;
+    bottom: 70px;
+    left: 16px;
+    right: 16px;
+    max-width: 720px;
+    margin: 0 auto;
+    height: 60vh;
+    max-height: 560px;
+    z-index: 200;
+    background: var(--ctx-menu-bg);
+    border-radius: 24px;
+    outline: var(--ctx-menu-outline);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translateY(calc(100% + 86px));
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 1, 1), opacity 0.15s ease;
+}
+
+.panelOpen {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+    transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.2s ease;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-bottom: var(--ctx-menu-divider);
+    flex-shrink: 0;
+}
+
+.headerTitle {
+    font-family: var(--main-font);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ctx-menu-text-color);
+    letter-spacing: 0.5px;
+}
+
+.closeButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: var(--ctx-menu-pill-radius);
+    border: none;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--ctx-menu-text-color);
+    }
+}
+
+.tabsRow {
+    padding: 12px 12px 8px;
+    flex-shrink: 0;
+}
+
+/* ── Body ──────────────────────────────────────────────────────────────────── */
+
+.body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 0 12px 12px;
+    overflow: hidden;
+}
+
+.sourceRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 0 10px;
+}
+
+.fieldLabel {
+    font-family: var(--main-font);
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.55);
+    white-space: nowrap;
+}
+
+.tokenInput {
+    font-family: var(--main-font);
+}
+
+.chipsRow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 0 10px;
+}
+
+.chip {
+    font-family: var(--main-font);
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+
+    &:hover { background: rgba(255, 255, 255, 0.08); }
+}
+
+.chipActive {
+    background: var(--mantine-color-teal-6, #12b886);
+    border-color: transparent;
+    color: #fff;
+}
+
+.searchForm {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.searchIcon { color: rgba(255, 255, 255, 0.4); flex-shrink: 0; }
+
+.searchInput {
+    border: none;
+    background: transparent;
+    outline: none;
+    color: var(--ctx-menu-text-color);
+    font-family: var(--main-font);
+    font-size: 12px;
+    width: 90px;
+}
+
+/* ── Grid ──────────────────────────────────────────────────────────────────── */
+
+.grid {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    grid-auto-rows: 96px;
+    gap: 8px;
+    align-content: start;
+    scrollbar-width: thin;
+}
+
+.gridState {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    font-family: var(--main-font);
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.thumb {
+    position: relative;
+    height: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    padding: 0;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.04);
+    transition: border-color 0.15s, transform 0.15s;
+
+    img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    img[data-loaded='true'] { opacity: 1; }
+
+    &:hover { transform: translateY(-2px); }
+}
+
+/* Loading placeholder shown until each thumbnail's image has decoded. */
+.thumbShimmer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        100deg,
+        rgba(255, 255, 255, 0.03) 25%,
+        rgba(255, 255, 255, 0.10) 50%,
+        rgba(255, 255, 255, 0.03) 75%
+    );
+    background-size: 220% 100%;
+    animation: thumbShimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes thumbShimmer {
+    from { background-position: 220% 0; }
+    to   { background-position: -220% 0; }
+}
+
+.thumbSelected {
+    border-color: var(--mantine-color-teal-6, #12b886);
+}
+
+.thumbCheck {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--mantine-color-teal-6, #12b886);
+    color: #fff;
+}
+
+/* ── Footer ────────────────────────────────────────────────────────────────── */
+
+.footer {
+    flex-shrink: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 10px 14px;
+    border-top: var(--ctx-menu-divider);
+}
+
+.footerControl {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* The brightness control absorbs the leftover space so the row stays single-line. */
+.footerControlGrow {
+    flex: 1;
+    min-width: 0;
+}
+
+.sliderWrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 110px;
+}
+
+.sliderValue {
+    font-family: var(--main-font);
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.55);
+    width: 36px;
+    text-align: right;
+}

@@ -6,8 +6,12 @@ export const config = {
         blurAmount: 5,
     },
     background: {
+        source: 'apple',
+        mode: 'shuffle',
         changeTime: minutes(2),
         brightness: 0.5,
+        apple: { albumToken: null, pinned: null },
+        nasa: { query: 'nebula', pinned: null },
     },
     pages: [
         {

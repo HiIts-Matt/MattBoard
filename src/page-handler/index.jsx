@@ -31,6 +31,7 @@ export function PageHandler() {
     const {
         builderPages,
         builderTheme,
+        builderBackground,
         enterBuilder,
         exitBuilder,
         handleSave,
@@ -43,7 +44,7 @@ export function PageHandler() {
 
     const builderMode = builderPages !== null;
     const activePages = builderMode ? builderPages : config.pages;
-    const background = config.background;
+    const background = (builderMode ? builderBackground : null) ?? config.background;
 
     const activeTheme = (builderMode ? builderTheme : null) ?? config.theme ?? DEFAULT_THEME;
 
@@ -91,7 +92,7 @@ export function PageHandler() {
                 activePage={activePage}
                 onNavigate={goToPage}
                 builderMode={builderMode}
-                onEnterBuilder={() => enterBuilder(config.pages, toDoData, config.theme)}
+                onEnterBuilder={() => enterBuilder(config.pages, toDoData, config.theme, config.background)}
                 onSave={handleSave}
                 onDiscard={exitBuilder}
                 onAddModule={(pageIndex, type) => handleAddModule(pageIndex, type)}
