@@ -1,0 +1,31 @@
+{
+  "title": "MattBoard",
+  "tagline": "A self-hosted wall display, laid out by drag and drop",
+  "summary": "A smart display you hang on a wall and own outright: a React front end draws the board (clock, to-do list, weather, news headlines and a photo backdrop) while a small Express server on the same machine holds the layout, the stored lists and every outside API call. The layout is built in the browser by dragging widgets onto a snap grid, each widget has its own settings popover, and the whole look (corner radius, font, backdrop blur, background colour) is themeable from inside the board itself. AGPL licensed, no account and no subscription, and the target device is a Raspberry Pi driving a screen.",
+  "year": "2026",
+  "status": "In progress",
+  "tags": ["react", "vite", "express", "self-hosted", "raspberry-pi", "agpl"],
+  "cover": "media/01-board.webp",
+  "media": [
+    {
+      "src": "media/01-board.webp",
+      "alt": "MattBoard in normal wall-facing mode: to-do list, analog and digital clock, weather forecast and news headlines over a photo backdrop",
+      "caption": "The board as it sits on the wall, with live weather from Open-Meteo, live RSS headlines and a photo pulled from a shared album."
+    },
+    {
+      "src": "media/02-builder.webp",
+      "alt": "The same board in builder mode, showing a dot snap grid, dashed drag handles labelled todo, clock, news and weather, and an expanded toolbar",
+      "caption": "Builder mode: every widget gets a labelled drag handle, the snap grid appears, and the toolbar grows theme, background, add, save and switch-layout buttons."
+    },
+    {
+      "src": "media/03-widget-settings.webp",
+      "alt": "The weather widget selected with a green outline and its settings popover open, offering Use Current Location, an address search and manual latitude and longitude fields",
+      "caption": "Selecting a widget opens its own settings next to it, so the weather module is pointed at a location without leaving the board."
+    },
+    {
+      "src": "media/04-theme.webp",
+      "alt": "The theme panel open over the board, with live previews of each widget and sliders for background, corner radius, text brightness, backdrop blur and font",
+      "caption": "The theme panel previews every widget as you change it, and each widget can override the app-wide theme."
+    }
+  ]
+}
