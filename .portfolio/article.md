@@ -1,7 +1,7 @@
 *Your space is sacred. A billboard doesn't belong there.*
 
-MattBoard is a smart display for a wall. A cheap computer — a Raspberry Pi is
-the target — sits behind a screen, boots into a browser, and shows a clock, a
+MattBoard is a smart display for a wall. A cheap computer (a Raspberry Pi is
+the target) sits behind a screen, boots into a browser, and shows a clock, a
 to-do list, the weather, news headlines and a slow slideshow of your own
 photos. The commercial versions of this want an account, a monthly fee, and
 space on your kitchen wall for their branding. This one runs on hardware you
@@ -12,7 +12,7 @@ AGPL so that anyone who runs it as a service has to publish their changes too.
 
 **MattBoard** is the board itself: React, Vite, and the builder you arrange it
 with. **MattBoard-backend** is a small Express server on the same machine that
-holds the layout, the to-do list, and every credential — no key ever reaches
+holds the layout, the to-do list, and every credential, so no key ever reaches
 the browser. **MattBoard-hosted** is the other answer to the same problem: a
 multi-tenant version with accounts and a database, built as a wrapper that
 never edits a line of the open-source halves. The third one is where the
@@ -23,7 +23,7 @@ own section below.
 
 A board is pages; a page is widgets; a widget knows its size and where it is
 pinned. Crucially it is pinned to the nearest *corner* as a percentage rather
-than placed at a pixel — the editor picks whichever edge is closer on each axis
+than placed at a pixel: the editor picks whichever edge is closer on each axis
 and stores the offset from there. That is the whole reason a board arranged on
 a laptop lands correctly on the 1080p panel it will actually live on, and why
 the same layout survives being turned portrait.
@@ -41,7 +41,7 @@ screen.
 Builder mode is a draft. Entering it deep-clones the pages, the theme and the
 background; leaving it throws the clone away. The close button diffs the draft
 against what is saved and only asks for confirmation if something really
-changed — and it normalises both sides before comparing, because the
+changed, and it normalises both sides before comparing, because the
 normaliser upgrades older layout shapes and would otherwise report a legacy
 field as an edit you never made.
 
@@ -64,8 +64,8 @@ than a blank wall.
 
 The frosted panels behind each widget are not live blur. Running
 `backdrop-filter` over a full-screen photo on every frame is precisely the work
-a Raspberry Pi cannot spare. So the server blurs the wallpaper once — `sharp`,
-one pass, cached for half an hour — and every widget paints that blurred copy
+a Raspberry Pi cannot spare. So the server blurs the wallpaper once (`sharp`,
+one pass, cached for half an hour), and every widget paints that blurred copy
 as its own background, offset by its position on screen.
 
 Getting it to line up is the fiddly part, because the real photo is displayed
@@ -96,12 +96,12 @@ its own character:
   response; they are obtained by rewriting `~thumb.jpg` to `~orig.jpg`, because
   the library has no field for them.
 - **Weather** is Open-Meteo, sliced to the next 24 hours by matching the
-  current hour against the hourly series — and returning nothing rather than
+  current hour against the hourly series, and returning nothing rather than
   something wrong if that match fails.
 - **News** is RSS plus AFINN sentiment scoring, mapped through `tanh` so that
   an unbounded comparative score becomes a 0-to-1 number with neutral at 0.5.
   The widget then filters at 0.5 by default. "Good news mode" is, honestly,
-  just *headlines that are not negative* — the score only ever sees the title.
+  just *headlines that are not negative*, since the score only ever sees the title.
 
 Storage is three JSON files. There is no database and no auth, because on a
 private network behind your own front door there is nothing to authenticate.
@@ -126,7 +126,7 @@ proprietary layer attaches in exactly three places:
 1. **Composition.** The hosted entry point wraps the core `App` in auth,
    permissions and onboarding gates without touching it.
 2. **Four swapped files.** A Vite plugin intercepts imports at resolution time
-   and substitutes hosted implementations for four core modules — the API base,
+   and substitutes hosted implementations for four core modules: the API base,
    the widget registry, the calendar auth hook, and a user button that the open
    core deliberately ships as a component returning `null`.
 3. **One monkey patch.** The hosted front end wraps `window.fetch` and attaches
@@ -134,8 +134,8 @@ proprietary layer attaches in exactly three places:
    unmodified core code becomes authenticated code.
 
 Behind it, every JSON file becomes a Postgres table with row-level security,
-the single global Google token becomes one row per user — the user's id is
-carried through the OAuth round trip in the `state` parameter — and widget
+the single global Google token becomes one row per user (the user's id is
+carried through the OAuth round trip in the `state` parameter), and widget
 availability becomes a permissions table that the registry enforces by deleting
 entries it is not allowed to show.
 
@@ -158,7 +158,7 @@ The clock, to-do list, photo backdrop, news and weather all work. The builder
 and the theme system are the most finished parts of the project.
 
 The calendar is the outstanding failure, and it is a good lesson in error
-handling. Google OAuth genuinely works — the consent round trip completes and a
+handling. Google OAuth genuinely works: the consent round trip completes and a
 valid refresh token is on disk. But the events route catches every possible
 error and collapses it into a bare 502, without logging the cause; and the
 client only recognises a 401 as "not connected". So a failure renders as a
@@ -168,11 +168,11 @@ different causes were made indistinguishable.
 
 There is a smaller one of the same family: the bundled default layout writes
 the weather widget's coordinates under the wrong key, so a fresh install shows
-"not set up" instead of a forecast — and the coordinates it writes are the
+"not set up" instead of a forecast, and the coordinates it writes are the
 northern-hemisphere mirror of Melbourne.
 
-The hosted version runs end to end against a local Supabase instance — sign up,
-get a board, arrange it, connect a calendar, delete your account — but it has
+The hosted version runs end to end against a local Supabase instance (sign up,
+get a board, arrange it, connect a calendar, delete your account), but it has
 never been deployed; every URL in its config still points at `127.0.0.1`. All
 three repositories stopped within ten days of each other in mid-2026, on the
 line the author wrote himself: *will finalise web hosting stack and hook up
