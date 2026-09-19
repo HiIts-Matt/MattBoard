@@ -1,10 +1,11 @@
 {
   "title": "MattBoard",
   "tagline": "A self-hosted wall display, laid out by drag and drop",
-  "summary": "A smart display you hang on a wall and own outright: a React front end draws the board (clock, to-do list, weather, news headlines and a photo backdrop) while a small Express server on the same machine holds the layout, the stored lists and every outside API call. The layout is built in the browser by dragging widgets onto a snap grid, each widget has its own settings popover, and the whole look (corner radius, font, backdrop blur, background colour) is themeable from inside the board itself. AGPL licensed, no account and no subscription, and the target device is a Raspberry Pi driving a screen.",
+  "summary": "A smart display you hang on a wall and own outright, across three repositories: a React front end that draws the board and the drag-and-drop builder, an Express server on the same machine that holds the layout, the stored lists and every credential, and a multi-tenant hosted wrapper that adds Supabase accounts by composing the other two as submodules rather than forking them. AGPL licensed, no account and no subscription, and the target device is a Raspberry Pi driving a screen.",
   "year": "2026",
   "status": "In progress",
-  "tags": ["react", "vite", "express", "self-hosted", "raspberry-pi", "agpl"],
+  "tags": ["react", "vite", "express", "supabase", "self-hosted", "raspberry-pi", "agpl"],
+  "links": [{ "label": "Backend", "url": "https://github.com/HiIts-Matt/MattBoard-backend" }],
   "cover": "media/01-board.webp",
   "media": [
     {
